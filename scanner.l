@@ -10,6 +10,10 @@ int running = 1;
 
 %%
 if		{ return KW_IF; }
+\n		{ lineNumber++; }
+
+
+
 .		{ return 999; }
 %%
 
