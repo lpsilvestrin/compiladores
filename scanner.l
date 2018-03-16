@@ -12,7 +12,6 @@ int running = 1;
 %x STRING
 %%
 
-
 char 																{return KW_CHAR; }
 int 																{return KW_INT; }
 float 															{return KW_FLOAT; }
@@ -50,10 +49,9 @@ print 															{return KW_PRINT; }
 \n 																	{lineNumber++; }
 .																		{return TOKEN_ERROR; }
 
-<COMMENT>
-\n												{lineNumber++; }
-"*/"											{BEGIN(INITIAL); }
-.													{}
+<COMMENT>\n								{lineNumber++; }
+<COMMENT>"*/"							{BEGIN(INITIAL); }
+<COMMENT>.								{}
 
 
 
@@ -108,7 +106,7 @@ void tokenTreatment(int tk_code) {
     break;
     case OPERATOR_OR: printf("LINE %d: Found an OR\n", lineNumber );
     break;
-    case TK_IDENTIFIER: printf("LINE %d: Found an identified called %s\n", lineNumber, yytext); //colocar na hash
+    case TK_IDENTIFIER: printf("LINE %d: Found an identifier called %s\n", lineNumber, yytext); //colocar na hash
     break;
     case LIT_INTEGER: printf("LINE %d: Found a LIT INTEGER with value %s\n", lineNumber, yytext );
     break;
@@ -116,7 +114,7 @@ void tokenTreatment(int tk_code) {
     break;
     case LIT_CHAR: printf("LINE %d: Found a LIT CHAR %s\n", lineNumber, yytext );
     break;
-    case LIT_STRING: printf("LINE %d: Found a LIT STRING %s\n", lineNumber, yytext );
+    case LIT_STRING: printf("LINE %d: Found a LIT STRING %s\n", lineNumber, yytext ); //nao reconhece \" na string
     break;
     case TOKEN_ERROR: printf("LINE %d: Token error <%s>\n\n", lineNumber, yytext);
 		break;
