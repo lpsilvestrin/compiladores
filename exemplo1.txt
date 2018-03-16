@@ -1,11 +1,17 @@
 function1(int abacate){
-	float coisa_bonita_e_fofa = 200.7; //oi
-	while(n > m){
-	/*
-
-	um while sem sentido
-	*/	
-	mds_que_bagunca00 = uVa - uh8888l;
-	print("oi oi oi");
+	float coisa_bonita_e_fofa = 200.7; //oi, cuidado para nao me achar como identificador!!!
+	while((n => m)&&(dois != tres)||(esse-tipo-de-id >= esse_aqui)){
+	char coisa = '8';
+	float mds_que_bagunca00 = uVa - uh8888l;
+	int ult = ve % esc;
+	string = "eu tava aqui\n pensando muito sobre como eh louca essa historia \n de \t\t /* reconhecer 346234 strings doidas21346 $@#%&*"
+	print("NAO SOU UM (OU VARIOS) IDENTIFICADORES, SE LIGA!\n");
 	}
+
 }
+/*
+
+	eu queria que ele reconhecesse isso como um comentario de multiplas linhas =(
+
+	*/
+													{}

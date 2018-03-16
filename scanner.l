@@ -9,6 +9,7 @@ int running = 1;
 %}
 
 %x COMMENT
+%x STRING
 %%
 
 
@@ -22,7 +23,7 @@ while 															{return KW_WHILE; }
 for 																{return KW_FOR; }
 read 																{return KW_READ; }
 return 															{return KW_RETURN; }
-print 															{return KW_RETURN; }
+print 															{return KW_PRINT; }
 
 "<="																{return OPERATOR_LE; }
 ">="																{return OPERATOR_GE; }
@@ -35,6 +36,8 @@ print 															{return KW_RETURN; }
 
 [0-9]+															{return LIT_INTEGER; }
 [0-9]+[.][0-9]+											{return LIT_REAL; }
+"\'"[a-zA-Z0-9_-]+"\'"							{return LIT_CHAR; }
+"\"".*"\""													{return LIT_STRING; }
 [a-zA-Z][a-zA-Z0-9_-]*							{return TK_IDENTIFIER; }
 
 
@@ -42,8 +45,8 @@ print 															{return KW_RETURN; }
 
 " "																	{}
 \t																	{}
-"/*".*															{BEGIN(COMMENT); }
 "//".*															{}
+"/*".*															{BEGIN(COMMENT); }
 \n 																	{lineNumber++; }
 .																		{return TOKEN_ERROR; }
 
@@ -51,6 +54,9 @@ print 															{return KW_RETURN; }
 \n												{lineNumber++; }
 "*/"											{BEGIN(INITIAL); }
 .													{}
+
+
+
 
 %%
 
@@ -68,69 +74,52 @@ int isRunning() {
 
 void tokenTreatment(int tk_code) {
   switch (tk_code) {
-    case KW_CHAR: printf("LINE %d: achei um char\n", lineNumber );
+    case KW_CHAR: printf("LINE %d: Found a char\n", lineNumber );
     break;
-    case KW_INT: printf("LINE %d: achei um int\n", lineNumber );
+    case KW_INT: printf("LINE %d: Found an int\n", lineNumber );
     break;
-    case KW_FLOAT: printf("LINE %d: achei um float\n", lineNumber );
+    case KW_FLOAT: printf("LINE %d: Found a float\n", lineNumber );
     break;
-    case KW_IF: printf("LINE %d: achei um if\n", lineNumber );
+    case KW_IF: printf("LINE %d: Found an if\n", lineNumber );
     break;
-    case KW_THEN: printf("LINE %d: achei um then\n", lineNumber );
+    case KW_THEN: printf("LINE %d: Found a then\n", lineNumber );
     break;
-    case KW_ELSE: printf("LINE %d: achei um else\n", lineNumber );
+    case KW_ELSE: printf("LINE %d: Found an else\n", lineNumber );
     break;
-    case KW_WHILE: printf("LINE %d: achei um while\n", lineNumber );
+    case KW_WHILE: printf("LINE %d: Found a while\n", lineNumber );
     break;
-    case KW_FOR: printf("LINE %d: achei um for\n", lineNumber );
+    case KW_FOR: printf("LINE %d: Found a for\n", lineNumber );
     break;
-    case KW_READ: printf("LINE %d: achei um read\n", lineNumber );
+    case KW_READ: printf("LINE %d: Found a read\n", lineNumber );
     break;
-    case KW_RETURN: printf("LINE %d: achei um return\n", lineNumber );
+    case KW_RETURN: printf("LINE %d: Found a return\n", lineNumber );
     break;
-    case KW_PRINT: printf("LINE %d: achei um print\n", lineNumber );
+    case KW_PRINT: printf("LINE %d: Found a print\n", lineNumber );
     break;
-    case OPERATOR_LE: printf("LINE %d: achei um LE\n", lineNumber );
+    case OPERATOR_LE: printf("LINE %d: Found a LE\n", lineNumber );
     break;
-    case OPERATOR_GE: printf("LINE %d: achei um GE\n", lineNumber );
+    case OPERATOR_GE: printf("LINE %d: Found a GE\n", lineNumber );
     break;
-    case OPERATOR_EQ: printf("LINE %d: achei um EQ\n", lineNumber );
+    case OPERATOR_EQ: printf("LINE %d: Found an EQ\n", lineNumber );
     break;
-    case OPERATOR_NE: printf("LINE %d: achei um NE\n", lineNumber );
+    case OPERATOR_NE: printf("LINE %d: Found a NE\n", lineNumber );
     break;
-    case OPERATOR_AND: printf("LINE %d: achei um AND\n", lineNumber );
+    case OPERATOR_AND: printf("LINE %d: Found an AND\n", lineNumber );
     break;
-    case OPERATOR_OR: printf("LINE %d: achei um OR\n", lineNumber );
+    case OPERATOR_OR: printf("LINE %d: Found an OR\n", lineNumber );
     break;
     case TK_IDENTIFIER: printf("LINE %d: Found an identified called %s\n", lineNumber, yytext); //colocar na hash
     break;
-    case LIT_INTEGER: printf("LINE %d: achei um LIT INTEGER de valor %s\n", lineNumber, yytext );
+    case LIT_INTEGER: printf("LINE %d: Found a LIT INTEGER with value %s\n", lineNumber, yytext );
     break;
-    case LIT_REAL: printf("LINE %d: achei um REAL de valor %s\n", lineNumber, yytext );
+    case LIT_REAL: printf("LINE %d: Found a REAL with value %s\n", lineNumber, yytext );
     break;
-    case LIT_CHAR: printf("LINE %d: achei um LIT CHAR\n", lineNumber );
+    case LIT_CHAR: printf("LINE %d: Found a LIT CHAR %s\n", lineNumber, yytext );
     break;
-    case LIT_STRING: printf("LINE %d: achei um LIT STRING\n", lineNumber);
+    case LIT_STRING: printf("LINE %d: Found a LIT STRING %s\n", lineNumber, yytext );
     break;
     case TOKEN_ERROR: printf("LINE %d: Token error <%s>\n\n", lineNumber, yytext);
 		break;
 		default: printf("LINE %d: Found the special character <%s>\n", lineNumber, yytext);
 	}
 }
-
-
-/*int main(int argc, char** argv) {
-	if (argc < 2) {
-		printf("nome do arquivo inválido");
-		exit(1);
-	}
-	yyin = fopen(argv[1], "r");
-	int res = yylex();
-	while (res != 0) {
-		printf("achou %d\n", res);
-		res = yylex();
-	}
-
-	fclose(yyin);
-	exit(0);
-}*/
