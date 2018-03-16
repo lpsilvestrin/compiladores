@@ -1,0 +1,11 @@
+function1(int m){
+	float n = 200.7; //oi
+	while(n > m){
+	/*
+
+	um while sem sentido
+	*/	
+	n = n - m;
+	printf("oi oi oi");
+	}
+}
