@@ -6,6 +6,6 @@ function1(int m){
 	um while sem sentido
 	*/	
 	n = n - m;
-	printf("oi oi oi");
+	print("oi oi oi");
 	}
 }

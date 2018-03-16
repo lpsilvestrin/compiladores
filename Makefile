@@ -7,16 +7,21 @@
 # and #include "main.c" in the last part of the scanner.l
 #
 
-etapa1: lex.yy.c
-	gcc -o etapa1 lex.yy.c
+etapa1: lex.yy.c 
+	gcc -c main.c -o main.o
+	gcc -o etapa1 lex.yy.c main.o
+
 lex.yy.c: scanner.l
 	lex scanner.l
 
+
+
 hashtable.o: hashtable.c hashtable.h
 	gcc -g -Wall -c hashtable.c
+
 
 test_hash: test_hash.c hashtable.o
 	gcc -g -Wall -o main test_hash.c hashtable.o
 
 clean:
-	rm lex.yy.c etapa1 main 
+	rm lex.yy.c etapa1 main.o
