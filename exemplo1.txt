@@ -1,11 +1,11 @@
-function1(int m){
-	float n = 200.7; //oi
+function1(int abacate){
+	float coisa_bonita_e_fofa = 200.7; //oi
 	while(n > m){
 	/*
 
 	um while sem sentido
 	*/	
-	n = n - m;
+	mds_que_bagunca00 = uVa - uh8888l;
 	print("oi oi oi");
 	}
 }
