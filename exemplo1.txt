@@ -14,5 +14,3 @@ function1(int abacate){
 	eu queria que ele reconhecesse isso como um comentario de multiplas linhas =(
 
 	*/
-
-													{}

@@ -1,15 +1,18 @@
 %{
 #include <stdlib.h>
+#include <stdio.h>
 #include "tokens.h"
+#include "hashtable.h"
 
 //control variables
 int lineNumber = 1;
 int running = 1;
+hashNode SymbolsTable;
+
 
 %}
 
 %x COMMENT
-%x STRING
 %%
 
 char 																{return KW_CHAR; }
@@ -36,12 +39,10 @@ print 															{return KW_PRINT; }
 [0-9]+															{return LIT_INTEGER; }
 [0-9]+[.][0-9]+											{return LIT_REAL; }
 "\'"[a-zA-Z0-9_-]+"\'"							{return LIT_CHAR; }
-"\"".*"\""													{return LIT_STRING; }
+"\"".*[\\"].*"\""													{return LIT_STRING; }
 [a-zA-Z][a-zA-Z0-9_-]*							{return TK_IDENTIFIER; }
 
-
-
-
+<<EOF>>															{running = 0; printf("EOF REACHED\n"); return running;}
 " "																	{}
 \t																	{}
 "//".*															{}
@@ -69,7 +70,6 @@ int getLineNumber() {
 int isRunning() {
 	return running;
 }
-
 void tokenTreatment(int tk_code) {
   switch (tk_code) {
     case KW_CHAR: printf("LINE %d: Found a char\n", lineNumber );
@@ -120,4 +120,8 @@ void tokenTreatment(int tk_code) {
 		break;
 		default: printf("LINE %d: Found the special character <%s>\n", lineNumber, yytext);
 	}
+}
+
+void initMe() {
+	//initHash(SymbolsTable, _KEYSIZE);
 }

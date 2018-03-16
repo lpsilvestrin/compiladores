@@ -8,8 +8,7 @@
 #
 
 etapa1: lex.yy.c 
-	gcc -c main.c -o main.o
-	gcc -o etapa1 lex.yy.c main.o
+	gcc -o etapa1 lex.yy.c main.c
 
 lex.yy.c: scanner.l
 	lex scanner.l
@@ -24,4 +23,4 @@ test_hash: test_hash.c hashtable.o
 	gcc -g -Wall -o main test_hash.c hashtable.o
 
 clean:
-	rm lex.yy.c etapa1 main.o
+	rm lex.yy.c etapa1

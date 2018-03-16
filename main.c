@@ -1,13 +1,11 @@
-#import <stdlib.h>
-#import <stdio.h>
+#include <stdlib.h>
+#include <stdio.h>
 
-
-extern int running;
-extern int lineNumber;
-extern FILE *yyin;
-extern void tokenTreatment(int tk_code);
+extern FILE *yyin; //CAREFUL WITH IT
 extern int yylex();
-
+extern void tokenTreatment(int tk_code);
+extern void initMe();
+extern int isRunning();
 
 int main(int argc, char** argv) {
 	if (argc < 2) {
@@ -15,19 +13,21 @@ int main(int argc, char** argv) {
 		exit(1);
 	}
 	yyin = fopen(argv[1], "r");
-  int res = yylex();
-  while(res){
-      tokenTreatment(res);
-      //printf("achei algo, mas to com preguica\n");
-      res = yylex();
+  if(yyin){
+    initMe(); //init da hash e etc
+
+    int token;
+    while(isRunning()){
+        token = yylex();
+        if(!isRunning()){
+          break;
+        }else{
+          tokenTreatment(token);
+        }
       }
-	/*while (res != 0) {
-		printf("achou %d\n", res);
-		res = yylex();
-	}*/
-
-
-
-	fclose(yyin);
-	return 0;
+  	fclose(yyin);
+    return 0;
+  }else{
+    return 1;
+  }
 }
