@@ -123,5 +123,5 @@ void tokenTreatment(int tk_code) {
 }
 
 void initMe() {
-	//initHash(SymbolsTable, _KEYSIZE);
+	initHash(&SymbolsTable, _KEYSIZE);
 }

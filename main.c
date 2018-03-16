@@ -15,7 +15,6 @@ int main(int argc, char** argv) {
 	yyin = fopen(argv[1], "r");
   if(yyin){
     initMe(); //init da hash e etc
-
     int token;
     while(isRunning()){
         token = yylex();
