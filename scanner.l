@@ -7,8 +7,7 @@
 //control variables
 int lineNumber = 1;
 int running = 1;
-hashNode SymbolsTable;
-
+hashTable **SymbolsTable;
 
 %}
 
@@ -123,5 +122,5 @@ void tokenTreatment(int tk_code) {
 }
 
 void initMe() {
-	initHash(&SymbolsTable, _KEYSIZE);
+	initHash(SymbolsTable, _KEYSIZE);
 }
