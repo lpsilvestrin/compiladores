@@ -19,6 +19,7 @@ int isRunning();
 void initMe();
 void updateSymbolsTable(char* id);
 void tokenTreatment(int tk_code);
+void checkSymbolsTable(char* token);
 
 %}
 
@@ -121,18 +122,23 @@ void tokenTreatment(int tk_code) {
     case TK_IDENTIFIER:
 		printf("LINE %d: Found an identifier called %s\n", lineNumber, yytext);
 		updateSymbolsTable(yytext);
+		checkSymbolsTable(yytext);
     break;
     case LIT_INTEGER: printf("LINE %d: Found a LIT INTEGER with value %s\n", lineNumber, yytext );
 		updateSymbolsTable(yytext);
+		checkSymbolsTable(yytext);
     break;
     case LIT_REAL: printf("LINE %d: Found a REAL with value %s\n", lineNumber, yytext );
 		updateSymbolsTable(yytext);
+		checkSymbolsTable(yytext);
     break;
     case LIT_CHAR: printf("LINE %d: Found a LIT CHAR %s\n", lineNumber, yytext );
 		updateSymbolsTable(yytext);
+		checkSymbolsTable(yytext);
     break;
     case LIT_STRING: printf("LINE %d: Found a LIT STRING %s\n", lineNumber, yytext );
 		updateSymbolsTable(yytext);
+		checkSymbolsTable(yytext);
     break;
     case TOKEN_ERROR: printf("LINE %d: Token error <%s>\n\n", lineNumber, yytext);
 		break;
@@ -145,4 +151,15 @@ void updateSymbolsTable(char* id) {
 	initNode(&n); 		// inicializando área de memória e atribuindo pro ponteiro
 	strcpy(n->id, id); // atribuindo identificador como key
 	insertHash(n, SymbolsTable); // inserindo na tabela
+}
+
+void checkSymbolsTable(char* token) {
+	hashNode *n = NULL;
+	printf("[HASH] Searching for %s inside our hash\n", token);
+	getHash(token, SymbolsTable, &n);
+	if (n != NULL) {
+	printf("[HASH] Found %s\n", n->id);
+	} else {
+		printf("[HASH] Failed to find %s\n", yytext);
+	}
 }

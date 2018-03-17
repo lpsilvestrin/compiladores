@@ -21,20 +21,10 @@ int main(int argc, char** argv) {
     int token;
     while(isRunning()){
         token = yylex();
-        if(!isRunning()){
+        if(!isRunning())
           break;
-        }else{
+        else
           tokenTreatment(token);
-		  hashNode *n = NULL;
-		  printf("[HASH] Searching for %s inside our hash\n", yytext);
-		  getHash(yytext, SymbolsTable, &n);
-		  if (n != NULL) {
-			printf("[HASH] Found %s\n", n->id);
-		  } else {
-		  	printf("[HASH] Failed to find %s\n", yytext);
-		  }
-
-        }
       }
   	fclose(yyin);
 
