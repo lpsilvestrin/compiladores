@@ -1,11 +1,14 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include "hashtable.h"
 
 extern FILE *yyin; //CAREFUL WITH IT
 extern int yylex();
 extern void tokenTreatment(int tk_code);
 extern void initMe();
 extern int isRunning();
+extern hashTable* SymbolsTable;
+extern char *yytext;
 
 int main(int argc, char** argv) {
 	if (argc < 2) {
@@ -22,9 +25,21 @@ int main(int argc, char** argv) {
           break;
         }else{
           tokenTreatment(token);
+		  hashNode *n = NULL;
+		  printf("procurando %s na hash\n", yytext);
+		  getHash(yytext, SymbolsTable, &n);
+		  if (n != NULL) {
+			printf("%s ta na hash\n", n->key);
+		  } else {
+		  	printf("%s nao ta na hash\n", yytext);
+		  }
+
         }
       }
   	fclose(yyin);
+
+	
+
     return 0;
   }else{
     return 1;

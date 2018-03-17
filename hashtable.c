@@ -31,7 +31,7 @@ void insertHash(hashNode *entry, hashTable *table) {
 	if (strcmp(iterator->key, entry->key) == 0) {
 		printf("key %s in use\n", entry->key);
 		return;
-	}
+	} 
 	// insert in the end of the list
 	iterator->next = entry;
 	
@@ -73,7 +73,7 @@ void initNode(hashNode **node) {
 	hashNode *tmp = (hashNode*) malloc(sizeof(hashNode));
 	tmp->key = (char*) malloc(_KEYSIZE*sizeof(char));
 	tmp->value = (char*) malloc(_VALSIZE*sizeof(char));
-
+	tmp->next = NULL;
 	*node = tmp;
 }
 
