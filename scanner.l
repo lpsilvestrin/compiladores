@@ -115,12 +115,16 @@ void tokenTreatment(int tk_code) {
 		updateSymbolsTable(yytext);
     break;
     case LIT_INTEGER: printf("LINE %d: Found a LIT INTEGER with value %s\n", lineNumber, yytext );
+		updateSymbolsTable(yytext);
     break;
     case LIT_REAL: printf("LINE %d: Found a REAL with value %s\n", lineNumber, yytext );
+		updateSymbolsTable(yytext);
     break;
     case LIT_CHAR: printf("LINE %d: Found a LIT CHAR %s\n", lineNumber, yytext );
+		updateSymbolsTable(yytext);
     break;
-    case LIT_STRING: printf("LINE %d: Found a LIT STRING %s\n", lineNumber, yytext ); //nao reconhece \" na string
+    case LIT_STRING: printf("LINE %d: Found a LIT STRING %s\n", lineNumber, yytext );
+		updateSymbolsTable(yytext);
     break;
     case TOKEN_ERROR: printf("LINE %d: Token error <%s>\n\n", lineNumber, yytext);
 		break;
