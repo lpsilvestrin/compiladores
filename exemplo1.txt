@@ -7,7 +7,7 @@ function1(int abacate){
 	string = "eu tava aqui\n pensando muito sobre como eh louca essa historia \n de \t\t /* reconhecer 346234 strings doidas21346 $@#%&*"
 	print("NAO SOU UM \"(OU VARIOS) IDENTIFICADORES, SE LIGA!\n");
 	}
-
+	abacate abacate abacate
 }
 /*
 
