@@ -17,8 +17,8 @@ int yywrap();
 int getLineNumber();
 int isRunning();
 void initMe();
-void updateSymbolsTable(char* id);
 void tokenTreatment(int tk_code);
+void updateSymbolsTable(char* id);
 void checkSymbolsTable(char* token);
 
 %}
