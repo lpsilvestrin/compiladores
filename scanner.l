@@ -8,17 +8,23 @@
 #define _TABLESIZE 100
 
 //control variables
-int lineNumber = 1;
-int running = 1;
+int lineNumber;
+int running;
 hashTable *SymbolsTable;
-void updateSymbolsTable(char*);
 
+//interfaces
+int yywrap();
+int getLineNumber();
+int isRunning();
+void initMe();
+void updateSymbolsTable(char* id);
+void tokenTreatment(int tk_code);
+void checkSymbolsTable(char* token);
 
 %}
 
 %x COMMENT
 %%
-
 char 																{return KW_CHAR; }
 int 																{return KW_INT; }
 float 															{return KW_FLOAT; }
@@ -43,7 +49,7 @@ print 															{return KW_PRINT; }
 [0-9]+															{return LIT_INTEGER; }
 [0-9]+[.][0-9]+											{return LIT_REAL; }
 "\'"[a-zA-Z0-9_-]+"\'"							{return LIT_CHAR; }
-"\"".*[\\"].*"\""													{return LIT_STRING; }
+"\"".*[\\"]*.*"\""													{return LIT_STRING; }
 [a-zA-Z][a-zA-Z0-9_-]*							{return TK_IDENTIFIER; }
 
 <<EOF>>															{running = 0; printf("EOF REACHED\n"); return running;}
@@ -57,13 +63,9 @@ print 															{return KW_PRINT; }
 <COMMENT>\n								{lineNumber++; }
 <COMMENT>"*/"							{BEGIN(INITIAL); }
 <COMMENT>.								{}
-
-
-
-
 %%
 
-int yywrap(void) {
+int yywrap() {
 	return 1;
 }
 
@@ -74,6 +76,13 @@ int getLineNumber() {
 int isRunning() {
 	return running;
 }
+
+void initMe() {
+	lineNumber = 1;
+	running = 1;
+	initHash(&SymbolsTable, _TABLESIZE);
+}
+
 void tokenTreatment(int tk_code) {
   switch (tk_code) {
     case KW_CHAR: printf("LINE %d: Found a char\n", lineNumber );
@@ -110,17 +119,26 @@ void tokenTreatment(int tk_code) {
     break;
     case OPERATOR_OR: printf("LINE %d: Found an OR\n", lineNumber );
     break;
-    case TK_IDENTIFIER: 
+    case TK_IDENTIFIER:
 		printf("LINE %d: Found an identifier called %s\n", lineNumber, yytext);
 		updateSymbolsTable(yytext);
+		checkSymbolsTable(yytext);
     break;
     case LIT_INTEGER: printf("LINE %d: Found a LIT INTEGER with value %s\n", lineNumber, yytext );
+		updateSymbolsTable(yytext);
+		checkSymbolsTable(yytext);
     break;
     case LIT_REAL: printf("LINE %d: Found a REAL with value %s\n", lineNumber, yytext );
+		updateSymbolsTable(yytext);
+		checkSymbolsTable(yytext);
     break;
     case LIT_CHAR: printf("LINE %d: Found a LIT CHAR %s\n", lineNumber, yytext );
+		updateSymbolsTable(yytext);
+		checkSymbolsTable(yytext);
     break;
-    case LIT_STRING: printf("LINE %d: Found a LIT STRING %s\n", lineNumber, yytext ); //nao reconhece \" na string
+    case LIT_STRING: printf("LINE %d: Found a LIT STRING %s\n", lineNumber, yytext );
+		updateSymbolsTable(yytext);
+		checkSymbolsTable(yytext);
     break;
     case TOKEN_ERROR: printf("LINE %d: Token error <%s>\n\n", lineNumber, yytext);
 		break;
@@ -128,14 +146,20 @@ void tokenTreatment(int tk_code) {
 	}
 }
 
-void initMe() {
-	initHash(&SymbolsTable, _TABLESIZE);
-}
-
 void updateSymbolsTable(char* id) {
 	hashNode *n;
-	initNode(&n); 		// inicializando área de memória e atribuindo
-						// pro ponteiro
-	strcpy(n->key, id); // atribuindo identificador como key
+	initNode(&n); 		// inicializando área de memória e atribuindo pro ponteiro
+	strcpy(n->id, id); // atribuindo identificador como key
 	insertHash(n, SymbolsTable); // inserindo na tabela
+}
+
+void checkSymbolsTable(char* token) {
+	hashNode *n = NULL;
+	printf("[HASH] Searching for %s inside our hash\n", token);
+	getHash(token, SymbolsTable, &n);
+	if (n != NULL) {
+	printf("[HASH] Found %s\n", n->id);
+	} else {
+		printf("[HASH] Failed to find %s\n", yytext);
+	}
 }

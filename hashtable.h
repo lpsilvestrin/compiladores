@@ -9,8 +9,8 @@
 #define _VALSIZE 256
 
 typedef struct HashNode {
-	char* key;
-	char* value;
+	char* id; //the id string
+	char* value; //some content
 	struct HashNode* next;
 } hashNode;
 
@@ -19,11 +19,11 @@ typedef struct HashTable {
 	struct HashNode** data;
 } hashTable;
 
-unsigned long hashKey(unsigned char *str); 
-
+unsigned long hashKey(unsigned char *str);
 void insertHash(hashNode *entry, hashTable *table);
-int getHash(char* key, hashTable *table, hashNode **entry); 
+int getHash(char* key, hashTable *table, hashNode **entry);
 void initHash(hashTable **table, int size);
 void initNode(hashNode **node);
+void printHash(hashTable *table);
 
 #endif //_HASHTABLE_H
