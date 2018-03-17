@@ -4,10 +4,14 @@
 #include "tokens.h"
 #include "hashtable.h"
 
+
+#define _TABLESIZE 100
+
 //control variables
 int lineNumber = 1;
 int running = 1;
-hashNode SymbolsTable;
+hashTable *SymbolsTable;
+void updateSymbolsTable(char*);
 
 
 %}
@@ -106,7 +110,9 @@ void tokenTreatment(int tk_code) {
     break;
     case OPERATOR_OR: printf("LINE %d: Found an OR\n", lineNumber );
     break;
-    case TK_IDENTIFIER: printf("LINE %d: Found an identifier called %s\n", lineNumber, yytext); //colocar na hash
+    case TK_IDENTIFIER: 
+		printf("LINE %d: Found an identifier called %s\n", lineNumber, yytext);
+		updateSymbolsTable(yytext);
     break;
     case LIT_INTEGER: printf("LINE %d: Found a LIT INTEGER with value %s\n", lineNumber, yytext );
     break;
@@ -123,5 +129,13 @@ void tokenTreatment(int tk_code) {
 }
 
 void initMe() {
-	initHash(&SymbolsTable, _KEYSIZE);
+	initHash(&SymbolsTable, _TABLESIZE);
+}
+
+void updateSymbolsTable(char* id) {
+	hashNode *n;
+	initNode(&n); 		// inicializando área de memória e atribuindo
+						// pro ponteiro
+	strcpy(n->key, id); // atribuindo identificador como key
+	insertHash(n, SymbolsTable); // inserindo na tabela
 }
