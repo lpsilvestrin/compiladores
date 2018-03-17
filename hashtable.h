@@ -20,7 +20,6 @@ typedef struct HashTable {
 } hashTable;
 
 unsigned long hashKey(unsigned char *str);
-
 void insertHash(hashNode *entry, hashTable *table);
 int getHash(char* key, hashTable *table, hashNode **entry);
 void initHash(hashTable **table, int size);

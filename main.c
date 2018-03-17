@@ -26,19 +26,19 @@ int main(int argc, char** argv) {
         }else{
           tokenTreatment(token);
 		  hashNode *n = NULL;
-		  printf("procurando %s na hash\n", yytext);
+		  printf("[HASH] Searching for %s inside our hash\n", yytext);
 		  getHash(yytext, SymbolsTable, &n);
 		  if (n != NULL) {
-			printf("%s ta na hash\n", n->key);
+			printf("[HASH] Found %s\n", n->id);
 		  } else {
-		  	printf("%s nao ta na hash\n", yytext);
+		  	printf("[HASH] Failed to find %s\n", yytext);
 		  }
 
         }
       }
   	fclose(yyin);
 
-	
+
 
     return 0;
   }else{
