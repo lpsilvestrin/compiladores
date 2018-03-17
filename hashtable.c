@@ -47,14 +47,14 @@ int getHash(char* key, hashTable *table, hashNode **entry) {
 	hashNode* iterator = table->data[index];
 	while (iterator->next != NULL) {
 		if (strcmp(iterator->id, key) == 0) {
-			printf("found %s \n", key);
+			//printf("found %s \n", key);
 			*entry = iterator;
 			return 1;
 		}
 		iterator = iterator->next;
 	}
 	if (strcmp(iterator->id, key) == 0) {
-		printf("found %s \n", key);
+		//printf("found %s \n", key);
 		*entry = iterator;
 		return 1;
 	}
