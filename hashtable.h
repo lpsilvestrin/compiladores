@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#define _KEYSIZE 50
-#define _VALSIZE 50
+#define _KEYSIZE 256
+#define _VALSIZE 256
 
 typedef struct HashNode {
 	char* key;
