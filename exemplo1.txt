@@ -1,11 +1,13 @@
 function1(int abacate){
-	float coisa_bonita_e_fofa = 200.7; //oi, cuidado para nao me achar como identificador!!!
+	float um_id_com_muito_underline = 200.7; //oi, cuidado para nao me achar como identificador!!!
 	while((n => m)&&(dois != tres)||(esse-tipo-de-id >= esse_aqui)){
 	char coisa = '8';
-	float mds_que_bagunca00 = uVa - uh8888l;
-	int ult = ve / esc;
+	float id_misto-deNumeros99_e_letras = mAiS - men000s;
+	int ult = dividr / coisa;
+	id_misto-deNumeros99_e_letras = ult * 5;
 	string = "eu tava aqui\n pensando muito sobre como eh louca essa historia \n de \t\t /* reconhecer 346234 strings doidas21346 $@#%&*"
 	print("NAO SOU UM \"(OU VARIOS) IDENTIFICADORES, SE LIGA!\n");
+	char *nome = "tenho que testar \" varias coisas \n dentro da string para ter certeza que ta funcionando \" neh"
 	}
 
 }
