@@ -48,8 +48,10 @@ print 															{return KW_PRINT; }
 
 [0-9]+															{return LIT_INTEGER; }
 [0-9]+[.][0-9]+											{return LIT_REAL; }
-"\'".*"\'"							 	 					{return LIT_CHAR; }
-"\"".*[\\"]*.*"\""									{return LIT_STRING; }
+"\'"[\\n]"\'"				{return LIT_CHAR; }
+"\'"."\'"							 	 					{return LIT_CHAR; }
+"\""([^"]*)([\"|^"]*)"\""									{return LIT_STRING; }
+
 [a-zA-Z][a-zA-Z0-9_-]*							{return TK_IDENTIFIER; }
 
 <<EOF>>															{running = 0; printf("EOF REACHED\n"); return running;}
