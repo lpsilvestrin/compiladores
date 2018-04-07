@@ -34,3 +34,22 @@
 
 %%
 program: list_of_commands
+    |
+    ; 
+//it has to accept empty programs
+
+//declarar bloco
+
+//declarar variavel global
+
+//declarar funcao
+
+function: header '{' block '}'
+    |
+    ;
+
+header: |;
+block: |;
+list_of_commands:|;
+
+%%
