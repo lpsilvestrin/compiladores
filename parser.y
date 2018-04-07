@@ -66,7 +66,7 @@ lit_value: LIT_CHAR | LIT_INTEGER | LIT_REAL
 
 //----------- FUNCTION
 
-function: header '{' block '}' 
+function: header block 
     ;
 
 header: kw_type TK_IDENTIFIER '(' params ')' 
@@ -79,5 +79,43 @@ params: kw_type TK_IDENTIFIER | l_param
 
 l_param: kw_type TK_IDENTIFIER ',' l_param | kw_type TK_IDENTIFIER 
     ;
+
+//----------- BLOCK  
+block: '{' l_commands '}' 
+    ;
+
+//it says that it can have an perty command and a ; after
+l_commands: command | command ';' l_commands
+    ;
+
+
+//----------- COMMAND 
+command: atrib | flow_c | read | print | return 
+    | 
+    ;
+
+//missing pointers
+atrib: TK_IDENTIFIER '=' expression | TK_IDENTIFIER '[' expression ']' '=' expression
+    ;
+
+read: KW_READ TK_IDENTIFIER 
+    ;
+
+print: KW_PRINT l_print 
+    ;
+
+l_print: LIT_STRING l_print | arit_expr l_print 
+    | 
+    ;
+
+return: KW_RETURN expression ;
+
+value: TK_IDENTIFIER '[' expression ']';
+
+
+arit_expr: ;
+expression: ;
+
+//----------- FLOW CONTROL
 
 %%
