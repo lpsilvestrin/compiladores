@@ -1,11 +1,10 @@
 %{
 #include<stdio.h>
-
 %}
 
 %start program
 
-/*Declaração da linguagem*/
+/*lang181 special tokens*/
 %token KW_CHAR
 %token KW_INT
 %token KW_FLOAT
@@ -29,124 +28,177 @@
 %token LIT_REAL
 %token LIT_CHAR
 %token LIT_STRING
-%token TOKEN_ERROR  /*Ainda precisa ou tiramos esse?*/
-
-
+%token TOKEN_ERROR  
 
 %%
+//----------- MAIN FLOW
+//a program is a (empty) list of instructions
+//accepts empty production
 program: instructions
     |
     ; 
 
-// ????
-instructions: global_struct instructions | function instructions
+//the instructions is a list of global definitions and functions (without any order)
+instructions: global_def | function_def | global_def instructions | function_def instructions
     ;
+
 
 //----------- GLOBAL STRUCTURES
-
-global_struct: global_var | global_vector
+//a global definition can be a scalar variable or a vector
+global_def: global_var_def | vector_def
     ;
 
-//Nao faco ideia se ta certo declarar assim
-
-global_var: kw_type TK_IDENTIFIER '=' lit_value ';' | kw_type '#' TK_IDENTIFIER '=' lit_value ';'
+//an init value can only be scalar values
+global_var_def: scalar_type TK_IDENTIFIER '=' init_value ';' | scalar_type '#' TK_IDENTIFIER '=' init_value ';'
     ;
 
-global_vector: TK_IDENTIFIER '[' LIT_INTEGER ']' ';' | TK_IDENTIFIER '[' LIT_INTEGER ']' '=' lit_list ';' 
+vector_def: scalar_type TK_IDENTIFIER '[' LIT_INTEGER ']' ';' | scalar_type TK_IDENTIFIER '[' LIT_INTEGER ']' '=' init_values_list ';' 
     ;
 
-kw_type: KW_CHAR | KW_INT | KW_FLOAT
-    ;
-
-lit_list: lit_value | lit_value ':' lit_list 
-    ;
-
-// escalares
-lit_value: LIT_CHAR | LIT_INTEGER | LIT_REAL 
-    ; 
 
 //----------- FUNCTION
-
-function: header block 
+//a function is made of a header and a block
+function_def: header block 
     ;
 
-header: kw_type TK_IDENTIFIER '(' def_params ')' 
+// the header have a return type, an identifier and a (empty) list of arguments
+header: scalar_type TK_IDENTIFIER '(' def_parameters ')' 
     ;
 
-//pode ser vazio, mas nao pode sobrar virgula no final
-def_params: kw_type TK_IDENTIFIER | l_param
+//accepts empty production
+def_parameters: scalar_type TK_IDENTIFIER | tail_def_parameters
     | 
     ;
 
-l_param: kw_type TK_IDENTIFIER ',' l_param | kw_type TK_IDENTIFIER 
+tail_def_parameters: scalar_type TK_IDENTIFIER | scalar_type TK_IDENTIFIER ',' tail_def_parameters 
     ;
+
 
 //----------- BLOCK  
-block: '{' l_commands '}' 
+//the {} are from the block
+block: '{' commands_list '}' 
     ;
 
-//it says that it can have an perty command and a ; after
-l_commands: command | command ';' l_commands
+//the ; is associated to the commands list, and not the command itself, therefore we can have <empty>;<something>
+commands_list: simple_command | simple_command ';' commands_list
     ;
 
 
-//----------- COMMAND 
-command: atrib | flow_c | read | print | return 
+//----------- SIMPLE COMMAND 
+//no ; here!!
+//a block is considered as a simple command
+//accepts empty production
+simple_command: block | assignment_c | flow_c | read_c | print_c | return_c
     | 
     ;
 
-//missing pointers
-atrib: TK_IDENTIFIER '=' expression | TK_IDENTIFIER '[' expression ']' '=' expression
+//for now i'm considering that you cannot assign values to pointers and refferences
+assignment_c: vector_assignment | var_assignment 
     ;
 
-read: KW_READ TK_IDENTIFIER 
+vector_assignment: TK_IDENTIFIER '[' expression ']' '=' expression
     ;
 
-print: KW_PRINT l_print 
+var_assignment: TK_IDENTIFIER '=' expression
     ;
 
-l_print: LIT_STRING l_print | arit_expr l_print 
+//read should be followed by a variable to put something inside or it, it only accepts scalar values, so no vector or pointers here
+read_c: KW_READ TK_IDENTIFIER 
+    ;
+
+//print if followed by a list of things to be printed (token " " between the items)
+print_c: KW_PRINT print_list
+    ;
+
+//each element can be either a string or an arithmetic expression
+print_list: LIT_STRING | arithmetic_expression | LIT_STRING " " print_list | arithmetic_expression " " print_list 
+    ;
+
+return_c: KW_RETURN expression 
+    ;
+
+
+//----------- EXPRESSION
+//for the moment it should accept every kind of operator and sub-expression, and therefore i'm considering it accepts # and &
+expression: arithmetic_expression | boolean_expression | function_expression ;
+
+//an arithmetic expression is a recursive definition of operations over the leaves 
+arithmetic_expression: id | arithmetic_expression arithmetic_op arithmetic_expression | '(' arithmetic_expression ')'
+    ;
+
+//are made of relational operations applied over arithmetic expressions or logic operators aplied over logic expressions
+boolean_expression: arithmetic_expression | boolean_expression relational_op boolean_expression | '!' boolean_expression 
+    | '(' boolean_expression ')'
+    ;
+
+//the leaves can be variables, vector positions with integer expression inside and literals
+//for the moment we have no distinction between logical, arithmetic and string operations, and therefore id accepts all
+id: TK_IDENTIFIER | '#' TK_IDENTIFIER | '&' TK_IDENTIFIER | TK_IDENTIFIER '[' expression ']' | init_value 
+    ;
+
+//a function is a identifier followed by its parameters separated by a ','
+function_expression: TK_IDENTIFIER '(' parameters_list ')'
+    ;
+
+//accepts empty production
+parameters_list: id | id ',' tail_parameters_list 
     | 
     ;
 
-return: KW_RETURN expression ;
-
-value: TK_IDENTIFIER | TK_IDENTIFIER '[' int_expression ']' | lit_value | '#' TK_IDENTIFIER | '&' TK_IDENTIFIER
+tail_parameters_list: id | id ',' tail_parameters_list 
     ;
 
-expression: arit_expr |  bool_expr |  TK_IDENTIFIER '(' call_params ')';
-
-call_params: value | l_value | ;
-
-l_value: value ',' l_value | value ;
-
-arit_expr: value | value aritmetic_op arit_expr | '('arit_expr ')'  
-    ;
-
-bool_expr: value relational_op bool_expr | '!' bool_expr | value 
-    ;
-
-relational_op: OPERATOR_LE | OPERATOR_GE | OPERATOR_EQ | OPERATOR_NE | OPERATOR_AND | OPERATOR_OR 
-    ;
-aritmetic_op: '*' | '\\' | '+' | '-' 
-    ;
 
 //----------- FLOW CONTROL
 
-flow_c: for | if | ifthenelse | while 
+flow_c: if_c | if_then_else_c | while_c | for_c
     ;
 
-for: KW_FOR '(' TK_IDENTIFIER '=' expression KW_TO expression ')' block
+if_c: KW_IF '(' expression ')' KW_THEN flow_command
     ;
 
-while: KW_WHILE '(' expression ')' block
+if_then_else_c: KW_IF '(' expression ')' KW_THEN flow_command KW_ELSE flow_command
     ;
 
-if: KW_IF '(' expression ')' KW_THEN block
+while_c: KW_WHILE '(' expression ')' flow_command
     ;
 
-ifthenelse: KW_IF '(' expression ')' KW_THEN command KW_ELSE block
+for_c: KW_FOR '(' TK_IDENTIFIER '=' expression KW_TO expression ')' flow_command
     ;
+
+flow_command: block | simple_command 
+    ;
+
+//----------- LEAVES
+//list of scalar types
+scalar_type: KW_CHAR | KW_INT | KW_FLOAT 
+    ;
+
+//initialization possibilities
+init_value: LIT_CHAR | LIT_INTEGER | LIT_REAL
+    ;
+
+//vector init list
+init_values_list: init_value | init_value ':' init_values_list 
+    ; // CAN WE HAVE POINTERS HERE ???
+
+arithmetic_op: '*' | '\\' | '+' | '-' 
+    ;
+
+//he defined the relational operator set as the union of the arithmetic set and the usual relational ones
+relational_op: OPERATOR_LE | OPERATOR_GE | OPERATOR_EQ | OPERATOR_NE | OPERATOR_AND | OPERATOR_OR | '<' | '>' | arithmetic_op
+    ;
+
+
+
+// ---------------------- ISSUES
+
+//(default nope)
+//podemos por ponteiros nos valores de inicialização de vetores ?
+//assignments podem ser feitos com # e & ?!!!!!!!!!!
+//a lista do print pode ser vazia?
+//expressoes de aritmetica podem ser aplicadas sobre ponteiros e memory refs ?
+//as estruturas de flow control podem aceitar um bloco ou apenas um comando?
 
 
 %%
