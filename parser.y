@@ -33,8 +33,10 @@
 /*association rules*/
 %left OPERATOR_AND OPERATOR_OR
 %left OPERATOR_EQ OPERATOR_GE OPERATOR_LE OPERATOR_NE
-%left '+' '-'
+%left '!'
 %left '*' '/'
+%left '+' '-'
+%left '<' '>'
 %nonassoc KW_THEN
 %nonassoc KW_ELSE
 %nonassoc KW_TO
