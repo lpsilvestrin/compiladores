@@ -31,6 +31,8 @@
 %token TOKEN_ERROR  
 
 /*association rules*/
+%left OPERATOR_AND OPERATOR_OR
+%left OPERATOR_EQ OPERATOR_GE OPERATOR_LE OPERATOR_NE
 %left '+' '-'
 %left '*' '/'
 %nonassoc KW_THEN
@@ -87,7 +89,7 @@ header:
 //accepts empty production
 def_parameters: 
     scalar_type TK_IDENTIFIER 
-    | tail_def_parameters
+    | scalar_type TK_IDENTIFIER ',' tail_def_parameters
     | 
     ;
 
