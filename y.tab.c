@@ -67,83 +67,284 @@ extern int YYPARSE_DECL();
 #define KW_ELSE 262
 #define KW_WHILE 263
 #define KW_FOR 264
-#define KW_READ 265
-#define KW_RETURN 266
-#define KW_PRINT 267
-#define OPERATOR_LE 268
-#define OPERATOR_GE 269
-#define OPERATOR_EQ 270
-#define OPERATOR_NE 271
-#define OPERATOR_AND 272
-#define OPERATOR_OR 273
-#define TK_IDENTIFIER 274
-#define LIT_INTEGER 275
-#define LIT_REAL 276
-#define LIT_CHAR 277
-#define LIT_STRING 278
-#define TOKEN_ERROR 279
+#define KW_TO 265
+#define KW_READ 266
+#define KW_RETURN 267
+#define KW_PRINT 268
+#define OPERATOR_LE 269
+#define OPERATOR_GE 270
+#define OPERATOR_EQ 271
+#define OPERATOR_NE 272
+#define OPERATOR_AND 273
+#define OPERATOR_OR 274
+#define TK_IDENTIFIER 275
+#define LIT_INTEGER 276
+#define LIT_REAL 277
+#define LIT_CHAR 278
+#define LIT_STRING 279
+#define TOKEN_ERROR 280
+#define int_expression 281
 #define YYERRCODE 256
 typedef short YYINT;
 static const YYINT yylhs[] = {                           -1,
-    0,    0,    2,    2,    3,    3,    4,    4,    1,    1,
+    0,    0,    1,    1,    2,    2,    4,    4,    5,    5,
+    6,    6,    6,    8,    8,    7,    7,    7,    3,    9,
+   11,   11,   11,   12,   12,   10,   13,   13,   14,   14,
+   14,   14,   14,   14,   15,   15,   17,   18,   21,   21,
+   21,   19,   23,   23,   23,   23,   23,   20,   20,   20,
+   25,   25,   25,   26,   26,   22,   22,   22,   24,   24,
+   24,   28,   28,   28,   28,   28,   28,   27,   27,   27,
+   27,   16,   16,   16,   16,   29,   32,   30,   31,
 };
 static const YYINT yylen[] = {                            2,
-    1,    0,    4,    0,    0,    0,    0,    0,    0,    0,
+    1,    0,    2,    2,    1,    1,    5,    6,    5,    7,
+    1,    1,    1,    1,    3,    1,    1,    1,    2,    5,
+    2,    1,    0,    4,    2,    3,    1,    3,    1,    1,
+    1,    1,    1,    0,    3,    6,    2,    2,    2,    2,
+    0,    2,    1,    4,    1,    2,    2,    1,    1,    4,
+    1,    1,    0,    3,    1,    1,    3,    3,    3,    2,
+    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+    1,    1,    1,    1,    1,    9,    5,    6,    8,
 };
-static const YYINT yydefred[] = {                         2,
-    0,    1,
+static const YYINT yydefred[] = {                         0,
+   11,   12,   13,    0,    0,    1,    0,    0,    5,    6,
+    0,    0,    0,    3,    4,    0,    0,    0,   19,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,   29,   30,   31,   32,   33,   72,   73,   74,
+   75,    0,   17,   18,   16,    0,    0,    0,   22,    0,
+    0,    0,    0,   37,    0,    0,    0,    0,    0,   45,
+   42,   48,    0,   49,    0,    0,   38,    0,    0,    0,
+    0,   26,    0,    0,    9,    7,    0,   20,    0,    0,
+    0,    0,    0,    0,   46,    0,   47,    0,   60,   62,
+   63,   64,   65,   66,   67,   68,   69,   70,   71,    0,
+    0,   39,   40,   35,    0,   28,    0,    0,    0,    8,
+    0,    0,    0,    0,    0,    0,   52,   58,   57,   59,
+    0,    0,   10,    0,   24,    0,   77,    0,   44,    0,
+   50,    0,   15,    0,   78,    0,    0,    0,   54,   36,
+    0,    0,   79,    0,   76,
 };
-static const YYINT yydgoto[] = {                          1,
-    2,    0,    0,    0,
+static const YYINT yydgoto[] = {                          5,
+    6,    7,    8,    9,   10,   11,   60,  108,   12,   19,
+   48,   49,   31,   32,   33,   34,   35,   36,   37,   61,
+   67,   62,   63,   64,  116,  117,  100,  101,   38,   39,
+   40,   41,
 };
-static const YYINT yysindex[] = {                         0,
-    0,    0,
+static const YYINT yysindex[] = {                      -114,
+    0,    0,    0,  -78,    0,    0, -114, -114,    0,    0,
+  -34, -107, -241,    0,    0,  -23, -235,  -97,    0,  -31,
+ -258, -153,  -16,   12,   25,   42, -205,  -33,   -1,  -40,
+  -42,   34,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,  -37,    0,    0,    0,   35, -176,   59,    0, -258,
+  -33,  -33, -164,    0,  -28, -163,   15, -161,  -29,    0,
+    0,    0,   29,    0,   26,   -1,    0,   -1,   47,  -33,
+  -33,    0,  -97, -258,    0,    0,   74,    0,   60,   79,
+   83,   64, -155,   19,    0,   87,    0,  -87,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,   15,
+  -29,    0,    0,    0,   36,    0,   73,   75, -153,    0,
+ -129, -107,  -33,   53,   96,  107,    0,    0,    0,    0,
+   91, -258,    0, -119,    0, -113,    0, -108,    0,   19,
+    0,  -33,    0,   74,    0, -104,  -33,   96,    0,    0,
+ -107,  118,    0, -107,    0,
 };
-static const YYINT yyrindex[] = {                         0,
-    0,    0,
+static const YYINT yyrindex[] = {                       160,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,  -48,    0,    0,
+    0,  123,    0,    0,    0,    0,    0,    0,  -56,    0,
+    0,   40,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,   43,    0,    0,    0,    0,    0,
+    0,    0,   17,    0,  -12,  -56,    0,  -56,    8,    0,
+    0,    0,  -48,    0,    0,    0,  131,    0,    0,    0,
+    0,    0,    0,  132,    0,    0,    0,   56,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,  115,    0,    0,    0,
+    0,    0,    0,    0,  134,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,  -86,    0,    0,    0,    0,
+    0,    0,    0,  136,    0,    0,    0,  138,    0,    0,
+    0,    0,    0,    0,    0,
 };
 static const YYINT yygindex[] = {                         0,
-    0,    0,    0,    0,
+   71,    0,    0,    0,    0,  -14,   -6,   58,    0,   -3,
+    0,   80,  117,   62,    0,    0,    0,    0,    0,  -10,
+  -41,   30,    7,  -45,    0,   61,    0,    0,    0,    0,
+    0,    0,
 };
-#define YYTABLESIZE 0
-static const YYINT yytable[] = {                          0,
+#define YYTABLESIZE 321
+static const YYINT yytable[] = {                         59,
+   17,   56,   41,   59,   58,   56,   57,   47,   58,   18,
+   34,   84,   13,   89,   46,   18,   22,   43,   44,   45,
+   70,   75,   43,   74,  102,   43,  103,   43,   43,   43,
+   43,   43,   43,   56,   20,   69,   58,   21,   57,   23,
+   80,   81,   56,   79,   50,   56,   43,   56,   56,   56,
+   71,   51,   58,   56,   57,  120,   58,   56,   68,  104,
+  105,   42,   83,   69,   52,   88,   56,  107,   41,   54,
+   96,   98,   69,   99,   69,   56,   34,   14,   15,   43,
+   43,   53,   72,   43,   43,   43,   86,   43,   96,   98,
+  115,   99,   73,   76,  124,   68,   61,   68,   77,   78,
+   56,   43,  128,    1,    2,    3,   69,   88,  127,   56,
+   82,   85,   43,   87,   61,  107,   83,  109,  110,  111,
+   97,  140,  135,  112,  113,  114,  142,  118,  121,  119,
+  122,  126,   56,  123,   43,   43,  138,  143,   97,  130,
+  145,   56,    1,    2,    3,  129,   24,  131,   61,   25,
+   26,  132,   27,   28,   29,  134,  137,  141,  144,    2,
+    4,   30,   24,   23,   27,   25,   26,   43,   27,   28,
+   29,   21,   53,   14,   51,   34,   25,   30,   55,  133,
+   61,   90,   91,   92,   93,   94,   95,  136,  125,  106,
+  139,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,   41,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+   16,   55,   43,   44,   45,   65,   43,   44,   45,   43,
+    0,    0,   43,    0,    0,    0,   43,   43,   43,   43,
+   43,   43,   43,   43,   43,   43,   43,    0,    0,   56,
+    0,    0,   56,   65,   43,   44,   45,   66,   56,    0,
+    0,   56,   56,   56,   56,   56,   56,    0,    0,   65,
+   43,   44,   45,   65,   43,   44,   45,   90,   91,   92,
+   93,   94,   95,    0,   43,    0,    0,   43,    0,    0,
+    0,   43,   43,   43,   43,   43,   43,   61,    0,    0,
+   61,
 };
-static const YYINT yycheck[] = {                         -1,
+static const YYINT yycheck[] = {                         33,
+   35,   35,   59,   33,   38,   35,   40,   22,   38,  123,
+   59,   40,   91,   59,   21,  123,   40,  276,  277,  278,
+   61,   59,   35,   61,   66,   38,   68,   40,   41,   42,
+   43,   44,   45,   35,  276,   29,   38,   61,   40,  275,
+   51,   52,   35,   50,   61,   38,   59,   40,   41,   35,
+   91,   40,   38,   35,   40,  101,   38,   41,   29,   70,
+   71,   93,   91,   57,   40,   59,   59,   74,  125,  275,
+   42,   43,   66,   45,   68,   59,  125,    7,    8,   92,
+   93,   40,  125,   41,   42,   43,   57,   45,   42,   43,
+   84,   45,   59,   59,  109,   66,   41,   68,  275,   41,
+   93,   59,  113,  257,  258,  259,  100,  101,  112,   93,
+  275,  275,  125,  275,   59,  122,   91,   44,   59,   41,
+   92,  132,  126,   41,   61,  281,  137,   41,   93,  100,
+   58,  261,  125,   59,   92,   93,  130,  141,   92,   44,
+  144,  125,  257,  258,  259,   93,  260,   41,   93,  263,
+  264,   61,  266,  267,  268,  275,  265,  262,   41,    0,
+  275,  275,  260,   41,  125,  263,  264,  125,  266,  267,
+  268,   41,   41,   59,   41,  262,   41,  275,   41,  122,
+  125,  269,  270,  271,  272,  273,  274,  126,  109,   73,
+  130,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,  262,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+  275,  275,  276,  277,  278,  275,  276,  277,  278,  262,
+   -1,   -1,  265,   -1,   -1,   -1,  269,  270,  271,  272,
+  273,  274,  275,  276,  277,  278,  279,   -1,   -1,  262,
+   -1,   -1,  265,  275,  276,  277,  278,  279,  262,   -1,
+   -1,  265,  275,  276,  277,  278,  279,   -1,   -1,  275,
+  276,  277,  278,  275,  276,  277,  278,  269,  270,  271,
+  272,  273,  274,   -1,  262,   -1,   -1,  265,   -1,   -1,
+   -1,  269,  270,  271,  272,  273,  274,  262,   -1,   -1,
+  265,
 };
-#define YYFINAL 1
+#define YYFINAL 5
 #ifndef YYDEBUG
 #define YYDEBUG 0
 #endif
-#define YYMAXTOKEN 279
-#define YYUNDFTOKEN 286
+#define YYMAXTOKEN 281
+#define YYUNDFTOKEN 316
 #define YYTRANSLATE(a) ((a) > YYMAXTOKEN ? YYUNDFTOKEN : (a))
 #if YYDEBUG
 static const char *const yyname[] = {
 
-"end-of-file",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+"end-of-file",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+"'!'",0,"'#'",0,0,"'&'",0,"'('","')'","'*'","'+'","','","'-'",0,0,0,0,0,0,0,0,0,
+0,0,0,"':'","';'",0,"'='",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,"'['","'\\\\'","']'",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,"'{'",0,"'}'",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,"'{'",0,"'}'",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"KW_CHAR","KW_INT",
-"KW_FLOAT","KW_IF","KW_THEN","KW_ELSE","KW_WHILE","KW_FOR","KW_READ",
-"KW_RETURN","KW_PRINT","OPERATOR_LE","OPERATOR_GE","OPERATOR_EQ","OPERATOR_NE",
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"KW_CHAR","KW_INT","KW_FLOAT","KW_IF",
+"KW_THEN","KW_ELSE","KW_WHILE","KW_FOR","KW_TO","KW_READ","KW_RETURN",
+"KW_PRINT","OPERATOR_LE","OPERATOR_GE","OPERATOR_EQ","OPERATOR_NE",
 "OPERATOR_AND","OPERATOR_OR","TK_IDENTIFIER","LIT_INTEGER","LIT_REAL",
-"LIT_CHAR","LIT_STRING","TOKEN_ERROR",0,0,0,0,0,0,"illegal-symbol",
+"LIT_CHAR","LIT_STRING","TOKEN_ERROR","int_expression",0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"illegal-symbol",
 };
 static const char *const yyrule[] = {
 "$accept : program",
-"program : list_of_commands",
+"program : instructions",
 "program :",
-"function : header '{' block '}'",
-"function :",
-"header :",
-"header :",
-"block :",
-"block :",
-"list_of_commands :",
-"list_of_commands :",
+"instructions : global_struct instructions",
+"instructions : function instructions",
+"global_struct : global_var",
+"global_struct : global_vector",
+"global_var : kw_type TK_IDENTIFIER '=' lit_value ';'",
+"global_var : kw_type '#' TK_IDENTIFIER '=' lit_value ';'",
+"global_vector : TK_IDENTIFIER '[' LIT_INTEGER ']' ';'",
+"global_vector : TK_IDENTIFIER '[' LIT_INTEGER ']' '=' lit_list ';'",
+"kw_type : KW_CHAR",
+"kw_type : KW_INT",
+"kw_type : KW_FLOAT",
+"lit_list : lit_value",
+"lit_list : lit_value ':' lit_list",
+"lit_value : LIT_CHAR",
+"lit_value : LIT_INTEGER",
+"lit_value : LIT_REAL",
+"function : header block",
+"header : kw_type TK_IDENTIFIER '(' def_params ')'",
+"def_params : kw_type TK_IDENTIFIER",
+"def_params : l_param",
+"def_params :",
+"l_param : kw_type TK_IDENTIFIER ',' l_param",
+"l_param : kw_type TK_IDENTIFIER",
+"block : '{' l_commands '}'",
+"l_commands : command",
+"l_commands : command ';' l_commands",
+"command : atrib",
+"command : flow_c",
+"command : read",
+"command : print",
+"command : return",
+"command :",
+"atrib : TK_IDENTIFIER '=' expression",
+"atrib : TK_IDENTIFIER '[' expression ']' '=' expression",
+"read : KW_READ TK_IDENTIFIER",
+"print : KW_PRINT l_print",
+"l_print : LIT_STRING l_print",
+"l_print : arit_expr l_print",
+"l_print :",
+"return : KW_RETURN expression",
+"value : TK_IDENTIFIER",
+"value : TK_IDENTIFIER '[' int_expression ']'",
+"value : lit_value",
+"value : '#' TK_IDENTIFIER",
+"value : '&' TK_IDENTIFIER",
+"expression : arit_expr",
+"expression : bool_expr",
+"expression : TK_IDENTIFIER '(' call_params ')'",
+"call_params : value",
+"call_params : l_value",
+"call_params :",
+"l_value : value ',' l_value",
+"l_value : value",
+"arit_expr : value",
+"arit_expr : value aritmetic_op arit_expr",
+"arit_expr : '(' arit_expr ')'",
+"bool_expr : value relational_op bool_expr",
+"bool_expr : '!' bool_expr",
+"bool_expr : value",
+"relational_op : OPERATOR_LE",
+"relational_op : OPERATOR_GE",
+"relational_op : OPERATOR_EQ",
+"relational_op : OPERATOR_NE",
+"relational_op : OPERATOR_AND",
+"relational_op : OPERATOR_OR",
+"aritmetic_op : '*'",
+"aritmetic_op : '\\\\'",
+"aritmetic_op : '+'",
+"aritmetic_op : '-'",
+"flow_c : for",
+"flow_c : if",
+"flow_c : ifthenelse",
+"flow_c : while",
+"for : KW_FOR '(' TK_IDENTIFIER '=' expression KW_TO expression ')' block",
+"while : KW_WHILE '(' expression ')' block",
+"if : KW_IF '(' expression ')' KW_THEN block",
+"ifthenelse : KW_IF '(' expression ')' KW_THEN command KW_ELSE block",
 
 };
 #endif

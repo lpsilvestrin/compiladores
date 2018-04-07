@@ -14,6 +14,7 @@
 %token KW_ELSE
 %token KW_WHILE
 %token KW_FOR
+%token KW_TO
 %token KW_READ
 %token KW_RETURN
 %token KW_PRINT
@@ -60,7 +61,7 @@ kw_type: KW_CHAR | KW_INT | KW_FLOAT
 lit_list: lit_value | lit_value ':' lit_list 
     ;
 
-// tirei o lit_string, mas nao sei
+// escalares
 lit_value: LIT_CHAR | LIT_INTEGER | LIT_REAL 
     ; 
 
@@ -69,11 +70,11 @@ lit_value: LIT_CHAR | LIT_INTEGER | LIT_REAL
 function: header block 
     ;
 
-header: kw_type TK_IDENTIFIER '(' params ')' 
+header: kw_type TK_IDENTIFIER '(' def_params ')' 
     ;
 
 //pode ser vazio, mas nao pode sobrar virgula no final
-params: kw_type TK_IDENTIFIER | l_param
+def_params: kw_type TK_IDENTIFIER | l_param
     | 
     ;
 
@@ -110,12 +111,42 @@ l_print: LIT_STRING l_print | arit_expr l_print
 
 return: KW_RETURN expression ;
 
-value: TK_IDENTIFIER '[' expression ']';
+value: TK_IDENTIFIER | TK_IDENTIFIER '[' int_expression ']' | lit_value | '#' TK_IDENTIFIER | '&' TK_IDENTIFIER
+    ;
 
+expression: arit_expr |  bool_expr |  TK_IDENTIFIER '(' call_params ')';
 
-arit_expr: ;
-expression: ;
+call_params: value | l_value | ;
+
+l_value: value ',' l_value | value ;
+
+arit_expr: value | value aritmetic_op arit_expr | '('arit_expr ')'  
+    ;
+
+bool_expr: value relational_op bool_expr | '!' bool_expr | value 
+    ;
+
+relational_op: OPERATOR_LE | OPERATOR_GE | OPERATOR_EQ | OPERATOR_NE | OPERATOR_AND | OPERATOR_OR 
+    ;
+aritmetic_op: '*' | '\\' | '+' | '-' 
+    ;
 
 //----------- FLOW CONTROL
+
+flow_c: for | if | ifthenelse | while 
+    ;
+
+for: KW_FOR '(' TK_IDENTIFIER '=' expression KW_TO expression ')' block
+    ;
+
+while: KW_WHILE '(' expression ')' block
+    ;
+
+if: KW_IF '(' expression ')' KW_THEN block
+    ;
+
+ifthenelse: KW_IF '(' expression ')' KW_THEN command KW_ELSE block
+    ;
+
 
 %%

@@ -33,6 +33,7 @@ then 											{return KW_THEN; }
 else 											{return KW_ELSE; }
 while 										{return KW_WHILE; }
 for 											{return KW_FOR; }
+to                        {return KW_TO; }
 read 											{return KW_READ; }
 return 										{return KW_RETURN; }
 print 										{return KW_PRINT; }
@@ -100,6 +101,8 @@ void tokenTreatment(int tk_code) {
     case KW_WHILE: printf("LINE %d: Found a while\n", lineNumber );
     break;
     case KW_FOR: printf("LINE %d: Found a for\n", lineNumber );
+    break;
+    case KWTO: printf("LINE %d: Found a to\n", lineNumber );
     break;
     case KW_READ: printf("LINE %d: Found a read\n", lineNumber );
     break;
