@@ -33,18 +33,4 @@
 
 
 %%
-main()
-{
- return(yyparse());
-}
-
-yyerror(s)
-char *s;
-{
-  fprintf(stderr, "%s\n",s);
-}
-
-yywrap()
-{
-  return(1);
-}
+program: list_of_commands
