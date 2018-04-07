@@ -271,11 +271,10 @@ init_values_list:
 // ---------------------- ISSUES
 
 //(default nope)
-//podemos por ponteiros nos valores de inicialização de vetores ?
-//assignments podem ser feitos com # e & ?!!!!!!!!!!
+//podemos por ponteiros nos valores de inicialização de vetores ? sim
+//assignments podem ser feitos com # ?!!!!!!!!!!
 //a lista do print pode ser vazia?
 //expressoes de aritmetica podem ser aplicadas sobre ponteiros e memory refs ?
-//as estruturas de flow control podem aceitar um bloco ou apenas um comando?
 //podemos aceitar vetor[function()] ?
 
 
