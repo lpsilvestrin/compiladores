@@ -148,8 +148,9 @@ vector_assignment:
 var_assignment: 
     TK_IDENTIFIER '=' expression
     | '#' TK_IDENTIFIER '=' expression
-    | TK_IDENTIFIER '=' '#' expression
+    | '#' TK_IDENTIFIER '=' '&' expression
     | TK_IDENTIFIER '=' '&' expression
+    | TK_IDENTIFIER '=' '#' expression
     ;
 
 //read should be followed by a variable to put something inside or it, it only accepts scalar values, so no vector or pointers here
@@ -201,6 +202,7 @@ arithmetic_or_boolean_expression:
     | arithmetic_or_boolean_expression OPERATOR_AND arithmetic_or_boolean_expression 
     | arithmetic_or_boolean_expression OPERATOR_OR arithmetic_or_boolean_expression 
     | '!' arithmetic_or_boolean_expression 
+    | '-' arithmetic_or_boolean_expression 
     | '(' arithmetic_or_boolean_expression ')'
     ;
 
@@ -222,13 +224,13 @@ function_expression:
 //accepts empty production
 parameters_list: 
     id 
-    | id ',' tail_parameters_list 
+    | tail_parameters_list   
     | 
     ;
 
 tail_parameters_list: 
     id 
-    | id ',' tail_parameters_list 
+    | tail_parameters_list ',' id   
     ;
 
 
@@ -279,16 +281,27 @@ init_values_list:
     ; // CAN WE HAVE POINTERS HERE ???
 
 // ---------------------- ISSUES
-
-//(default nope)
-//podemos por ponteiros nos valores de inicialização de vetores ? sim
-//assignments podem ser feitos com # ?!!!!!!!!!!
 //a lista do print pode ser vazia?
+//atribuicoes de ponteiros???
 //expressoes de aritmetica podem ser aplicadas sobre ponteiros e memory refs ?
+//podemos por ponteiros nos valores de inicialização de vetores ? 
+//assignments podem ser feitos com # ?!!!!!!!!!!
 //podemos aceitar vetor[function()] ?
 
 
-//fix -int
+
+
+
+
+// ---------------------- CONSIDERACOES FEITAS POR CAUSA DE AMBIGUIDADE
+//assingments podem ser feitos utilizando ponteiros, e podemos atribuir ponteiros, valores ou referencias de memoria
+//a lista do print nao pode ser vazia
+//inicializacoes de globais nao podem ser feitas usando var1 = var2 
+//podemos aplicar expressoes sobre & e #
+//nao podemos inicializar vetores com ponteiros
+//podemos aceitar vetor[funcao()]
+
+
 
 
 %%

@@ -7,11 +7,11 @@ char global3 = 1.3533;
 char function1(){
 }
 
-char vector[100] = {0, 0, 0, 0}; //nao era pra funcionar
+char vector[100] : 1 3 5;//= {0, 0, 0, 0}; 
 
 float function2(int a1, float a2, float a3, char a5){
-	global3 = "cinquenta";
-;;;ddfsdf4545497456/9*******************
+	global3 = 'd';
+//;;;ddfsdf4545497456/9*******************
 
 }
 
