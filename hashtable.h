@@ -17,7 +17,7 @@
 
 typedef struct HashNode {
 	char* id; //the id string
-	int type;
+	int type; //the type 
 	char* value; //some content
 	struct HashNode* next;
 } hashNode;
