@@ -17,3 +17,19 @@ if(segundo == terceiro){
 	print("que legal\n")
 	return;
 }
+'a'
+'!'
+
+'\n'
+'\"'
+'\t'
+'*' '\''
+
+"
+
+asdas
+
+
+\n \"
+
+"
