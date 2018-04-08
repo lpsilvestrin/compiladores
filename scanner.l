@@ -25,45 +25,51 @@ void checkSymbolsTable(char* token);
 
 %x COMMENT
 %%
-char    {return KW_CHAR; }
-int     {return KW_INT; }
-float   {return KW_FLOAT; }
-if      {return KW_IF; }
-then    {return KW_THEN; }
-else    {return KW_ELSE; }
-while   {return KW_WHILE; }
-for     {return KW_FOR; }
-to      {return KW_TO; }
-read    {return KW_READ; }
-return  {return KW_RETURN; }
-print   {return KW_PRINT; }
+char    {fprintf(stderr,"LINE %d: Found a char\n", lineNumber );return KW_CHAR; }
+int     {fprintf(stderr,"LINE %d: Found an int\n", lineNumber );return KW_INT; }
+float   {fprintf(stderr,"LINE %d: Found a float\n", lineNumber );return KW_FLOAT; }
+if      {fprintf(stderr,"LINE %d: Found an if\n", lineNumber );return KW_IF; }
+then    {fprintf(stderr,"LINE %d: Found a then\n", lineNumber );return KW_THEN; }
+else    {fprintf(stderr,"LINE %d: Found an else\n", lineNumber );return KW_ELSE; }
+while   {fprintf(stderr,"LINE %d: Found a while\n", lineNumber );return KW_WHILE; }
+for     {fprintf(stderr,"LINE %d: Found a for\n", lineNumber );return KW_FOR; }
+to      {fprintf(stderr,"LINE %d: Found a to\n", lineNumber );return KW_TO; }
+read    {fprintf(stderr,"LINE %d: Found a read\n", lineNumber );return KW_READ; }
+return  {fprintf(stderr,"LINE %d: Found a return\n", lineNumber );return KW_RETURN; }
+print   {fprintf(stderr,"LINE %d: Found a print\n", lineNumber );return KW_PRINT; }
 
-"<="  {return OPERATOR_LE; }
-">="  {return OPERATOR_GE; }
-"=="  {return OPERATOR_EQ; }
-"!="  {return OPERATOR_NE; }
-"&&"  {return OPERATOR_AND; }
-"||"  {return OPERATOR_OR; }
+"<="  {fprintf(stderr,"LINE %d: Found a LE\n", lineNumber );return OPERATOR_LE; }
+">="  {fprintf(stderr,"LINE %d: Found a GE\n", lineNumber );return OPERATOR_GE; }
+"=="  {fprintf(stderr,"LINE %d: Found an EQ\n", lineNumber );return OPERATOR_EQ; }
+"!="  {fprintf(stderr,"LINE %d: Found a NE\n", lineNumber );return OPERATOR_NE; }
+"&&"  {fprintf(stderr,"LINE %d: Found an AND\n", lineNumber );return OPERATOR_AND; }
+"||"  {fprintf(stderr,"LINE %d: Found an OR\n", lineNumber );return OPERATOR_OR; }
 
-[,;:()[\]{}+\-*/<>=!&$#]  {return yytext[0]; }
+[,;:()[\]{}+\-*/<>=!&$#]  {fprintf(stderr,"LINE %d: Found the special character <%s>\n", lineNumber, yytext);return yytext[0]; }
 
-[0-9]+                  {return LIT_INTEGER; }
-[0-9]+[.][0-9]+         {return LIT_REAL; }
-'([^'\"]|\\['\"nt])'    {return LIT_CHAR; }
-\"(\\.|[^"])*\"         {return LIT_STRING; }
-[a-zA-Z][a-zA-Z0-9_-]*  {return TK_IDENTIFIER; }
+[0-9]+                  {fprintf(stderr,"LINE %d: Found a LIT INTEGER with value %s\n", lineNumber, yytext );
+		updateSymbolsTable(yytext);checkSymbolsTable(yytext);return LIT_INTEGER; }
+[0-9]+[.][0-9]+         {fprintf(stderr,"LINE %d: Found a REAL with value %s\n", lineNumber, yytext );
+		updateSymbolsTable(yytext);checkSymbolsTable(yytext);return LIT_REAL; }
+'([^'\"]|\\['\"nt])'    {fprintf(stderr,"LINE %d: Found a LIT CHAR %s\n", lineNumber, yytext );
+		updateSymbolsTable(yytext);checkSymbolsTable(yytext);return LIT_CHAR; }
+\"(\\.|[^"])*\"         {fprintf(stderr,"LINE %d: Found a LIT STRING %s\n", lineNumber, yytext );
+		updateSymbolsTable(yytext);checkSymbolsTable(yytext);return LIT_STRING; }
+[a-zA-Z][a-zA-Z0-9_-]*  {fprintf(stderr,"LINE %d: Found an identifier called %s\n", lineNumber, yytext);
+		updateSymbolsTable(yytext);checkSymbolsTable(yytext);return TK_IDENTIFIER; }
 
 <<EOF>>   {running = 0; printf("EOF REACHED\n"); return running;}
 " "       {}
 \t        {}
 "//".*    {}
-"/*".*    {BEGIN(COMMENT); }
+"/*"      {fprintf(stderr,"Starting multiple lines comment");BEGIN(COMMENT); }
 \n        {lineNumber++; }
-.         {return TOKEN_ERROR; }
+.         {fprintf(stderr, "LINE %d: Token error <%s>\n\n", lineNumber, yytext); return TOKEN_ERROR; }
 
-<COMMENT>\n   {lineNumber++; }
-<COMMENT>"*/" {BEGIN(INITIAL); }
-<COMMENT>.    {}
+<COMMENT>\n       {lineNumber++; }
+<COMMENT>"\\n"    {}
+<COMMENT>"*"+"/"  {BEGIN(INITIAL); }
+<COMMENT>.        {}
 %%
 
 int yywrap() {
@@ -82,71 +88,6 @@ void initMe() {
 	lineNumber = 1;
 	running = 1;
 	initHash(&SymbolsTable, _TABLESIZE);
-}
-
-void tokenTreatment(int tk_code) {
-  switch (tk_code) {
-    case KW_CHAR: printf("LINE %d: Found a char\n", lineNumber );
-    break;
-    case KW_INT: printf("LINE %d: Found an int\n", lineNumber );
-    break;
-    case KW_FLOAT: printf("LINE %d: Found a float\n", lineNumber );
-    break;
-    case KW_IF: printf("LINE %d: Found an if\n", lineNumber );
-    break;
-    case KW_THEN: printf("LINE %d: Found a then\n", lineNumber );
-    break;
-    case KW_ELSE: printf("LINE %d: Found an else\n", lineNumber );
-    break;
-    case KW_WHILE: printf("LINE %d: Found a while\n", lineNumber );
-    break;
-    case KW_FOR: printf("LINE %d: Found a for\n", lineNumber );
-    break;
-    case KW_TO: printf("LINE %d: Found a to\n", lineNumber );
-    break;
-    case KW_READ: printf("LINE %d: Found a read\n", lineNumber );
-    break;
-    case KW_RETURN: printf("LINE %d: Found a return\n", lineNumber );
-    break;
-    case KW_PRINT: printf("LINE %d: Found a print\n", lineNumber );
-    break;
-    case OPERATOR_LE: printf("LINE %d: Found a LE\n", lineNumber );
-    break;
-    case OPERATOR_GE: printf("LINE %d: Found a GE\n", lineNumber );
-    break;
-    case OPERATOR_EQ: printf("LINE %d: Found an EQ\n", lineNumber );
-    break;
-    case OPERATOR_NE: printf("LINE %d: Found a NE\n", lineNumber );
-    break;
-    case OPERATOR_AND: printf("LINE %d: Found an AND\n", lineNumber );
-    break;
-    case OPERATOR_OR: printf("LINE %d: Found an OR\n", lineNumber );
-    break;
-    case TK_IDENTIFIER:
-		printf("LINE %d: Found an identifier called %s\n", lineNumber, yytext);
-		updateSymbolsTable(yytext);
-		checkSymbolsTable(yytext);
-    break;
-    case LIT_INTEGER: printf("LINE %d: Found a LIT INTEGER with value %s\n", lineNumber, yytext );
-		updateSymbolsTable(yytext);
-		checkSymbolsTable(yytext);
-    break;
-    case LIT_REAL: printf("LINE %d: Found a REAL with value %s\n", lineNumber, yytext );
-		updateSymbolsTable(yytext);
-		checkSymbolsTable(yytext);
-    break;
-    case LIT_CHAR: printf("LINE %d: Found a LIT CHAR %s\n", lineNumber, yytext );
-		updateSymbolsTable(yytext);
-		checkSymbolsTable(yytext);
-    break;
-    case LIT_STRING: printf("LINE %d: Found a LIT STRING %s\n", lineNumber, yytext );
-		updateSymbolsTable(yytext);
-		checkSymbolsTable(yytext);
-    break;
-    case TOKEN_ERROR: printf("LINE %d: Token error <%s>\n\n", lineNumber, yytext);
-		break;
-		default: printf("LINE %d: Found the special character <%s>\n", lineNumber, yytext);
-	}
 }
 
 void updateSymbolsTable(char* id) {

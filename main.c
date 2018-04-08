@@ -5,6 +5,7 @@
 extern FILE *yyin; //CAREFUL WITH IT
 extern int yyparse();
 extern void initMe();
+extern int getLineNumber();
 
 int main(int argc, char** argv) {
 	if (argc < 2) {
@@ -17,7 +18,9 @@ int main(int argc, char** argv) {
 	}else {
 		initMe();
 		if(yyin){
-    return yyparse();
+    yyparse();
+
+		printf("Last line: %d\n", getLineNumber());
   	}
 	}
 	exit(0);

@@ -1,0 +1,33 @@
+/*
+
+
+This one tests global estructures and functions with empty blocks
+
+
+*/
+
+
+char this_test = 's';
+
+int should_only(float accept){}
+
+int empty_blocks[23];
+
+float and_global[23]: 's' 't' 'u' 'f' 'f' ;
+
+float lets(){
+
+
+
+
+}
+
+
+int check = 'i';
+float if_ = 34545.344356;
+
+float works(int five, int four, int three, int two, int one){
+
+
+//hheheheh
+}

@@ -22,4 +22,5 @@ test_hash: test_hash.c hashtable.o
 	gcc -g -Wall -o main test_hash.c hashtable.o
 
 clean:
-	rm etapa2 *.o lex.yy.* y.output y.tab.*
+	rm etapa2 lex.yy.* y.output y.tab.* 
+	rm *.o

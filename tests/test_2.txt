@@ -10,8 +10,9 @@ char function1(){
 char vector[100] = {0, 0, 0, 0};
 
 float function2(int a1, float a2, float a3, char a5){
-	global3 = "cinquenta";
-
+	####global3 = "cinquenta";
+	if((global3 != global2)+global2) then {;;;;;} else vector[2] = 3;
+ 
 }
 
 int global5[3];
