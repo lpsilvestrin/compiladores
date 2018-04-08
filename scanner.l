@@ -1,7 +1,7 @@
 %{
 #include <stdlib.h>
 #include <stdio.h>
-#include "parser.h" 
+#include "y.tab.h"
 #include "hashtable.h"
 
 
@@ -25,45 +25,45 @@ void checkSymbolsTable(char* token);
 
 %x COMMENT
 %%
-char 											{return KW_CHAR; }
-int 											{return KW_INT; }
-float 										{return KW_FLOAT; }
-if												{return KW_IF; }
-then 											{return KW_THEN; }
-else 											{return KW_ELSE; }
-while 										{return KW_WHILE; }
-for 											{return KW_FOR; }
-to                        {return KW_TO; }
-read 											{return KW_READ; }
-return 										{return KW_RETURN; }
-print 										{return KW_PRINT; }
+char    {return KW_CHAR; }
+int     {return KW_INT; }
+float   {return KW_FLOAT; }
+if      {return KW_IF; }
+then    {return KW_THEN; }
+else    {return KW_ELSE; }
+while   {return KW_WHILE; }
+for     {return KW_FOR; }
+to      {return KW_TO; }
+read    {return KW_READ; }
+return  {return KW_RETURN; }
+print   {return KW_PRINT; }
 
-"<="											{return OPERATOR_LE; }
-">="											{return OPERATOR_GE; }
-"=="											{return OPERATOR_EQ; }
-"!="											{return OPERATOR_NE; }
-"&&"											{return OPERATOR_AND; }
-"||"											{return OPERATOR_OR; }
+"<="  {return OPERATOR_LE; }
+">="  {return OPERATOR_GE; }
+"=="  {return OPERATOR_EQ; }
+"!="  {return OPERATOR_NE; }
+"&&"  {return OPERATOR_AND; }
+"||"  {return OPERATOR_OR; }
 
-[,;:()[\]{}+\-*/<>=!&$#]	{return yytext[0]; }
+[,;:()[\]{}+\-*/<>=!&$#]  {return yytext[0]; }
 
-[0-9]+										{return LIT_INTEGER; }
-[0-9]+[.][0-9]+						{return LIT_REAL; }
-'([^'\"]|\\['\"nt])'			{return LIT_CHAR; }
-\"(\\.|[^"])*\"						{return LIT_STRING; }
-[a-zA-Z][a-zA-Z0-9_-]*		{return TK_IDENTIFIER; }
+[0-9]+                  {return LIT_INTEGER; }
+[0-9]+[.][0-9]+         {return LIT_REAL; }
+'([^'\"]|\\['\"nt])'    {return LIT_CHAR; }
+\"(\\.|[^"])*\"         {return LIT_STRING; }
+[a-zA-Z][a-zA-Z0-9_-]*  {return TK_IDENTIFIER; }
 
-<<EOF>>										{running = 0; printf("EOF REACHED\n"); return running;}
-" "												{}
-\t												{}
-"//".*										{}
-"/*".*										{BEGIN(COMMENT); }
-\n												{lineNumber++; }
-.													{return TOKEN_ERROR; }
+<<EOF>>   {running = 0; printf("EOF REACHED\n"); return running;}
+" "       {}
+\t        {}
+"//".*    {}
+"/*".*    {BEGIN(COMMENT); }
+\n        {lineNumber++; }
+.         {return TOKEN_ERROR; }
 
-<COMMENT>\n			{lineNumber++; }
-<COMMENT>"*/"		{BEGIN(INITIAL); }
-<COMMENT>.			{}
+<COMMENT>\n   {lineNumber++; }
+<COMMENT>"*/" {BEGIN(INITIAL); }
+<COMMENT>.    {}
 %%
 
 int yywrap() {
@@ -102,7 +102,7 @@ void tokenTreatment(int tk_code) {
     break;
     case KW_FOR: printf("LINE %d: Found a for\n", lineNumber );
     break;
-    case KWTO: printf("LINE %d: Found a to\n", lineNumber );
+    case KW_TO: printf("LINE %d: Found a to\n", lineNumber );
     break;
     case KW_READ: printf("LINE %d: Found a read\n", lineNumber );
     break;

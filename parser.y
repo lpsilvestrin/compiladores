@@ -279,3 +279,8 @@ init_values_list:
 
 
 %%
+int yyerror (char const *s) {
+    fflush(stderr);
+    fprintf(stderr,"ERROR: %s ---> Line: %d\n", s, getLineNumber());
+    exit(3);
+}
