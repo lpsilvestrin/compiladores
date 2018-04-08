@@ -1,37 +1,27 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "hashtable.h"
+#include "lex.yy.h"
 
 extern FILE *yyin; //CAREFUL WITH IT
-extern int yylex();
-extern void tokenTreatment(int tk_code);
+extern int yyparse();
 extern void initMe();
-extern int isRunning();
-extern hashTable* SymbolsTable;
-extern char *yytext;
+extern int getLineNumber();
 
 int main(int argc, char** argv) {
 	if (argc < 2) {
-		printf("Usage: etapa1 <file>");
+		printf("Usage: etapa2 <file>");
 		exit(1);
 	}
-	yyin = fopen(argv[1], "r");
-  if(yyin){
-    initMe(); //init da hash e etc
-    int token;
-    while(isRunning()){
-        token = yylex();
-        if(!isRunning())
-          break;
-        else
-          tokenTreatment(token);
-      }
-  	fclose(yyin);
+	if((yyin = fopen(argv[1], "r"))==NULL) {
+		printf("Problem reading the file %s\n", argv[1]);
+		exit(1);
+	}else {
+		initMe();
+		if(yyin){
+    yyparse();
 
-
-
-    return 0;
-  }else{
-    return 1;
-  }
+		printf("Last line: %d\n", getLineNumber());
+  	}
+	}
+	exit(0);
 }

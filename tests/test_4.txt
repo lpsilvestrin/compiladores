@@ -1,0 +1,15 @@
+/*This one will create a looooooooot of blocks */
+
+
+int main(){
+
+	if (algo != algo ) then {
+				{while(n> 50) {}
+
+				;;;
+				{}}
+				} else {
+		print "coisa linda" 200;{}; };
+
+	for(chocolate = napolitano/creme to (morango+chocolate)<=50 ) {if(morango == gostoso) then print "yay!"}
+}
