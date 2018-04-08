@@ -72,9 +72,10 @@ global_var_def:
     | scalar_type '#' TK_IDENTIFIER '=' init_value ';'
     ;
 
+//initialization is given by values separated by " " after a ":"
 vector_def: 
     scalar_type TK_IDENTIFIER '[' LIT_INTEGER ']' ';' 
-    | scalar_type TK_IDENTIFIER '[' LIT_INTEGER ']' '=' init_values_list ';' 
+    | scalar_type TK_IDENTIFIER '[' LIT_INTEGER ']' ':' init_values_list ';' 
     ;
 
 
@@ -156,8 +157,8 @@ print_c:
 print_list: 
     LIT_STRING 
     | arithmetic_or_boolean_expression 
-    | LIT_STRING " " print_list 
-    | arithmetic_or_boolean_expression " " print_list 
+    | LIT_STRING print_list 
+    | arithmetic_or_boolean_expression print_list 
     ;
 
 return_c: KW_RETURN expression 
@@ -265,7 +266,7 @@ init_value:
 //vector init list
 init_values_list: 
     init_value 
-    | init_value ':' init_values_list 
+    | init_value init_values_list 
     ; // CAN WE HAVE POINTERS HERE ???
 
 // ---------------------- ISSUES
