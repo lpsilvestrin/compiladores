@@ -32,7 +32,7 @@
 %token TOKEN_ERROR  
 
 /*association rules*/
-//%right '#' '&'
+
 //%left '[' ']'
 //%left '(' ')' '{' '}' 
 //%left ','
@@ -46,9 +46,9 @@
 %left '-' '+'
 %left '*' '/'
 %left '<' '>'
-%right '&'
-%left '(' // <<<<<<<<<<, it should work
-%left '['
+//%right '&' '#' 
+%left '('
+%left '[' 
 %left OPERATOR_AND OPERATOR_OR
 %left OPERATOR_EQ OPERATOR_GE OPERATOR_LE OPERATOR_NE
 //%precedence NEG
@@ -57,6 +57,8 @@
 %nonassoc KW_TO
 %nonassoc ')'
 %nonassoc ','
+%nonassoc '#'
+%nonassoc '&'
 %nonassoc LOWER_THAN_LIST_REST
 
 %%
@@ -152,10 +154,11 @@ vector_assignment:
 //    | TK_IDENTIFIER '[' expression ']' '=' '#' expression 
     ;
 
+//accepting pointers and mem refs only in the leaves
 var_assignment: 
     TK_IDENTIFIER '=' expression
-    | TK_IDENTIFIER '=' '&' expression
-    | TK_IDENTIFIER '=' '#' expression
+//    | TK_IDENTIFIER '=' '&' expression
+//    | TK_IDENTIFIER '=' '#' expression
     ;
 
 //read should be followed by a variable to put something inside or it, it only accepts scalar values, so no vector or pointers here
@@ -207,7 +210,7 @@ arithmetic_or_boolean_expression:
     | arithmetic_or_boolean_expression OPERATOR_AND arithmetic_or_boolean_expression 
     | arithmetic_or_boolean_expression OPERATOR_OR arithmetic_or_boolean_expression 
     | '!' arithmetic_or_boolean_expression 
-//    | '-' arithmetic_or_boolean_expression //can solve this :(
+//    | '-' arithmetic_or_boolean_expression //cant solve this :(
     | '(' arithmetic_or_boolean_expression ')'
     ;
 
