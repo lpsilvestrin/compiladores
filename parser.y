@@ -38,13 +38,17 @@
 //%left ','
 //%right '=' ':'
 //%left ';'
+//%left ',' ')'
+//%left '='
 
+%left '{' '}'
 %right '!'
 %left '-' '+'
 %left '*' '/'
 %left '<' '>'
-//%left ',' ')'
-//%left '='
+%right '&'
+%left '(' // <<<<<<<<<<, it should work
+%left '['
 %left OPERATOR_AND OPERATOR_OR
 %left OPERATOR_EQ OPERATOR_GE OPERATOR_LE OPERATOR_NE
 //%precedence NEG
