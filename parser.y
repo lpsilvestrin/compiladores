@@ -32,20 +32,26 @@
 %token TOKEN_ERROR  
 
 /*association rules*/
+//%right '#' '&'
+//%left '[' ']'
+//%left '(' ')' '{' '}' 
+//%left ','
+//%right '=' ':'
+//%left ';'
+
+%right '!'
+%right '-' '+'
+%left '*' '/'
+%left '<' '>'
+//%left ',' ')'
+//%left '='
 %left OPERATOR_AND OPERATOR_OR
 %left OPERATOR_EQ OPERATOR_GE OPERATOR_LE OPERATOR_NE
-%left '(' ')'
-%left '{' '}'
-%left ','
-%left '!'
-%left '*' '/'
-%left '+' '-'
-%left '<' '>'
-%right '='
-%left ';'
+//%precedence NEG
 %nonassoc KW_THEN
 %nonassoc KW_ELSE
 %nonassoc KW_TO
+
 
 %%
 //----------- MAIN FLOW
@@ -141,14 +147,12 @@ assignment_c:
 
 vector_assignment: 
     TK_IDENTIFIER '[' expression ']' '=' expression 
-    | TK_IDENTIFIER '[' expression ']' '=' '&' expression
-    | TK_IDENTIFIER '[' expression ']' '=' '#' expression 
+//    | TK_IDENTIFIER '[' expression ']' '=' '&' expression
+//    | TK_IDENTIFIER '[' expression ']' '=' '#' expression 
     ;
 
 var_assignment: 
     TK_IDENTIFIER '=' expression
-    | '#' TK_IDENTIFIER '=' expression
-    | '#' TK_IDENTIFIER '=' '&' expression
     | TK_IDENTIFIER '=' '&' expression
     | TK_IDENTIFIER '=' '#' expression
     ;
@@ -202,7 +206,7 @@ arithmetic_or_boolean_expression:
     | arithmetic_or_boolean_expression OPERATOR_AND arithmetic_or_boolean_expression 
     | arithmetic_or_boolean_expression OPERATOR_OR arithmetic_or_boolean_expression 
     | '!' arithmetic_or_boolean_expression 
-    | '-' arithmetic_or_boolean_expression 
+//    | '-' arithmetic_or_boolean_expression //can solve this :(
     | '(' arithmetic_or_boolean_expression ')'
     ;
 
@@ -278,30 +282,7 @@ init_value:
 init_values_list: 
     init_value 
     | init_values_list init_value
-    ; // CAN WE HAVE POINTERS HERE ???
-
-// ---------------------- ISSUES
-//a lista do print pode ser vazia?
-//atribuicoes de ponteiros???
-//expressoes de aritmetica podem ser aplicadas sobre ponteiros e memory refs ?
-//podemos por ponteiros nos valores de inicialização de vetores ? 
-//assignments podem ser feitos com # ?!!!!!!!!!!
-//podemos aceitar vetor[function()] ?
-
-
-
-
-
-
-// ---------------------- CONSIDERACOES FEITAS POR CAUSA DE AMBIGUIDADE
-//assingments podem ser feitos utilizando ponteiros, e podemos atribuir ponteiros, valores ou referencias de memoria
-//a lista do print nao pode ser vazia
-//inicializacoes de globais nao podem ser feitas usando var1 = var2 
-//podemos aplicar expressoes sobre & e #
-//nao podemos inicializar vetores com ponteiros
-//podemos aceitar vetor[funcao()]
-
-
+    ; 
 
 
 %%
