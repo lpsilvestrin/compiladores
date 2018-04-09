@@ -5,7 +5,7 @@
 etapa2: y.tab.o lex.yy.o hashtable.o main.c
 	gcc -g -Wall -o etapa2 y.tab.o lex.yy.o main.c hashtable.o
 
-y.tab.o:
+y.tab.o: parser.y
 	yacc -d -v parser.y
 	gcc -g -Wall -c y.tab.c
 	
