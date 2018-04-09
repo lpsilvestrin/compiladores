@@ -102,7 +102,7 @@ header:
 //accepts empty production
 def_parameters: 
     scalar_type TK_IDENTIFIER 
-    | tail_def_parameters
+    | scalar_type TK_IDENTIFIER ',' tail_def_parameters
     | 
     ;
 
