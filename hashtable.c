@@ -75,3 +75,16 @@ void initNode(hashNode **node) {
 	tmp->next = NULL;
 	*node = tmp;
 }
+
+void printHash(hashTable *table) {
+	hashNode* currNode = NULL;
+	int size = table->size;
+
+	for (int i = 0; i < size; i++) {
+		currNode = table->data[i];
+		while (currNode != NULL) {
+			printf("[HASH] entry %d = %s, type %d\n", i, currNode->id, currNode->type);
+			currNode = currNode->next;
+		}
+	}
+}

@@ -18,7 +18,7 @@ int getLineNumber();
 int isRunning();
 void initMe();
 void tokenTreatment(int tk_code);
-void updateSymbolsTable(char* id);
+void updateSymbolsTable(char* id, int type);
 void checkSymbolsTable(char* token);
 
 %}
@@ -48,15 +48,15 @@ print   {fprintf(stderr,"LINE %d: Found a print\n", lineNumber );return KW_PRINT
 [,;:()[\]{}+\-*/<>=!&$#]  {fprintf(stderr,"LINE %d: Found the special character <%s>\n", lineNumber, yytext);return yytext[0]; }
 
 [0-9]+                  {fprintf(stderr,"LINE %d: Found a LIT INTEGER with value %s\n", lineNumber, yytext );
-		updateSymbolsTable(yytext);checkSymbolsTable(yytext);return LIT_INTEGER; }
+		updateSymbolsTable(yytext, SYMBOL_LIT_INT);checkSymbolsTable(yytext);return LIT_INTEGER; }
 [0-9]+[.][0-9]+         {fprintf(stderr,"LINE %d: Found a REAL with value %s\n", lineNumber, yytext );
-		updateSymbolsTable(yytext);checkSymbolsTable(yytext);return LIT_REAL; }
+		updateSymbolsTable(yytext, SYMBOL_LIT_REAL);checkSymbolsTable(yytext);return LIT_REAL; }
 '([^'\"]|\\['\"nt])'    {fprintf(stderr,"LINE %d: Found a LIT CHAR %s\n", lineNumber, yytext );
-		updateSymbolsTable(yytext);checkSymbolsTable(yytext);return LIT_CHAR; }
+		updateSymbolsTable(yytext, SYMBOL_LIT_CHAR);checkSymbolsTable(yytext);return LIT_CHAR; }
 \"(\\.|[^"])*\"         {fprintf(stderr,"LINE %d: Found a LIT STRING %s\n", lineNumber, yytext );
-		updateSymbolsTable(yytext);checkSymbolsTable(yytext);return LIT_STRING; }
+		updateSymbolsTable(yytext, SYMBOL_LIT_STRING);checkSymbolsTable(yytext);return LIT_STRING; }
 [a-zA-Z][a-zA-Z0-9_-]*  {fprintf(stderr,"LINE %d: Found an identifier called %s\n", lineNumber, yytext);
-		updateSymbolsTable(yytext);checkSymbolsTable(yytext);return TK_IDENTIFIER; }
+		updateSymbolsTable(yytext, SYMBOL_IDENTIFIER);checkSymbolsTable(yytext);return TK_IDENTIFIER; }
 
 <<EOF>>   {running = 0; printf("EOF REACHED\n"); return running;}
 " "       {}
@@ -90,10 +90,11 @@ void initMe() {
 	initHash(&SymbolsTable, _TABLESIZE);
 }
 
-void updateSymbolsTable(char* id) {
+void updateSymbolsTable(char* id, int type) {
 	hashNode *n;
 	initNode(&n); 		// inicializando área de memória e atribuindo pro ponteiro
 	strcpy(n->id, id); // atribuindo identificador como key
+	n->type = type;
 	insertHash(n, SymbolsTable); // inserindo na tabela
 }
 

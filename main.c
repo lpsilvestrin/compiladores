@@ -1,11 +1,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "lex.yy.h"
+#include "hashtable.h"
 
 extern FILE *yyin; //CAREFUL WITH IT
 extern int yyparse();
 extern void initMe();
 extern int getLineNumber();
+extern hashTable *SymbolsTable; 
 
 int main(int argc, char** argv) {
 	if (argc < 2) {
@@ -21,6 +23,8 @@ int main(int argc, char** argv) {
     yyparse();
 
 		printf("Last line: %d\n", getLineNumber());
+		printf("printing the hash table contents:\n");
+		printHash(SymbolsTable);
   	}
 	}
 	exit(0);
