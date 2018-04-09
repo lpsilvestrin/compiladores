@@ -41,7 +41,7 @@
 //%left ',' ')'
 //%left '='
 
-%left '{' '}'
+//%left '{' '}'
 %right '!'
 %left '-' '+'
 %left '*' '/'
@@ -54,7 +54,7 @@
 //%precedence NEG
 %nonassoc KW_THEN
 %nonassoc KW_ELSE
-%nonassoc KW_TO
+//%nonassoc KW_TO
 %nonassoc ')'
 %nonassoc ','
 %nonassoc '#'
@@ -106,15 +106,14 @@ header:
     scalar_type TK_IDENTIFIER def_parameters  
     ; 
 
-//accepts empty production
 def_parameters: 
 	'(' ')'
-	| '(' def_parameters_tail 
+	| '(' def_parameters_tail ')' 
     ;
 
 def_parameters_tail:
-	scalar_type TK_IDENTIFIER ')' 
-    | scalar_type TK_IDENTIFIER ',' def_parameters_tail
+	scalar_type TK_IDENTIFIER  
+    | def_parameters_tail ',' scalar_type TK_IDENTIFIER
 	;	
 
 
@@ -235,12 +234,12 @@ function_expression:
 //accepts empty production
 parameters_list: 
 	'(' ')'
-	| '(' parameters_list_tail 
+	| '(' parameters_list_tail ')' 
     ;
 
 parameters_list_tail:
-	id ')'
-    | id ',' parameters_list_tail 
+	id 
+    | parameters_list_tail ',' id 
 	;
 
 //----------- FLOW CONTROL
