@@ -103,16 +103,20 @@ function_def: header block
     ;
 
 // the header have a return type, an identifier and a (empty) list of arguments
-header: 
-    scalar_type TK_IDENTIFIER '(' def_parameters 
+header:
+    scalar_type TK_IDENTIFIER def_parameters  
     ; 
 
 //accepts empty production
 def_parameters: 
-    scalar_type TK_IDENTIFIER ')'
-    | scalar_type TK_IDENTIFIER ',' def_parameters
-    | ')'
+	'(' ')'
+	| '(' def_parameters_tail 
     ;
+
+def_parameters_tail:
+	scalar_type TK_IDENTIFIER ')' 
+    | scalar_type TK_IDENTIFIER ',' def_parameters_tail
+	;	
 
 
 //----------- BLOCK  
@@ -226,16 +230,19 @@ id:
 
 //a function is a identifier followed by its parameters separated by a ','
 function_expression: 
-    TK_IDENTIFIER '(' parameters_list 
+    TK_IDENTIFIER parameters_list 
     ;
 
 //accepts empty production
 parameters_list: 
-    id ')'	
-    | id ',' parameters_list   
-    | ')'
+	'(' ')'
+	| '(' parameters_list_tail 
     ;
 
+parameters_list_tail:
+	id ')'
+    | id ',' parameters_list_tail 
+	;
 
 //----------- FLOW CONTROL
 
