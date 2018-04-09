@@ -51,7 +51,9 @@
 %nonassoc KW_THEN
 %nonassoc KW_ELSE
 %nonassoc KW_TO
-
+%nonassoc ')'
+%nonassoc ','
+%nonassoc LOWER_THAN_LIST_REST
 
 %%
 //----------- MAIN FLOW
@@ -96,19 +98,14 @@ function_def: header block
 
 // the header have a return type, an identifier and a (empty) list of arguments
 header: 
-    scalar_type TK_IDENTIFIER '(' def_parameters ')' 
+    scalar_type TK_IDENTIFIER '(' def_parameters 
     ; 
 
 //accepts empty production
 def_parameters: 
-    scalar_type TK_IDENTIFIER 
-    | scalar_type TK_IDENTIFIER ',' tail_def_parameters
-    | 
-    ;
-
-tail_def_parameters: 
-    scalar_type TK_IDENTIFIER 
-    | tail_def_parameters ',' scalar_type TK_IDENTIFIER 
+    scalar_type TK_IDENTIFIER ')'
+    | scalar_type TK_IDENTIFIER ',' def_parameters
+    | ')'
     ;
 
 
@@ -222,19 +219,14 @@ id:
 
 //a function is a identifier followed by its parameters separated by a ','
 function_expression: 
-    TK_IDENTIFIER '(' parameters_list ')'
+    TK_IDENTIFIER '(' parameters_list 
     ;
 
 //accepts empty production
 parameters_list: 
-    id 
-    | tail_parameters_list   
-    | 
-    ;
-
-tail_parameters_list: 
-    id 
-    | tail_parameters_list ',' id   
+    id ')'	
+    | id ',' parameters_list   
+    | ')'
     ;
 
 
