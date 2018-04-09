@@ -238,8 +238,8 @@ parameters_list:
     ;
 
 parameters_list_tail:
-	id 
-    | parameters_list_tail ',' id 
+	expression 
+    | parameters_list_tail ',' expression 
 	;
 
 //----------- FLOW CONTROL
