@@ -228,7 +228,7 @@ function_expression:
 //accepts empty production
 parameters_list: 
     id 
-    | tail_parameters_list   
+    | tail_parameters_list ',' id 
     | 
     ;
 
