@@ -42,19 +42,18 @@
 //%left '='
 
 //%left '{' '}'
-%right '!'
-%left '-' '+'
-%left '*' '/'
+
+
 %left '<' '>'
-//%right '&' '#' 
 %left '('
 %left '[' 
 %left OPERATOR_AND OPERATOR_OR
 %left OPERATOR_EQ OPERATOR_GE OPERATOR_LE OPERATOR_NE
-//%precedence NEG
+%left '-' '+'
+%left '*' '/'
+%right '!'
 %nonassoc KW_THEN
 %nonassoc KW_ELSE
-//%nonassoc KW_TO
 %nonassoc ')'
 %nonassoc ','
 %nonassoc '#'
@@ -176,9 +175,9 @@ print_c:
 //each element can be either a string or an arithmetic expression
 print_list: 
     LIT_STRING 
-    | arithmetic_or_boolean_expression 
+    | expression 
     | print_list LIT_STRING  
-    | print_list arithmetic_or_boolean_expression  
+    | print_list expression  
     ;
 
 return_c: KW_RETURN expression 
@@ -188,32 +187,33 @@ return_c: KW_RETURN expression
 //----------- EXPRESSION
 //for the moment we have no distinction between boolean and arithmetic
 //for the moment it should accept every kind of operator and sub-expression, and therefore i'm considering it accepts # and &
-expression: 
-    arithmetic_or_boolean_expression 
-    | function_expression 
-    ;
+//expression: 
+//    expression 
+//    | function_expression 
+//    ;
 
 //an arithmetic expression is a recursive definition of operations over the leaves 
 //boolean expressions are made of relational operations applied over arithmetic expressions or 
 //logic operators aplied over logic expressions
 //he defined the relational operator set as the union of the arithmetic set and the usual relational ones
-arithmetic_or_boolean_expression: 
-    id 
-    | arithmetic_or_boolean_expression '+' arithmetic_or_boolean_expression 
-    | arithmetic_or_boolean_expression '-' arithmetic_or_boolean_expression 
-    | arithmetic_or_boolean_expression '*' arithmetic_or_boolean_expression 
-    | arithmetic_or_boolean_expression '/' arithmetic_or_boolean_expression 
-    | arithmetic_or_boolean_expression '<' arithmetic_or_boolean_expression 
-    | arithmetic_or_boolean_expression '>' arithmetic_or_boolean_expression 
-    | arithmetic_or_boolean_expression OPERATOR_LE arithmetic_or_boolean_expression 
-    | arithmetic_or_boolean_expression OPERATOR_GE arithmetic_or_boolean_expression 
-    | arithmetic_or_boolean_expression OPERATOR_EQ arithmetic_or_boolean_expression 
-    | arithmetic_or_boolean_expression OPERATOR_NE arithmetic_or_boolean_expression 
-    | arithmetic_or_boolean_expression OPERATOR_AND arithmetic_or_boolean_expression 
-    | arithmetic_or_boolean_expression OPERATOR_OR arithmetic_or_boolean_expression 
-    | '!' arithmetic_or_boolean_expression 
-//    | '-' arithmetic_or_boolean_expression //cant solve this :(
-    | '(' arithmetic_or_boolean_expression ')'
+expression: 
+    id
+    | function_expression 
+    | expression '+' expression 
+    | expression '-' expression 
+    | expression '*' expression 
+    | expression '/' expression 
+    | expression '<' expression 
+    | expression '>' expression 
+    | expression OPERATOR_LE expression 
+    | expression OPERATOR_GE expression 
+    | expression OPERATOR_EQ expression 
+    | expression OPERATOR_NE expression 
+    | expression OPERATOR_AND expression 
+    | expression OPERATOR_OR expression 
+    | '!' expression 
+//    | '-' expression //cant solve this :(
+    | '(' expression ')'
     ;
 
 //the leaves can be variables, vector positions with integer expression inside and literals
