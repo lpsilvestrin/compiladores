@@ -11,7 +11,7 @@ y.tab.o: parser.y
 	
 lex.yy.o: scanner.l
 	lex --header-file=lex.yy.h scanner.l
-	gcc -g -Wall -c lex.yy.c
+	gcc -g -Wall -c lex.yy.c 
 
 
 hashtable.o: hashtable.c hashtable.h

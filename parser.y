@@ -32,20 +32,26 @@
 %token TOKEN_ERROR  
 
 /*association rules*/
+//%right '#' '&'
+//%left '[' ']'
+//%left '(' ')' '{' '}' 
+//%left ','
+//%right '=' ':'
+//%left ';'
+
+%right '!'
+%right '-' '+'
+%left '*' '/'
+%left '<' '>'
+//%left '('
+//%left '='
 %left OPERATOR_AND OPERATOR_OR
 %left OPERATOR_EQ OPERATOR_GE OPERATOR_LE OPERATOR_NE
-%left '(' ')'
-%left '{' '}'
-%left ','
-%left '!'
-%left '*' '/'
-%left '+' '-'
-%left '<' '>'
-%right '='
-%left ';'
+//%precedence NEG
 %nonassoc KW_THEN
 %nonassoc KW_ELSE
 %nonassoc KW_TO
+
 
 %%
 //----------- MAIN FLOW
@@ -141,8 +147,8 @@ assignment_c:
 
 vector_assignment: 
     TK_IDENTIFIER '[' expression ']' '=' expression 
-    | TK_IDENTIFIER '[' expression ']' '=' '&' expression
-    | TK_IDENTIFIER '[' expression ']' '=' '#' expression 
+//    | TK_IDENTIFIER '[' expression ']' '=' '&' expression
+//    | TK_IDENTIFIER '[' expression ']' '=' '#' expression 
     ;
 
 var_assignment: 
@@ -202,7 +208,7 @@ arithmetic_or_boolean_expression:
     | arithmetic_or_boolean_expression OPERATOR_AND arithmetic_or_boolean_expression 
     | arithmetic_or_boolean_expression OPERATOR_OR arithmetic_or_boolean_expression 
     | '!' arithmetic_or_boolean_expression 
-    | '-' arithmetic_or_boolean_expression 
+//    | '-' arithmetic_or_boolean_expression //can solve this :(
     | '(' arithmetic_or_boolean_expression ')'
     ;
 
