@@ -40,7 +40,7 @@
 //%left ';'
 
 %right '!'
-%right '-' '+'
+%left '-' '+'
 %left '*' '/'
 %left '<' '>'
 //%left ',' ')'
