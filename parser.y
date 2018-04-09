@@ -59,7 +59,6 @@
 %nonassoc ','
 %nonassoc '#'
 %nonassoc '&'
-%nonassoc LOWER_THAN_LIST_REST
 
 %%
 //----------- MAIN FLOW
