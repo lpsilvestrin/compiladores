@@ -212,7 +212,7 @@ expression:
     | expression OPERATOR_AND expression 
     | expression OPERATOR_OR expression 
     | '!' expression 
-//    | '-' expression //cant solve this :(
+    | '-' expression 
     | '(' expression ')'
     ;
 
