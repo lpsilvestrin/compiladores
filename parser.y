@@ -33,17 +33,6 @@
 
 /*association rules*/
 
-//%left '[' ']'
-//%left '(' ')' '{' '}' 
-//%left ','
-//%right '=' ':'
-//%left ';'
-//%left ',' ')'
-//%left '='
-
-//%left '{' '}'
-
-
 %left '<' '>'
 %left '('
 %left '[' 
@@ -55,9 +44,11 @@
 %nonassoc KW_THEN
 %nonassoc KW_ELSE
 %nonassoc ')'
+%nonassoc ']'
 %nonassoc ','
 %nonassoc '#'
 %nonassoc '&'
+%precedence NOT
 
 %%
 //----------- MAIN FLOW
@@ -212,7 +203,7 @@ expression:
     | expression OPERATOR_AND expression 
     | expression OPERATOR_OR expression 
     | '!' expression 
-    | '-' expression 
+    | '-' expression %prec NOT
     | '(' expression ')'
     ;
 
