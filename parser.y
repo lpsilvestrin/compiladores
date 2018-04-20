@@ -48,7 +48,7 @@
 %nonassoc ','
 %nonassoc '#'
 %nonassoc '&'
-%precedence NOT
+//%precedence NOT
 
 %%
 //----------- MAIN FLOW
@@ -176,20 +176,13 @@ return_c: KW_RETURN expression
 
 
 //----------- EXPRESSION
-//for the moment we have no distinction between boolean and arithmetic
 //for the moment it should accept every kind of operator and sub-expression, and therefore i'm considering it accepts # and &
-//expression: 
-//    expression 
-//    | function_expression 
-//    ;
-
 //an arithmetic expression is a recursive definition of operations over the leaves 
 //boolean expressions are made of relational operations applied over arithmetic expressions or 
 //logic operators aplied over logic expressions
 //he defined the relational operator set as the union of the arithmetic set and the usual relational ones
 expression: 
     id
-    | function_expression 
     | expression '+' expression 
     | expression '-' expression 
     | expression '*' expression 
@@ -203,7 +196,7 @@ expression:
     | expression OPERATOR_AND expression 
     | expression OPERATOR_OR expression 
     | '!' expression 
-    | '-' expression %prec NOT
+    | '-' expression //%prec NOT
     | '(' expression ')'
     ;
 
@@ -214,12 +207,14 @@ id:
     | '#' TK_IDENTIFIER 
     | '&' TK_IDENTIFIER 
     | TK_IDENTIFIER '[' expression ']' 
+    | function_expression
     | init_value 
     ;
 
+
 //a function is a identifier followed by its parameters separated by a ','
 function_expression: 
-    TK_IDENTIFIER parameters_list 
+     TK_IDENTIFIER parameters_list
     ;
 
 //accepts empty production
