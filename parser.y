@@ -33,21 +33,20 @@
 
 /*association rules*/
 
-%left '<' '>'
+//%left 
 //%left '('
-%left '[' 
-%left OPERATOR_AND OPERATOR_OR
-%left OPERATOR_EQ OPERATOR_GE OPERATOR_LE OPERATOR_NE
+//%left '[' 
+%left OPERATOR_AND OPERATOR_OR OPERATOR_EQ OPERATOR_GE OPERATOR_LE OPERATOR_NE '<' '>'
 %left '-' '+'
 %left '*' '/'
 %right '!'
 %nonassoc KW_THEN
 %nonassoc KW_ELSE
-%nonassoc ')'
-%nonassoc ']'
-%nonassoc ','
-%nonassoc '#'
-%nonassoc '&'
+//%nonassoc ')'
+//%nonassoc ']'
+//%nonassoc ','
+//%nonassoc '#'
+//%nonassoc '&'
 
 %%
 //----------- MAIN FLOW
