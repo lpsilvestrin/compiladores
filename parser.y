@@ -1,49 +1,49 @@
 %{
 #include <stdlib.h>
 #include <stdio.h>
-#include "hashtable.h"
 #include "astree.h"
+#include "hashtable.h"
 
 %}
+
 %union
 {
-	ASTree* astree;
-    hashTable* hashTable;
+	ASTree* astree_pointer;
+    hashTable* hashTable_pointer;
 }
-
 
 %start program
 
 /*grammar rules*/
-/*%type<astree> program
-%type<astree> instruction
-%type<astree> global_def
-%type<astree> function_def
-%type<astree> global_var_def
-%type<astree> vector_def
-%type<astree> header
-%type<astree> block
-%type<astree> def_parameters
-%type<astree> def_parameters_tail
-%type<astree> commands_list
-%type<astree> simple_command
-%type<astree> assignment_c
-%type<astree> flow_c 
-%type<astree> read_c
-%type<astree> print_c 
-%type<astree> return_c
-%type<astree> vector_assignment 
-%type<astree> var_assignment
-%type<astree> expression
-%type<astree> parameters_list
-%type<astree> parameters_list_tail
-%type<astree> if_c 
-%type<astree> if_then_else_c 
-%type<astree> while_c 
-%type<astree> for_c
-%type<astree> init_value
-%type<astree> init_values_list
-%type<astree> scalar_type*/
+%type<astree_pointer> program
+%type<astree_pointer> instruction
+%type<astree_pointer> global_def
+%type<astree_pointer> function_def
+%type<astree_pointer> global_var_def
+%type<astree_pointer> vector_def
+%type<astree_pointer> header
+%type<astree_pointer> block
+%type<astree_pointer> def_parameters
+%type<astree_pointer> def_parameters_tail
+%type<astree_pointer> commands_list
+%type<astree_pointer> simple_command
+%type<astree_pointer> assignment_c
+%type<astree_pointer> flow_c 
+%type<astree_pointer> read_c
+%type<astree_pointer> print_c 
+%type<astree_pointer> return_c
+%type<astree_pointer> vector_assignment 
+%type<astree_pointer> var_assignment
+%type<astree_pointer> expression
+%type<astree_pointer> parameters_list
+%type<astree_pointer> parameters_list_tail
+%type<astree_pointer> if_c 
+%type<astree_pointer> if_then_else_c 
+%type<astree_pointer> while_c 
+%type<astree_pointer> for_c
+%type<astree_pointer> init_value
+%type<astree_pointer> init_values_list
+%type<astree_pointer> scalar_type
 
 
 
@@ -66,11 +66,13 @@
 %token OPERATOR_NE
 %token OPERATOR_AND
 %token OPERATOR_OR
-%token TK_IDENTIFIER
-%token LIT_INTEGER
-%token LIT_REAL
-%token LIT_CHAR
-%token LIT_STRING
+
+%token<hashTable_pointer> TK_IDENTIFIER
+%token<hashTable_pointer> LIT_INTEGER
+%token<hashTable_pointer> LIT_REAL
+%token<hashTable_pointer> LIT_CHAR
+%token<hashTable_pointer> LIT_STRING
+
 %token TOKEN_ERROR  
 
 /*association rules*/
@@ -88,6 +90,7 @@
 //%nonassoc ','
 //%nonassoc '#'
 //%nonassoc '&'
+
 
 %%
 //----------- MAIN FLOW
