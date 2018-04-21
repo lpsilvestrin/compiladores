@@ -44,6 +44,7 @@
 %type<astree_pointer> init_value
 %type<astree_pointer> init_values_list
 %type<astree_pointer> scalar_type
+%type<astree_pointer> size
 
 
 
@@ -98,45 +99,46 @@
 //accepts empty production
 program: 
     program instruction     {$$=astree_create(AST_INITIAL,0,$2,$1,0,0);}
-    |                       {$$=0} // <<<<<<<<<<<<<<< CHECK THIS
+    |                       {$$=0;} // <<<<<<<<<<<<<<< CHECK THIS
     ; 
 
 //the instructions is a list of global definitions and functions (without any order)
 instruction: 
-    global_def      {$$=$1} //only one place to go
-    | function_def  {$$=$1}
+    global_def      {$$=$1;} //only one place to go
+    | function_def  {$$=$1;}
     ;
 
 
 //----------- GLOBAL STRUCTURES
 //a global definition can be a scalar variable or a vector
 global_def: 
-    global_var_def  {$$=$1}
-    | vector_def    {$$=$1}
+    global_var_def  {$$=$1;}
+    | vector_def    {$$=$1;}
     ;
 
 //an init value can only be scalar values
 global_var_def: 
-    scalar_type TK_IDENTIFIER '=' init_value ';'        {$$=astree_create(AST_GLOBAL_VAR_DEF,$2,$1,$3,0,0);}
-    | scalar_type '#' TK_IDENTIFIER '=' init_value ';'  {$$=astree_create(AST_GLOBAL_VAR_DEF,$3,$1,$4,0,0);}  
+    scalar_type TK_IDENTIFIER '=' init_value ';'        {$$=astree_create(AST_GLOBAL_VAR_DEF,$2,$1,$4,0,0);}
+    | scalar_type '#' TK_IDENTIFIER '=' init_value ';'  {$$=astree_create(AST_GLOBAL_VAR_DEF,$3,$1,$5,0,0);}  
     ;
 
 //initialization is given by values separated by " " after a ":"
 vector_def: 
-    scalar_type TK_IDENTIFIER '[' LIT_INTEGER ']' ';'                           //{$$=astree_create(AST_VECTOR_DEF,);} ZEBRA
-    | scalar_type TK_IDENTIFIER '[' LIT_INTEGER ']' ':' init_values_list ';'    
+    scalar_type TK_IDENTIFIER '[' size ']' ';'                          {$$=astree_create(AST_VECTOR_DEF,$2,$1,$4,0,0);} 
+    | scalar_type TK_IDENTIFIER '[' size ']' ':' init_values_list ';'   {$$=astree_create(AST_VECTOR_DEF,$2,$1,$4,$7,0);}  
     ;
+
 
 
 //----------- FUNCTION
 //a function is made of a header and a block
 function_def: 
-    header block 
+    header block    {$$=astree_create(AST_FUNCTION_DEF,0,$1,$2,0,0);}
     ;
 
 // the header have a return type, an identifier and a (empty) list of arguments
 header:
-    scalar_type TK_IDENTIFIER def_parameters  
+    scalar_type TK_IDENTIFIER def_parameters    {$$=astree_create(AST_HEADER,$2,$1,$3,0,0);}
     ; 
 
 def_parameters: 
@@ -313,6 +315,10 @@ init_values_list:
     init_value 
     | init_values_list init_value
     ; 
+
+size:
+    LIT_INTEGER {$$=astree_create(AST_INT,$1,0,0,0,0);}
+    ;    
 
 
 %%
