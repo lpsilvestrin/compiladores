@@ -2,8 +2,8 @@
 # Marcely e Luis Pedro, 2018/1
 #
 
-etapa2: y.tab.o lex.yy.o hashtable.o main.c
-	gcc -g -Wall -o etapa2 y.tab.o lex.yy.o main.c hashtable.o
+etapa2: y.tab.o lex.yy.o hashtable.o astree.o main.c
+	gcc -g -Wall -o etapa2 y.tab.o lex.yy.o main.c hashtable.o astree.o 
 
 y.tab.o: parser.y
 	yacc -d -v parser.y
@@ -16,6 +16,9 @@ lex.yy.o: scanner.l
 
 hashtable.o: hashtable.c hashtable.h
 	gcc -g -Wall -c hashtable.c
+
+astree.o: astree.h astree.c
+	gcc -g -Wall -c astree.c
 
 
 test_hash: test_hash.c hashtable.o

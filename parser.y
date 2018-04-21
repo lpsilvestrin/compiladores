@@ -13,7 +13,7 @@
 %start program
 
 /*grammar rules*/
-%type<astree> program
+/*%type<astree> program
 %type<astree> instruction
 %type<astree> global_def
 %type<astree> function_def
@@ -41,7 +41,7 @@
 %type<astree> for_c
 %type<astree> init_value
 %type<astree> init_values_list
-%type<astree> scalar_type
+%type<astree> scalar_type*/
 
 
 
