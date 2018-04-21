@@ -8,7 +8,9 @@
 
 
 /*here we will put a lot of defines with values for representing the possible types inside the AST*/
-#define AST_DEC
+#define AST_INITIAL
+#define AST_GLOBAL_VAR_DEF
+#define AST_VECTOR_DEF
 
 
 #include "hashtable.h"

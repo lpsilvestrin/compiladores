@@ -97,34 +97,34 @@
 //a program is a (empty) list of instructions
 //accepts empty production
 program: 
-    program instruction     {$$=astree_create(AST_DEC,0,$2,$1,0,0);}
-    |
+    program instruction     {$$=astree_create(AST_INITIAL,0,$2,$1,0,0);}
+    |                       {$$=0} // <<<<<<<<<<<<<<< CHECK THIS
     ; 
 
 //the instructions is a list of global definitions and functions (without any order)
 instruction: 
-    global_def 
-    | function_def 
+    global_def      {$$=$1} //only one place to go
+    | function_def  {$$=$1}
     ;
 
 
 //----------- GLOBAL STRUCTURES
 //a global definition can be a scalar variable or a vector
 global_def: 
-    global_var_def 
-    | vector_def
+    global_var_def  {$$=$1}
+    | vector_def    {$$=$1}
     ;
 
 //an init value can only be scalar values
 global_var_def: 
-    scalar_type TK_IDENTIFIER '=' init_value ';' 
-    | scalar_type '#' TK_IDENTIFIER '=' init_value ';'
+    scalar_type TK_IDENTIFIER '=' init_value ';'        {$$=astree_create(AST_GLOBAL_VAR_DEF,$2,$1,$3,0,0);}
+    | scalar_type '#' TK_IDENTIFIER '=' init_value ';'  {$$=astree_create(AST_GLOBAL_VAR_DEF,$3,$1,$4,0,0);}  
     ;
 
 //initialization is given by values separated by " " after a ":"
 vector_def: 
-    scalar_type TK_IDENTIFIER '[' LIT_INTEGER ']' ';' 
-    | scalar_type TK_IDENTIFIER '[' LIT_INTEGER ']' ':' init_values_list ';' 
+    scalar_type TK_IDENTIFIER '[' LIT_INTEGER ']' ';'                           //{$$=astree_create(AST_VECTOR_DEF,);} ZEBRA
+    | scalar_type TK_IDENTIFIER '[' LIT_INTEGER ']' ':' init_values_list ';'    
     ;
 
 
