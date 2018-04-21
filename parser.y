@@ -142,26 +142,26 @@ header:
     ; 
 
 def_parameters: 
-	'(' ')'
-	| '(' def_parameters_tail ')' 
+	'(' ')' {$$=0;}
+	| '(' def_parameters_tail ')'   {$$=$2;}//{$$=astree_create(AST_DEF_PARAM,0,$2,0,0,0);}
     ;
 
 def_parameters_tail:
-	scalar_type TK_IDENTIFIER  
-    | def_parameters_tail ',' scalar_type TK_IDENTIFIER
+	scalar_type TK_IDENTIFIER                           {$$=astree_create(AST_DEF_PARAM_T,$2,$1,0,0,0);}
+    | def_parameters_tail ',' scalar_type TK_IDENTIFIER {$$=astree_create(AST_DEF_PARAM_T,$4,$3,$1,0,0);}
 	;	
 
 
 //----------- BLOCK  
 //the {} are from the block
 block: 
-    '{' commands_list '}' 
+    '{' commands_list '}'   {$$=$2;}
     ;
 
 //the ; is associated to the commands list, and not the command itself, therefore we can have <empty>;<something>
 commands_list: 
-    simple_command 
-    | commands_list ';' simple_command
+    simple_command                      {$$=$1;}
+    | commands_list ';' simple_command  {$$=astree_create(AST_COMMANDS_L,0,$3,$1,0,0);}
     ;
 
 
@@ -170,23 +170,23 @@ commands_list:
 //a block is considered as a simple command
 //accepts empty production
 simple_command: 
-    block 
-    | assignment_c 
-    | flow_c 
-    | read_c 
-    | print_c 
-    | return_c
-    | 
+    block           {$$=$1;}
+    | assignment_c  {$$=$1;}
+    | flow_c        {$$=$1;}
+    | read_c        {$$=$1;}
+    | print_c       {$$=$1;}
+    | return_c      {$$=$1;}
+    |               {$$=0;}
     ;
 
 //for now i'm considering that you CAN assign values to pointers and refferences
 assignment_c: 
-    vector_assignment 
-    | var_assignment 
+    vector_assignment   {$$=0;}
+    | var_assignment    {$$=0;}
     ;
 
 vector_assignment: 
-    TK_IDENTIFIER '[' expression ']' '=' expression 
+    TK_IDENTIFIER '[' expression ']' '=' expression {$$=astree_create(AST_COMMANDS_L,$1,$2,$3,0,0);}
     ;
 
 //accepting pointers and mem refs only in the leaves
