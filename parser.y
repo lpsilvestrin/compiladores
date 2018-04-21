@@ -281,7 +281,7 @@ flow_c:
 
 if_c: 
     KW_IF '(' expression ')' KW_THEN simple_command
-    ; { $$=astree_create(KW_IF,,$3,$6,0,0); }
+    ; { $$=astree_create(KW_IF,0,$3,$6,0,0); }
 
 if_then_else_c: 
     KW_IF '(' expression ')' KW_THEN simple_command KW_ELSE simple_command { $$=astree_create(KW_IF,0,$3,$6,$8,0); }
