@@ -3,12 +3,14 @@
 #include <stdio.h>
 #include "hashtable.h"
 #include "astree.h"
-%}
 
+%}
 %union
 {
 	ASTree* astree;
+    hashTable* hashTable;
 }
+
 
 %start program
 

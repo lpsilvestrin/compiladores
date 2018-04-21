@@ -3,7 +3,7 @@
 #
 
 etapa2: y.tab.o lex.yy.o hashtable.o astree.o main.c
-	gcc -g -Wall -o etapa2 y.tab.o lex.yy.o main.c hashtable.o astree.o 
+	gcc -g -Wall -o etapa2 y.tab.o lex.yy.o hashtable.o astree.o main.c 
 
 y.tab.o: parser.y
 	yacc -d -v parser.y
