@@ -14,6 +14,10 @@
 #define AST_INT 4
 #define AST_FUNCTION_DEF 5
 #define AST_HEADER 6
+#define AST_DEF_PARAM 7
+#define AST_DEF_PARAM_T 8
+#define AST_COMMANDS_L 9
+
 
 
 #include "hashtable.h"
