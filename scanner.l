@@ -19,7 +19,7 @@ int getLineNumber();
 int isRunning();
 void initMe();
 void tokenTreatment(int tk_code);
-void updateSymbolsTable(char* id, int type);
+hashNode* updateSymbolsTable(char* id, int type);
 void checkSymbolsTable(char* token);
 
 %}
@@ -48,11 +48,11 @@ print   {return KW_PRINT; }
 
 [,;:()[\]{}+\-*/<>=!&$#]  {return yytext[0]; }
 
-[0-9]+                  {updateSymbolsTable(yytext, SYMBOL_LIT_INT);checkSymbolsTable(yytext);return LIT_INTEGER; }
-[0-9]+[.][0-9]+         {updateSymbolsTable(yytext, SYMBOL_LIT_REAL);checkSymbolsTable(yytext);return LIT_REAL; }
-'([^'\"]|\\['\"nt])'    {updateSymbolsTable(yytext, SYMBOL_LIT_CHAR);checkSymbolsTable(yytext);return LIT_CHAR; }
-\"(\\.|[^"])*\"         {updateSymbolsTable(yytext, SYMBOL_LIT_STRING);checkSymbolsTable(yytext);return LIT_STRING; }
-[a-zA-Z][a-zA-Z0-9_-]*  {updateSymbolsTable(yytext, SYMBOL_IDENTIFIER);checkSymbolsTable(yytext);return TK_IDENTIFIER; }
+[0-9]+                  {yylval.hashTable_pointer = updateSymbolsTable(yytext, SYMBOL_LIT_INT);checkSymbolsTable(yytext);return LIT_INTEGER; }
+[0-9]+[.][0-9]+         {yylval.hashTable_pointer = updateSymbolsTable(yytext, SYMBOL_LIT_REAL);checkSymbolsTable(yytext);return LIT_REAL; }
+'([^'\"]|\\['\"nt])'    {yylval.hashTable_pointer = updateSymbolsTable(yytext, SYMBOL_LIT_CHAR);checkSymbolsTable(yytext);return LIT_CHAR; }
+\"(\\.|[^"])*\"         {yylval.hashTable_pointer = updateSymbolsTable(yytext, SYMBOL_LIT_STRING);checkSymbolsTable(yytext);return LIT_STRING; }
+[a-zA-Z][a-zA-Z0-9_-]*  {yylval.hashTable_pointer = updateSymbolsTable(yytext, SYMBOL_IDENTIFIER);checkSymbolsTable(yytext);return TK_IDENTIFIER; }
 
 <<EOF>>   {running = 0; printf("EOF REACHED\n"); return running;}
 " "       {}
@@ -86,7 +86,7 @@ void initMe() {
 	initHash(&SymbolsTable, _TABLESIZE);
 }
 
-void updateSymbolsTable(char* id, int type) {
+hashNode* updateSymbolsTable(char* id, int type) {
 	hashNode *n;
 	initNode(&n); 		// inicializando área de memória e atribuindo pro ponteiro
 	strcpy(n->id, id); // atribuindo identificador como key
