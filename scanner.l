@@ -1,9 +1,9 @@
 %{
 #include <stdlib.h>
 #include <stdio.h>
-#include "y.tab.h"
 #include "hashtable.h"
 #include "astree.h"
+#include "y.tab.h"
 
 
 #define _TABLESIZE 100
