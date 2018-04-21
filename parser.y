@@ -281,18 +281,18 @@ flow_c:
 
 if_c: 
     KW_IF '(' expression ')' KW_THEN simple_command
-    ;
+    ; { $$=astree_create(KW_IF,,$3,$6,0,0); }
 
 if_then_else_c: 
-    KW_IF '(' expression ')' KW_THEN simple_command KW_ELSE simple_command
+    KW_IF '(' expression ')' KW_THEN simple_command KW_ELSE simple_command { $$=astree_create(KW_IF,0,$3,$6,$8,0); }
     ;
 
 while_c: 
-    KW_WHILE '(' expression ')' simple_command
+    KW_WHILE '(' expression ')' simple_command { $$=astree_create(KW_WHILE,0,$3,$5,0,0); }
     ;
 
 for_c: 
-    KW_FOR '(' TK_IDENTIFIER '=' expression KW_TO expression ')' simple_command { $$=astree_create(AST_FOR, $3, $5, $7, $9); }
+    KW_FOR '(' TK_IDENTIFIER '=' expression KW_TO expression ')' simple_command { $$=astree_create(KW_FOR,$3,$5,$7,$9,0); }
     ;
 
 //----------- LEAVES
