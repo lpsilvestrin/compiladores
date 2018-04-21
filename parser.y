@@ -290,22 +290,22 @@ while_c:
     ;
 
 for_c: 
-    KW_FOR '(' TK_IDENTIFIER '=' expression KW_TO expression ')' simple_command
+    KW_FOR '(' TK_IDENTIFIER '=' expression KW_TO expression ')' simple_command { $$=astree_create(AST_FOR, $3, $5, $7, $9); }
     ;
 
 //----------- LEAVES
 //list of scalar types
 scalar_type: 
-    KW_CHAR 
-    | KW_INT 
-    | KW_FLOAT 
+    KW_CHAR { $$=astree_create(KW_CHAR,0,0,0,0,0); }
+    | KW_INT { $$=astree_create(KW_INT,0,0,0,0,0); }
+    | KW_FLOAT { $$=astree_create(KW_FLOAT,0,0,0,0,0); }
     ;
 
 //initialization possibilities
 init_value: 
-    LIT_CHAR 
-    | LIT_INTEGER 
-    | LIT_REAL
+    LIT_CHAR { $$=astree_create(LIT_CHAR, 0,0,0,0,0); } 
+    | LIT_INTEGER { $$=astree_create(LIT_INTEGER, 0,0,0,0,0); }
+    | LIT_REAL { $$=astree_create(LIT_REAL,0,0,0,0,0); }
     ;
 
 //vector init list
