@@ -281,33 +281,33 @@ flow_c:
 
 if_c: 
     KW_IF '(' expression ')' KW_THEN simple_command
-    ;
+    ; { $$=astree_create(KW_IF,,$3,$6,0,0); }
 
 if_then_else_c: 
-    KW_IF '(' expression ')' KW_THEN simple_command KW_ELSE simple_command
+    KW_IF '(' expression ')' KW_THEN simple_command KW_ELSE simple_command { $$=astree_create(KW_IF,0,$3,$6,$8,0); }
     ;
 
 while_c: 
-    KW_WHILE '(' expression ')' simple_command
+    KW_WHILE '(' expression ')' simple_command { $$=astree_create(KW_WHILE,0,$3,$5,0,0); }
     ;
 
 for_c: 
-    KW_FOR '(' TK_IDENTIFIER '=' expression KW_TO expression ')' simple_command
+    KW_FOR '(' TK_IDENTIFIER '=' expression KW_TO expression ')' simple_command { $$=astree_create(KW_FOR,$3,$5,$7,$9,0); }
     ;
 
 //----------- LEAVES
 //list of scalar types
 scalar_type: 
-    KW_CHAR 
-    | KW_INT 
-    | KW_FLOAT 
+    KW_CHAR { $$=astree_create(KW_CHAR,0,0,0,0,0); }
+    | KW_INT { $$=astree_create(KW_INT,0,0,0,0,0); }
+    | KW_FLOAT { $$=astree_create(KW_FLOAT,0,0,0,0,0); }
     ;
 
 //initialization possibilities
 init_value: 
-    LIT_CHAR 
-    | LIT_INTEGER 
-    | LIT_REAL
+    LIT_CHAR { $$=astree_create(LIT_CHAR, 0,0,0,0,0); } 
+    | LIT_INTEGER { $$=astree_create(LIT_INTEGER, 0,0,0,0,0); }
+    | LIT_REAL { $$=astree_create(LIT_REAL,0,0,0,0,0); }
     ;
 
 //vector init list
