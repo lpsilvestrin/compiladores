@@ -27,11 +27,11 @@ typedef struct HashTable {
 	struct HashNode** data;
 } hashTable;
 
-unsigned long hashKey(unsigned char *str);
-void insertHash(hashNode *entry, hashTable *table);
 int getHash(char* key, hashTable *table, hashNode **entry);
+unsigned long hashKey(unsigned char *str);
 void initHash(hashTable **table, int size);
 void initNode(hashNode **node);
+void insertHash(hashNode *entry, hashTable *table);
 void printHash(hashTable *table);
 
 #endif //_HASHTABLE_H
