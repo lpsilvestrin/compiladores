@@ -19,6 +19,7 @@
 #define AST_COMMANDS_L 9
 #define AST_VECTOR_AS 10
 #define AST_VAR_AS 11
+#define AST_READ 12
 
 
 #include "hashtable.h"

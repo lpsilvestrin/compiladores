@@ -196,7 +196,7 @@ var_assignment:
 
 //read should be followed by a variable to put something inside or it, it only accepts scalar values, so no vector or pointers here
 read_c: 
-    KW_READ TK_IDENTIFIER 
+    KW_READ TK_IDENTIFIER   {$$=astree_create(AST_VAR_AS,$2,0,0,0,0);}
     ;
 
 //print if followed by a list of things to be printed (token " " between the items)
