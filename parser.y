@@ -170,23 +170,23 @@ commands_list:
 //a block is considered as a simple command
 //accepts empty production
 simple_command: 
-    block 
-    | assignment_c 
-    | flow_c 
-    | read_c 
-    | print_c 
-    | return_c
-    | 
+    block           {$$=$1;}
+    | assignment_c  {$$=$1;}
+    | flow_c        {$$=$1;}
+    | read_c        {$$=$1;}
+    | print_c       {$$=$1;}
+    | return_c      {$$=$1;}
+    |               {$$=0;}
     ;
 
 //for now i'm considering that you CAN assign values to pointers and refferences
 assignment_c: 
-    vector_assignment 
-    | var_assignment 
+    vector_assignment   {$$=0;}
+    | var_assignment    {$$=0;}
     ;
 
 vector_assignment: 
-    TK_IDENTIFIER '[' expression ']' '=' expression 
+    TK_IDENTIFIER '[' expression ']' '=' expression {$$=astree_create(AST_COMMANDS_L,$1,$2,$3,0,0);}
     ;
 
 //accepting pointers and mem refs only in the leaves

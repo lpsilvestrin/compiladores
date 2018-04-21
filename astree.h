@@ -17,7 +17,7 @@
 #define AST_DEF_PARAM 7
 #define AST_DEF_PARAM_T 8
 #define AST_COMMANDS_L 9
-
+#define AST_VECTOR_AS 10
 
 
 #include "hashtable.h"
