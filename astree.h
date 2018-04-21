@@ -6,10 +6,12 @@
 
 #include "hashtable.h"
 
-typedef struct astree_node {
+typedef struct astree {
     int type; 
     hashNode * symbol; //pointer for the info inside our hash
-    struct astree_node *offspring[MAX_OFFSPRING];
+    struct astree *offspring[MAX_OFFSPRING];
 } ASTree;
+
+void initASTree();
 
 #endif

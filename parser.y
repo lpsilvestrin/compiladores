@@ -1,9 +1,49 @@
 %{
 #include <stdlib.h>
 #include <stdio.h>
+#include "hashtable.h"
+#include "astree.h"
 %}
 
+%union
+{
+	ASTree* astree;
+}
+
 %start program
+
+/*grammar rules*/
+%type<astree> program
+%type<astree> instruction
+%type<astree> global_def
+%type<astree> function_def
+%type<astree> global_var_def
+%type<astree> vector_def
+%type<astree> header
+%type<astree> block
+%type<astree> def_parameters
+%type<astree> def_parameters_tail
+%type<astree> commands_list
+%type<astree> simple_command
+%type<astree> assignment_c
+%type<astree> flow_c 
+%type<astree> read_c
+%type<astree> print_c 
+%type<astree> return_c
+%type<astree> vector_assignment 
+%type<astree> var_assignment
+%type<astree> expression
+%type<astree> parameters_list
+%type<astree> parameters_list_tail
+%type<astree> if_c 
+%type<astree> if_then_else_c 
+%type<astree> while_c 
+%type<astree> for_c
+%type<astree> init_value
+%type<astree> init_values_list
+%type<astree> scalar_type
+
+
 
 /*lang181 special tokens*/
 %token KW_CHAR
@@ -32,8 +72,7 @@
 %token TOKEN_ERROR  
 
 /*association rules*/
-
-//%left 
+//%left //comentei oq nao faz diferenca
 //%left '('
 //%left '[' 
 %left OPERATOR_AND OPERATOR_OR OPERATOR_EQ OPERATOR_GE OPERATOR_LE OPERATOR_NE '<' '>'

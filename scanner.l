@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "y.tab.h"
 #include "hashtable.h"
+#include "astree.h"
 
 
 #define _TABLESIZE 100
