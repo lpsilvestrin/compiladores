@@ -4,7 +4,11 @@
 
 #define MAX_OFFSPRING 4 //suggested by our teacher
 
+
+
+
 /*here we will put a lot of defines with values for representing the possible types inside the AST*/
+#define AST_DEC
 
 
 #include "hashtable.h"

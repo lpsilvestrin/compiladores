@@ -9,7 +9,7 @@
 %union
 {
 	ASTree* astree_pointer;
-    hashTable* hashTable_pointer;
+    hashNode* hashTable_pointer;
 }
 
 %start program
@@ -97,7 +97,7 @@
 //a program is a (empty) list of instructions
 //accepts empty production
 program: 
-    program instruction 
+    program instruction     {$$=astree_create(AST_DEC,0,$2,$1,0,0);}
     |
     ; 
 
