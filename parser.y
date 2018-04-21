@@ -186,12 +186,12 @@ assignment_c:
     ;
 
 vector_assignment: 
-    TK_IDENTIFIER '[' expression ']' '=' expression {$$=astree_create(AST_COMMANDS_L,$1,$2,$3,0,0);}
+    TK_IDENTIFIER '[' expression ']' '=' expression {$$=astree_create(AST_VECTOR_AS,$1,$3,$6,0,0);}
     ;
 
 //accepting pointers and mem refs only in the leaves
 var_assignment: 
-    TK_IDENTIFIER '=' expression
+    TK_IDENTIFIER '=' expression    {$$=astree_create(AST_VAR_AS,$1,$3,0,0,0);}
     ;
 
 //read should be followed by a variable to put something inside or it, it only accepts scalar values, so no vector or pointers here
