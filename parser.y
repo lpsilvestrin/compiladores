@@ -34,7 +34,7 @@
 /*association rules*/
 
 %left '<' '>'
-%left '('
+//%left '('
 %left '[' 
 %left OPERATOR_AND OPERATOR_OR
 %left OPERATOR_EQ OPERATOR_GE OPERATOR_LE OPERATOR_NE
@@ -48,7 +48,6 @@
 %nonassoc ','
 %nonassoc '#'
 %nonassoc '&'
-//%precedence NOT
 
 %%
 //----------- MAIN FLOW
@@ -88,7 +87,8 @@ vector_def:
 
 //----------- FUNCTION
 //a function is made of a header and a block
-function_def: header block 
+function_def: 
+    header block 
     ;
 
 // the header have a return type, an identifier and a (empty) list of arguments
@@ -142,15 +142,11 @@ assignment_c:
 
 vector_assignment: 
     TK_IDENTIFIER '[' expression ']' '=' expression 
-//    | TK_IDENTIFIER '[' expression ']' '=' '&' expression
-//    | TK_IDENTIFIER '[' expression ']' '=' '#' expression 
     ;
 
 //accepting pointers and mem refs only in the leaves
 var_assignment: 
     TK_IDENTIFIER '=' expression
-//    | TK_IDENTIFIER '=' '&' expression
-//    | TK_IDENTIFIER '=' '#' expression
     ;
 
 //read should be followed by a variable to put something inside or it, it only accepts scalar values, so no vector or pointers here
@@ -159,16 +155,11 @@ read_c:
     ;
 
 //print if followed by a list of things to be printed (token " " between the items)
-print_c: 
-    KW_PRINT print_list
-    ;
-
 //each element can be either a string or an arithmetic expression
-print_list: 
-    LIT_STRING 
-    | expression 
-    | print_list LIT_STRING  
-    | print_list expression  
+print_c: 
+    KW_PRINT 
+    | print_c LIT_STRING  
+    | print_c expression  
     ;
 
 return_c: KW_RETURN expression 
@@ -182,7 +173,15 @@ return_c: KW_RETURN expression
 //logic operators aplied over logic expressions
 //he defined the relational operator set as the union of the arithmetic set and the usual relational ones
 expression: 
-    id
+    init_value
+    | TK_IDENTIFIER 
+    | '#' TK_IDENTIFIER 
+    | '&' TK_IDENTIFIER
+    | TK_IDENTIFIER '[' expression ']' 
+    | TK_IDENTIFIER parameters_list
+    | '!' expression 
+    | '-' expression 
+    | '(' expression ')'
     | expression '+' expression 
     | expression '-' expression 
     | expression '*' expression 
@@ -195,38 +194,36 @@ expression:
     | expression OPERATOR_NE expression 
     | expression OPERATOR_AND expression 
     | expression OPERATOR_OR expression 
-    | '!' expression 
-    | '-' expression //%prec NOT
-    | '(' expression ')'
     ;
 
 //the leaves can be variables, vector positions with integer expression inside and literals
 //for the moment we have no distinction between logical, arithmetic and string operations, and therefore id accepts all
-id: 
-    TK_IDENTIFIER 
-    | '#' TK_IDENTIFIER 
-    | '&' TK_IDENTIFIER 
-    | TK_IDENTIFIER '[' expression ']' 
-    | function_expression
-    | init_value 
-    ;
-
-
-//a function is a identifier followed by its parameters separated by a ','
-function_expression: 
-     TK_IDENTIFIER parameters_list
-    ;
+//id: 
+//    TK_IDENTIFIER 
+//    | '#' TK_IDENTIFIER 
+//    | '&' TK_IDENTIFIER 
+//    | TK_IDENTIFIER '[' expression ']' 
+//    | TK_IDENTIFIER parameters_list  
+//    | init_value 
+//    ;
 
 //accepts empty production
 parameters_list: 
 	'(' ')'
-	| '(' parameters_list_tail ')' 
+    | '(' parameters_list_tail ')'
     ;
 
 parameters_list_tail:
 	expression 
-    | parameters_list_tail ',' expression 
+    | parameters_list_tail ',' expression  
 	;
+
+//a function is a identifier followed by its parameters separated by a ','
+//function_expression: 
+//     TK_IDENTIFIER parameters_list
+//    ;
+
+
 
 //----------- FLOW CONTROL
 
