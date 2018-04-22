@@ -16,3 +16,16 @@ ASTree* astree_create(int type, hashNode *id, ASTree *offspring_0, ASTree *offsp
     return node;
 }
 
+void print_astnode(ASTree* node, int level) {
+	// print tree level indentation
+	for(int i = 0; i < level; i++) {
+		printf("-");
+	}
+	if(node->id != NULL)
+		printf("%d, %s\n", node->type, node->id->id);
+	for(int i = 0; i < MAX_OFFSPRING; i++) {
+		if (node->offspring[i] != NULL) 
+			print_astnode(node->offspring[i], level+1);
+	}
+}
+
