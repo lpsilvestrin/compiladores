@@ -66,5 +66,6 @@ typedef struct astree {
 
 ASTree* astree_create(int type, hashNode *id, ASTree *offspring_0, ASTree *offspring_1, ASTree *offspring_2, ASTree *offspring_3);
 void print_astnode(ASTree* node, int level);
+int decompile_tree(ASTree* tree, FILE *prog);
 
 #endif
