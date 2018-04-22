@@ -99,7 +99,7 @@
 //a program is a (empty) list of instructions
 //accepts empty production
 program: 
-    program instruction     {$$=astree_create(AST_INITIAL,0,$2,$1,0,0);}
+    program instruction     {$$=astree_create(AST_INITIAL,0,$2,$1,0,0); print_astnode($$,0);}
     |                       {$$=0;} // <<<<<<<<<<<<<<< CHECK THIS
     ; 
 
