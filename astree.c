@@ -36,13 +36,16 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 	switch(tree->type) {
 		case AST_INITIAL:
 			decompile_tree(tree->offspring[0], prog);
-			fprintf(prog, ' ');	
+			fprintf(prog, " ");	
 			decompile_tree(tree->offspring[1], prog);
 			break;
 		case AST_GLOBAL_VAR_DEF:
-			decompile_tree(tree->offspring[0], prog);
+			decompile_tree(tree->offspring[0], prog); // type
+			fprintf(prog, " %s = ", tree->id->id); // identifier
+			decompile_tree(tree->offspring[1], prog); // value
+			fprintf(prog, ";");
+			break;
 		case AST_VECTOR_DEF: break;
-		case AST_INT: break;
 		case AST_FUNCTION_DEF: break;
 		case AST_HEADER: break;
 		case AST_DEF_PARAM: break;
@@ -77,8 +80,11 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 		case AST_IFELSE: break;
 		case AST_FOR: break;
 		case AST_WHILE: break;
-		case AST_REAL: break;
-		case AST_CHAR: break;
+		case AST_REAL: // same behaviour for all literals 
+		case AST_INT:
+		case AST_CHAR: 
+			fprintf(prog, "%s", tree->id->id);
+			break;
 		case AST_INIT_VALUES: break;
 		default: break;
 	}
