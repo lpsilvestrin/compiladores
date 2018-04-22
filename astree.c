@@ -35,9 +35,9 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 	}
 	switch(tree->type) {
 		case AST_INITIAL:
-			decompile_tree(tree->offspring[0], prog);
-			fprintf(prog, " ");	
 			decompile_tree(tree->offspring[1], prog);
+			fprintf(prog, " ");	
+			decompile_tree(tree->offspring[0], prog);
 			break;
 		case AST_GLOBAL_VAR_DEF:
 			decompile_tree(tree->offspring[0], prog); // type
