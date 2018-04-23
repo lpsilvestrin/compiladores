@@ -120,7 +120,7 @@ global_def:
 //an init value can only be scalar values
 global_var_def: 
     scalar_type TK_IDENTIFIER '=' init_value ';'        {$$=astree_create(AST_GLOBAL_VAR_DEF,$2,$1,$4,0,0);}
-    | scalar_type '#' TK_IDENTIFIER '=' init_value ';'  {$$=astree_create(AST_GLOBAL_VAR_DEF,$3,$1,$5,0,0);}  
+    | scalar_type '#' TK_IDENTIFIER '=' init_value ';'  {$$=astree_create(AST_GLOBAL_VECTOR_DEF,$3,$1,$5,0,0);}  
     ;
 
 //initialization is given by values separated by " " after a ":"

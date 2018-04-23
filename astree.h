@@ -10,6 +10,7 @@
 /*here we will put a lot of defines with values for representing the possible types inside the AST*/
 #define AST_INITIAL 1
 #define AST_GLOBAL_VAR_DEF 2
+#define AST_GLOBAL_VECTOR_DEF 42
 #define AST_VECTOR_DEF 3
 #define AST_INT 4
 #define AST_FUNCTION_DEF 5
