@@ -1,5 +1,6 @@
 
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "astree.h"
@@ -78,13 +79,13 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 		case AST_HEADER: 
 			print_symbol(n1->type, prog); // function type
 			fprintf(" %s ", id->id); // function name
-			if (n2 == NULL) {
-				fprintf(prog, "()"); // empty parameters
-			} else {
+			fprintf(prog, "("); // empty parameters
+			if (n2 != NULL) {
 				decompile_tree(n2, prog);
 			}
+			fprintf(prog, ")"); // empty parameters
 			break;
-		case AST_DEF_PARAM: 
+		case AST_DEF_PARAM: // not used 
 			fprintf(prog,"(");
 			decompile_tree(n1,prog);
 			fprintf(prog,")");
@@ -162,4 +163,3 @@ void print_symbol(int s, FILE* prog) {
 			break;
 	}
 }
-
