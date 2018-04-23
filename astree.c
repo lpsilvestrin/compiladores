@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "astree.h"
+#include "ast_ids.h"
 
 
 ASTree* astree_create(int type, hashNode *id, ASTree *offspring_0, ASTree *offspring_1, ASTree *offspring_2, ASTree *offspring_3){

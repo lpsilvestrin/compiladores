@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "astree.h"
 #include "hashtable.h"
+#include "ast_ids.h"
 FILE* file_pointer; //to print our output tree :)
 %}
 
