@@ -182,8 +182,8 @@ simple_command:
 
 //for now i'm considering that you CAN assign values to pointers and refferences
 assignment_c: 
-    vector_assignment   {$$=0;}
-    | var_assignment    {$$=0;}
+    vector_assignment   {$$=$1;}
+    | var_assignment    {$$=$1;}
     ;
 
 vector_assignment: 
