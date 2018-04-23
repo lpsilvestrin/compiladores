@@ -295,9 +295,9 @@ for_c:
 //----------- LEAVES
 //list of scalar types
 scalar_type: 
-    KW_CHAR     {$$=0;}
-    | KW_INT    {$$=0;}
-    | KW_FLOAT  {$$=0;} //the tree does not save tokens
+    KW_CHAR     {$$=astree_create(AST_CHAR,0,0,0,0,0);}
+    | KW_INT    {$$=astree_create(AST_INT,0,0,0,0,0);}
+    | KW_FLOAT  {$$=astree_create(AST_REAL,0,0,0,0,0);} //the tree does not save tokens
     ;
 
 //initialization possibilities
