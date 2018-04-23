@@ -110,6 +110,7 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 		case AST_VAR_AS: break;
 		case AST_READ: break;
 		case AST_PRINT: break;
+		case AST_RETURN: break;
 		case AST_NOT_EXP: break;
 		case AST_NEG_EXP: break;
 		case AST_PAR_EXP: break;
@@ -131,8 +132,7 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 		case AST_VECTOR: break;
 		case AST_FUNCTION: break;
 		case AST_PARAM: break;
-		case AST_IF: break;
-		case AST_IFELSE: break;
+		case AST_IF: break; //same for if and if then else
 		case AST_FOR: break;
 		case AST_WHILE: break;
 		case AST_REAL: // same behaviour for all literals 
@@ -161,11 +161,11 @@ void print_symbol(int s, FILE* prog) {
 		case SYMBOL_LIT_CHAR:
 			fprintf(prog, "char");
 			break;
-		case SYMBOL_LIT_BOOL:
+		/*case SYMBOL_LIT_BOOL:
 			fprintf(prog, "bool");
 			break;
 		case SYMBOL_LIT_STRING:
 			fprintf(prog, "string");
-			break;
+			break;*/
 	}
 }

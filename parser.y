@@ -49,8 +49,6 @@ FILE* file_pointer; //to print our output tree :)
 %type<astree_pointer> id
 %type<astree_pointer> size
 
-
-
 /*lang181 special tokens*/
 %token KW_CHAR
 %token KW_INT
@@ -71,40 +69,32 @@ FILE* file_pointer; //to print our output tree :)
 %token OPERATOR_AND
 %token OPERATOR_OR
 
+/*our leaves*/
 %token<hashTable_pointer> TK_IDENTIFIER
 %token<hashTable_pointer> LIT_INTEGER
 %token<hashTable_pointer> LIT_REAL
 %token<hashTable_pointer> LIT_CHAR
 %token<hashTable_pointer> LIT_STRING
 
-%token TOKEN_ERROR  
+%token TOKEN_ERROR  //not using it yet
 
 /*association rules*/
-//%left //comentei oq nao faz diferenca
-//%left '('
-//%left '[' 
 %left OPERATOR_AND OPERATOR_OR OPERATOR_EQ OPERATOR_GE OPERATOR_LE OPERATOR_NE '<' '>'
 %left '-' '+'
 %left '*' '/'
 %right '!'
 %nonassoc KW_THEN
 %nonassoc KW_ELSE
-//%nonassoc ')'
-//%nonassoc ']'
-//%nonassoc ','
-//%nonassoc '#'
-//%nonassoc '&'
-
 
 %%
-//----------- ROOT FOR SETTING OUR FILE (cannot have recursion, that's why we need a different production)
+//---------------------- ROOT FOR SETTING OUR FILE 
+//(cannot have recursion, that's why we need a different production)
 program_root: 
     program {$$=$1; /*the print goes here*/}
     ;
 
-//----------- MAIN FLOW
+//---------------------- MAIN FLOW
 //a program is a (empty) list of instructions
-//accepts empty production
 program: 
     program instruction     {$$=astree_create(AST_INITIAL,0,$2,$1,0,0); print_astnode($$,0);}
     |                       {$$=0;} 
@@ -112,22 +102,21 @@ program:
 
 //the instructions is a list of global definitions and functions (without any order)
 instruction: 
-    global_def      {$$=$1;} //only one place to go
+    global_def      {$$=$1;} 
     | function_def  {$$=$1;}
     ;
 
-
-//----------- GLOBAL STRUCTURES
+//---------------------- GLOBAL STRUCTURES
 //a global definition can be a scalar variable or a vector
 global_def: 
     global_var_def  {$$=$1;}
     | vector_def    {$$=$1;}
     ;
 
-//an init value can only be scalar values
+//an init value can only be scalar 
 global_var_def: 
     scalar_type TK_IDENTIFIER '=' init_value ';'        {$$=astree_create(AST_GLOBAL_VAR_DEF,$2,$1,$4,0,0);}
-    | scalar_type '#' TK_IDENTIFIER '=' init_value ';'  {$$=astree_create(AST_GLOBAL_VAR_DEF,$3,$1,$5,0,0);}  
+    | scalar_type '#' TK_IDENTIFIER '=' init_value ';'  {$$=astree_create(AST_GLOBAL_POINTER_DEF,$3,$1,$5,0,0);}  
     ;
 
 //initialization is given by values separated by " " after a ":"
@@ -136,21 +125,19 @@ vector_def:
     | scalar_type TK_IDENTIFIER '[' size ']' ':' init_values_list ';'   {$$=astree_create(AST_VECTOR_DEF,$2,$1,$4,$7,0);}  
     ;
 
-
-
-//----------- FUNCTION
+//---------------------- FUNCTION
 //a function is made of a header and a block
 function_def: 
     header block    {$$=astree_create(AST_FUNCTION_DEF,0,$1,$2,0,0);}
     ;
 
-// the header have a return type, an identifier and a (empty) list of arguments
+// the header have a return type, an identifier and a list of arguments
 header:
     scalar_type TK_IDENTIFIER def_parameters    {$$=astree_create(AST_HEADER,$2,$1,$3,0,0);}
     ; 
 
 def_parameters: 
-	'(' ')' {$$=0;}
+	'(' ')' {$$=0;} //empty list of arguments
 	| '(' def_parameters_tail ')'   {$$=$2;}//{$$=astree_create(AST_DEF_PARAM,0,$2,0,0,0);}
     ;
 
@@ -159,8 +146,7 @@ def_parameters_tail:
     | def_parameters_tail ',' scalar_type TK_IDENTIFIER {$$=astree_create(AST_DEF_PARAM_T,$4,$3,$1,0,0);}
 	;	
 
-
-//----------- BLOCK  
+//---------------------- BLOCK  
 //the {} are from the block
 block: 
     '{' commands_list '}'   {$$=$2;}
@@ -172,11 +158,9 @@ commands_list:
     | commands_list ';' simple_command  {$$=astree_create(AST_COMMANDS_L,0,$3,$1,0,0);}
     ;
 
-
 //----------- SIMPLE COMMAND 
 //no ; here!!
 //a block is considered as a simple command
-//accepts empty production
 simple_command: 
     block           {$$=$1;}
     | assignment_c  {$$=$1;}
@@ -184,13 +168,13 @@ simple_command:
     | read_c        {$$=$1;}
     | print_c       {$$=$1;}
     | return_c      {$$=$1;}
-    |               {$$=0;}
+    |               {$$=0;} //accepts empty production
     ;
 
 //for now i'm considering that you CAN assign values to pointers and refferences
 assignment_c: 
-    vector_assignment   {$$=0;}
-    | var_assignment    {$$=0;}
+    vector_assignment   {$$=$1;}
+    | var_assignment    {$$=$1;}
     ;
 
 vector_assignment: 
@@ -207,18 +191,17 @@ read_c:
     KW_READ TK_IDENTIFIER   {$$=astree_create(AST_READ,$2,0,0,0,0);}
     ;
 
-//print if followed by a list of things to be printed (token " " between the items)
+//print is followed by a list of things to be printed (token " " between the items)
 //each element can be either a string or an arithmetic expression
 print_c: 
     KW_PRINT                {$$=0;} //it does not save tokens and intermediate productions 
-    | print_c LIT_STRING    {$$=astree_create(AST_PRINT,$2,0,0,0,0);}
-    | print_c expression    {$$=astree_create(AST_PRINT,0,$2,0,0,0);}
+    | print_c LIT_STRING    {$$=astree_create(AST_PRINT,$2,$1,0,0,0);}
+    | print_c expression    {$$=astree_create(AST_PRINT,$2,$1,0,0,0);}
     ;
 
 return_c: 
-KW_RETURN expression {$$=$2;}
+KW_RETURN expression {$$=astree_create(AST_RETURN,0,$2,0,0,0);}
     ;
-
 
 //----------- EXPRESSION
 //for the moment it should accept every kind of operator and sub-expression, and therefore i'm considering it accepts # and &
@@ -256,9 +239,8 @@ id:
     | init_value                        {$$=$1;}
     ;
 
-//accepts empty production
 parameters_list: 
-	'(' ')'                         {$$=0;}
+	'(' ')'                         {$$=0;} //accepts empty production
     | '(' parameters_list_tail ')'  {$$=$2;}
     ;
 
@@ -267,15 +249,7 @@ parameters_list_tail:
     | parameters_list_tail ',' expression   {$$=astree_create(AST_PARAM,0,$3,$1,0,0);}
 	;
 
-//a function is a identifier followed by its parameters separated by a ','
-//function_expression: 
-//     TK_IDENTIFIER parameters_list
-//    ;
-
-
-
 //----------- FLOW CONTROL
-
 flow_c: 
     if_c                {$$=$1;}
     | if_then_else_c    {$$=$1;}
@@ -288,7 +262,7 @@ if_c:
     ; 
 
 if_then_else_c: 
-    KW_IF '(' expression ')' KW_THEN simple_command KW_ELSE simple_command  {$$=astree_create(AST_IFELSE,0,$3,$6,$8,0);}
+    KW_IF '(' expression ')' KW_THEN simple_command KW_ELSE simple_command  {$$=astree_create(AST_IF,0,$3,$6,$8,0);}
     ;
 
 while_c: 
@@ -304,7 +278,7 @@ for_c:
 scalar_type: 
     KW_CHAR     {$$=astree_create(SYMBOL_LIT_CHAR,0,0,0,0,0);}
     | KW_INT    {$$=astree_create(SYMBOL_LIT_INT,0,0,0,0,0);}
-    | KW_FLOAT  {$$=astree_create(SYMBOL_LIT_REAL,0,0,0,0,0);} //the tree does not save tokens
+    | KW_FLOAT  {$$=astree_create(SYMBOL_LIT_REAL,0,0,0,0,0);} 
     ;
 
 //initialization possibilities
