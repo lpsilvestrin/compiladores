@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "astree.h"
 #include "hashtable.h"
-
+FILE* file_pointer; //to print our output tree :)
 %}
 
 %union
@@ -15,6 +15,7 @@
 %start program
 
 /*grammar rules*/
+%type<astree_pointer> program_root
 %type<astree_pointer> program
 %type<astree_pointer> instruction
 %type<astree_pointer> global_def
@@ -95,12 +96,17 @@
 
 
 %%
+//----------- ROOT FOR SETTING OUR FILE (cannot have recursion, that's why we need a different production)
+program_root: 
+    program {$$=$1; /*the print goes here*/}
+    ;
+
 //----------- MAIN FLOW
 //a program is a (empty) list of instructions
 //accepts empty production
 program: 
     program instruction     {$$=astree_create(AST_INITIAL,0,$2,$1,0,0); print_astnode($$,0);}
-    |                       {$$=0;} // <<<<<<<<<<<<<<< CHECK THIS
+    |                       {$$=0;} 
     ; 
 
 //the instructions is a list of global definitions and functions (without any order)
@@ -319,6 +325,10 @@ size:
 
 
 %%
+void setOutput(FILE *pointer) {
+    file_pointer = pointer;
+}
+
 int yyerror (char const *s) {
     fflush(stderr);
     fprintf(stderr,"ERROR: %s ---> Line: %d\n", s, getLineNumber());
