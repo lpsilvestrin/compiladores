@@ -52,7 +52,14 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			decompile_tree(n2, prog); // value
 			fprintf(prog, ";");
 			break;
-		case AST_VECTOR_DEF: break;
+		case AST_GLOBAL_VECTOR_DEF:
+			print_symbol(n1->type, prog); // type
+			fprintf(prog, " #%s = ", id->id); // identifier
+			decompile_tree(n2, prog); // value
+			fprintf(prog, ";");
+			break;
+		case AST_VECTOR_DEF: 
+			break;
 		case AST_FUNCTION_DEF: break;
 		case AST_HEADER: break;
 		case AST_DEF_PARAM: break;
