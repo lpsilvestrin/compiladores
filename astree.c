@@ -78,7 +78,7 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			break;
 		case AST_HEADER: 
 			print_symbol(n1->type, prog); // function type
-			fprintf(" %s ", id->id); // function name
+			fprintf(prog, " %s ", id->id); // function name
 			fprintf(prog, "("); // empty parameters
 			if (n2 != NULL) {
 				decompile_tree(n2, prog);
