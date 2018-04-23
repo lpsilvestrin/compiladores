@@ -73,8 +73,9 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			break;
 		case AST_FUNCTION_DEF: 
 			decompile_tree(n1, prog); // function header
-			fprintf(prog, " ");
+			fprintf(prog, " {");
 			decompile_tree(n2, prog); // code block
+			fprintf(prog,"}\n");
 			break;
 		case AST_HEADER: 
 			print_symbol(n1->type, prog); // function type
@@ -99,7 +100,11 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			fprintf(prog, " %s ", id->id);
 
 			break;
-		case AST_COMMANDS_L: break;
+		case AST_COMMANDS_L: 
+			decompile_tree(n2,prog); // recursion to the list head
+			decompile_tree(n1,prog); // print command
+			fprintf(prog,";\n");
+			break;
 		case AST_VECTOR_AS: break;
 		case AST_VAR_AS: break;
 		case AST_READ: break;
