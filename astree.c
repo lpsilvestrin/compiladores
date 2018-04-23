@@ -115,8 +115,20 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			fprintf(prog, " %s = ", id->id); // identifier
 			decompile_tree(n1, prog); // assigned value
 			break;
-		case AST_READ: break;
-		case AST_PRINT: break;
+		case AST_READ: 
+			fprintf(prog,"read %s", id->id);
+			break;
+		case AST_PRINT: 
+			fprintf(prog,"print ");
+			if (id != NULL)	
+				fprintf(prog,"%s", id->id);
+			if (n1 != NULL)	
+				decompile_tree(n1,prog);
+			break;
+		case AST_RETURN:
+			fprintf(prog,"return ");
+			decompile_tree(n1,prog);
+			break;
 		case AST_NOT_EXP: break;
 		case AST_NEG_EXP: break;
 		case AST_PAR_EXP: break;
