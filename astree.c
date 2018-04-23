@@ -23,7 +23,8 @@ void print_astnode(ASTree* node, int level) {
 	}
 	if(node->id != NULL)
 		printf("%d, %s\n", node->type, node->id->id);
-	for(int i = 0; i < MAX_OFFSPRING; i++) {
+	// tree recursion from right to the left
+	for(int i = MAX_OFFSPRING-1; i >= 0; i--) {
 		if (node->offspring[i] != NULL) 
 			print_astnode(node->offspring[i], level+1);
 	}
@@ -33,16 +34,22 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 	if (tree == NULL) {
 		return 0;
 	}
+	ASTree *n1, *n2, *n3, *n4;
+	n1 = tree->offspring[0];
+	n2 = tree->offspring[1];
+	n3 = tree->offspring[2];
+	n4 = tree->offspring[3];
+	hashNode *id = tree->id;
 	switch(tree->type) {
 		case AST_INITIAL:
-			decompile_tree(tree->offspring[1], prog);
+			decompile_tree(n2, prog);
 			fprintf(prog, " ");	
-			decompile_tree(tree->offspring[0], prog);
+			decompile_tree(n1, prog);
 			break;
 		case AST_GLOBAL_VAR_DEF:
-			decompile_tree(tree->offspring[0], prog); // type
-			fprintf(prog, " %s = ", tree->id->id); // identifier
-			decompile_tree(tree->offspring[1], prog); // value
+			print_symbol(n1->type, prog); // type
+			fprintf(prog, " %s = ", id->id); // identifier
+			decompile_tree(n2, prog); // value
 			fprintf(prog, ";");
 			break;
 		case AST_VECTOR_DEF: break;
@@ -90,3 +97,23 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 	}
 	return 0;
 }
+void print_symbol(int s, FILE* prog) {
+	switch(s) {
+		case SYMBOL_LIT_INT:
+			fprintf(prog, "int");
+			break;
+		case SYMBOL_LIT_REAL:
+			fprintf(prog, "real");
+			break;
+		case SYMBOL_LIT_CHAR:
+			fprintf(prog, "char");
+			break;
+		case SYMBOL_LIT_BOOL:
+			fprintf(prog, "bool");
+			break;
+		case SYMBOL_LIT_STRING:
+			fprintf(prog, "string");
+			break;
+	}
+}
+
