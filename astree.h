@@ -50,6 +50,7 @@
 #define AST_REAL 39
 #define AST_CHAR 40
 #define AST_INIT_VALUES 41
+#define AST_RETURN 43
 
 
 

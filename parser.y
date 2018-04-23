@@ -209,7 +209,7 @@ print_c:
     ;
 
 return_c: 
-KW_RETURN expression {$$=$2;}
+KW_RETURN expression {$$=astree_create(AST_RETURN,0,$2,0,0,0);}
     ;
 
 
