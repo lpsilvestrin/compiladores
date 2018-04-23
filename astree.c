@@ -129,7 +129,6 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			decompile_tree(n1,prog); // print command
 			fprintf(prog,";\n");
 			break;
-<<<<<<< HEAD
 		case AST_VECTOR_AS: 
 			fprintf(prog, " %s[", id->id); // identifier
 			decompile_tree(n1, prog); // position
@@ -204,28 +203,6 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 		case AST_OR_EXP:
 			print_binary_op(" || ",n1,n2,prog);
 			break;
-=======
-		case AST_VECTOR_AS: break;
-		case AST_VAR_AS: break;
-		case AST_READ: break;
-		case AST_PRINT: break;
-		case AST_RETURN: break;
-		case AST_NOT_EXP: break;
-		case AST_NEG_EXP: break;
-		case AST_PAR_EXP: break;
-		case AST_PLUS_EXP: break;
-		case AST_MINUS_EXP: break;
-		case AST_MUL_EXP: break;
-		case AST_DIV_EXP: break;
-		case AST_LESS_EXP: break;
-		case AST_GREAT_EXP: break;
-		case AST_LE_EXP: break;
-		case AST_GE_EXP: break;
-		case AST_EQ_EXP: break;
-		case AST_NE_EXP: break;
-		case AST_AND_EXP: break;
-		case AST_OR_EXP: break;
->>>>>>> 5fe5e70f0964bb87628fcc0159fa2fe43706f614
 		case AST_ID: break;
 		case AST_ID_POINTER: break;
 		case AST_ID_ADDRESS: break;
