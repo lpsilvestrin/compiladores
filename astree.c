@@ -118,10 +118,18 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			fprintf(prog, " %s ", id->id);
 
 			break;
+		case AST_BLOCK:
+			fprintf(prog, "{");
+			if(n1!= NULL){
+				decompile_tree(n1,prog);
+			}
+			fprintf(prog, "}");
+			break;
 		case AST_COMMANDS_L: 
 			decompile_tree(n2,prog); // recursion to the list head
+			fprintf(prog,";\n"); //<<<<<<<<<<<<, I'm not sure, but shouldn't it be here, in the middle?
 			decompile_tree(n1,prog); // print command
-			fprintf(prog,";\n");
+			
 			break;
 		case AST_VECTOR_AS: 
 			fprintf(prog, " %s[", id->id); // identifier
@@ -198,6 +206,7 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			print_binary_op(" || ",n1,n2,prog);
 			break;
 		case AST_ID: break;
+		
 		case AST_ID_POINTER: break;
 		case AST_ID_ADDRESS: break;
 		case AST_VECTOR: break;

@@ -20,6 +20,7 @@
 %token AST_DEF_PARAM_T 
 
 //block
+%token AST_BLOCK 
 %token AST_COMMANDS_L 
 %token AST_VAR_AS 
 %token AST_VECTOR_AS 

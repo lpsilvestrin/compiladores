@@ -149,7 +149,7 @@ def_parameters_tail:
 //---------------------- BLOCK  
 //the {} are from the block
 block: 
-    '{' commands_list '}'   {$$=$2;}
+    '{' commands_list '}'   {$$=astree_create(AST_BLOCK,0,$2,0,0,0);}
     ;
 
 //the ; is associated to the commands list, and not the command itself, therefore we can have <empty>;<something>
