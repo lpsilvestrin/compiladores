@@ -276,9 +276,9 @@ for_c:
 //----------- LEAVES
 //list of scalar types
 scalar_type: 
-    KW_CHAR     {$$=astree_create(SYMBOL_LIT_CHAR,0,0,0,0,0);}
-    | KW_INT    {$$=astree_create(SYMBOL_LIT_INT,0,0,0,0,0);}
-    | KW_FLOAT  {$$=astree_create(SYMBOL_LIT_REAL,0,0,0,0,0);} 
+    KW_CHAR     {$$=astree_create(AST_CHAR_SYMBOL,0,0,0,0,0);}
+    | KW_INT    {$$=astree_create(AST_INT_SYMBOL,0,0,0,0,0);}
+    | KW_FLOAT  {$$=astree_create(AST_FLOAT_SYMBOL,0,0,0,0,0);} 
     ;
 
 //initialization possibilities

@@ -12,20 +12,14 @@ void print_binary_op(char* op, ASTree* n1, ASTree *n2, FILE* prog) {
 
 void print_symbol(int s, FILE* prog) {
 	switch(s) {
-		case SYMBOL_LIT_INT:
+		case AST_INT_SYMBOL:
 			fprintf(prog, "int");
 			break;
-		case SYMBOL_LIT_REAL:
-			fprintf(prog, "real");
+		case AST_FLOAT_SYMBOL:
+			fprintf(prog, "float");
 			break;
-		case SYMBOL_LIT_CHAR:
+		case AST_CHAR_SYMBOL:
 			fprintf(prog, "char");
-			break;
-		case SYMBOL_LIT_BOOL:
-			fprintf(prog, "bool");
-			break;
-		case SYMBOL_LIT_STRING:
-			fprintf(prog, "string");
 			break;
 	}
 }
