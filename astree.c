@@ -3,6 +3,32 @@
 #include "astree.h"
 #include "ast_ids.h"
 
+void print_binary_op(char* op, ASTree* n1, ASTree *n2, FILE* prog) {
+	decompile_tree(n1,prog);
+	fprintf(prog, "%s", op);
+	decompile_tree(n2,prog);
+	
+}
+
+void print_symbol(int s, FILE* prog) {
+	switch(s) {
+		case SYMBOL_LIT_INT:
+			fprintf(prog, "int");
+			break;
+		case SYMBOL_LIT_REAL:
+			fprintf(prog, "real");
+			break;
+		case SYMBOL_LIT_CHAR:
+			fprintf(prog, "char");
+			break;
+		case SYMBOL_LIT_BOOL:
+			fprintf(prog, "bool");
+			break;
+		case SYMBOL_LIT_STRING:
+			fprintf(prog, "string");
+			break;
+	}
+}
 
 ASTree* astree_create(int type, hashNode *id, ASTree *offspring_0, ASTree *offspring_1, ASTree *offspring_2, ASTree *offspring_3){
     ASTree *node = (ASTree*)malloc(sizeof(ASTree));
@@ -103,6 +129,82 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			decompile_tree(n1,prog); // print command
 			fprintf(prog,";\n");
 			break;
+<<<<<<< HEAD
+		case AST_VECTOR_AS: 
+			fprintf(prog, " %s[", id->id); // identifier
+			decompile_tree(n1, prog); // position
+			fprintf(prog, "] = ");
+			decompile_tree(n3, prog); // assigned value
+			break;
+		case AST_VAR_AS:
+			fprintf(prog, " %s = ", id->id); // identifier
+			decompile_tree(n1, prog); // assigned value
+			break;
+		case AST_READ: 
+			fprintf(prog,"read %s", id->id);
+			break;
+		case AST_PRINT: 
+			fprintf(prog,"print ");
+			if (id != NULL)	
+				fprintf(prog,"%s", id->id);
+			if (n1 != NULL)	
+				decompile_tree(n1,prog);
+			break;
+		case AST_RETURN:
+			fprintf(prog,"return ");
+			decompile_tree(n1,prog);
+			break;
+		case AST_NOT_EXP: 
+			fprintf(prog,"!");
+			decompile_tree(n1,prog);
+			break;
+		case AST_NEG_EXP: 
+			fprintf(prog,"-");
+			decompile_tree(n1,prog);
+			break;
+		case AST_PAR_EXP:
+			fprintf(prog,"(");
+			decompile_tree(n1,prog);
+			fprintf(prog,")");
+			break;
+		case AST_PLUS_EXP:
+			break;
+			print_binary_op(" + ",n1,n2,prog);
+			break;
+		case AST_MINUS_EXP: 
+			print_binary_op(" - ",n1,n2,prog);
+			break;
+		case AST_MUL_EXP:
+			print_binary_op(" * ",n1,n2,prog);
+			break;
+		case AST_DIV_EXP:
+			print_binary_op(" / ",n1,n2,prog);
+			break;
+		case AST_LESS_EXP:
+			print_binary_op(" < ",n1,n2,prog);
+			break;
+		case AST_GREAT_EXP:
+			print_binary_op(" > ",n1,n2,prog);
+			break;
+		case AST_LE_EXP:
+			print_binary_op(" <= ",n1,n2,prog);
+			break;
+		case AST_GE_EXP:
+			print_binary_op(" >= ",n1,n2,prog);
+			break;
+		case AST_EQ_EXP:
+			print_binary_op(" == ",n1,n2,prog);
+			break;
+		case AST_NE_EXP:
+			print_binary_op(" != ",n1,n2,prog);
+			break;
+		case AST_AND_EXP:
+			print_binary_op(" && ",n1,n2,prog);
+			break;
+		case AST_OR_EXP:
+			print_binary_op(" || ",n1,n2,prog);
+			break;
+=======
 		case AST_VECTOR_AS: break;
 		case AST_VAR_AS: break;
 		case AST_READ: break;
@@ -123,6 +225,7 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 		case AST_NE_EXP: break;
 		case AST_AND_EXP: break;
 		case AST_OR_EXP: break;
+>>>>>>> 5fe5e70f0964bb87628fcc0159fa2fe43706f614
 		case AST_ID: break;
 		case AST_ID_POINTER: break;
 		case AST_ID_ADDRESS: break;
@@ -146,23 +249,4 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 		default: break;
 	}
 	return 0;
-}
-void print_symbol(int s, FILE* prog) {
-	switch(s) {
-		case SYMBOL_LIT_INT:
-			fprintf(prog, "int");
-			break;
-		case SYMBOL_LIT_REAL:
-			fprintf(prog, "real");
-			break;
-		case SYMBOL_LIT_CHAR:
-			fprintf(prog, "char");
-			break;
-		/*case SYMBOL_LIT_BOOL:
-			fprintf(prog, "bool");
-			break;
-		case SYMBOL_LIT_STRING:
-			fprintf(prog, "string");
-			break;*/
-	}
 }
