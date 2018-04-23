@@ -91,7 +91,11 @@ hashNode* updateSymbolsTable(char* id, int type) {
 	initNode(&n); 		// inicializando área de memória e atribuindo pro ponteiro
 	strcpy(n->id, id); // atribuindo identificador como key
 	n->type = type;
-	insertHash(n, SymbolsTable); // inserindo na tabela
+	hashNode* res = insertHash(n, SymbolsTable); // inserindo na tabela
+	// if n was already in the table, free the pointer
+	if (res != n) 
+		free(n);
+	return res;
 }
 
 void checkSymbolsTable(char* token) {

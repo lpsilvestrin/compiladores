@@ -8,14 +8,14 @@ unsigned long hashKey(unsigned char *str) { //generates the hash Key through the
 	return hash;
 }
 
-void insertHash(hashNode *entry, hashTable *table) {
+hashNode* insertHash(hashNode *entry, hashTable *table) {
 	int size = table->size;
 	hashNode **data = table->data;
 	unsigned long key = hashKey((unsigned char *)entry->id) % size;
 	// test if key is free
 	if (data[key] == NULL) {
 		data[key] = entry;
-		return;
+		return entry;
 	}
 	// otherwise iterate over the linked list
 	hashNode *iterator = data[key];
@@ -24,16 +24,17 @@ void insertHash(hashNode *entry, hashTable *table) {
 		if (strcmp(iterator->id, entry->id) == 0) { //if the id is the same
 			//nothing to do, just return
 			//printf("key %s in use\n", entry->id);
-			return;
+			return iterator;
 		}
 		iterator = iterator->next;
 	}
 	if (strcmp(iterator->id, entry->id) == 0) { //test the last one
 		//printf("key %s in use\n", entry->id);
-		return;
+		return iterator;
 	}
 	// insert in the end of the list
 	iterator->next = entry;
+	return entry;
 }
 
 // retreive node from hashtable
