@@ -105,8 +105,16 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			decompile_tree(n1,prog); // print command
 			fprintf(prog,";\n");
 			break;
-		case AST_VECTOR_AS: break;
-		case AST_VAR_AS: break;
+		case AST_VECTOR_AS: 
+			fprintf(prog, " %s[", id->id); // identifier
+			decompile_tree(n1, prog); // position
+			fprintf(prog, "] = ");
+			decompile_tree(n3, prog); // assigned value
+			break;
+		case AST_VAR_AS:
+			fprintf(prog, " %s = ", id->id); // identifier
+			decompile_tree(n1, prog); // assigned value
+			break;
 		case AST_READ: break;
 		case AST_PRINT: break;
 		case AST_NOT_EXP: break;
