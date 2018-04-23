@@ -7,7 +7,6 @@ void print_binary_op(char* op, ASTree* n1, ASTree *n2, FILE* prog) {
 	decompile_tree(n1,prog);
 	fprintf(prog, "%s", op);
 	decompile_tree(n2,prog);
-	
 }
 
 void print_symbol(int s, FILE* prog) {
@@ -41,7 +40,7 @@ void print_astnode(ASTree* node, int level) {
 		printf("-");
 	}
 	if(node->id != NULL)
-		printf("%d, %s\n", node->type, node->id->id);
+		printf("ast_type: %d, id; %s\n", node->type, node->id->id);
 	// tree recursion from right to the left
 	for(int i = MAX_OFFSPRING-1; i >= 0; i--) {
 		if (node->offspring[i] != NULL) 
@@ -69,13 +68,13 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			print_symbol(n1->type, prog); // type
 			fprintf(prog, " %s = ", id->id); // identifier
 			decompile_tree(n2, prog); // value
-			fprintf(prog, ";");
+			fprintf(prog, ";\n");
 			break;
 		case AST_GLOBAL_POINTER_DEF:
 			print_symbol(n1->type, prog); // type
 			fprintf(prog, " #%s = ", id->id); // identifier
 			decompile_tree(n2, prog); // value
-			fprintf(prog, ";");
+			fprintf(prog, ";\n");
 			break;
 		case AST_VECTOR_DEF:
 			print_symbol(n1->type, prog); // type
@@ -86,25 +85,26 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 				fprintf(prog, " : ");
 				decompile_tree(n3, prog); // value initialization
 			}
-			fprintf(prog, ";");
-			 
+			fprintf(prog, ";\n");
 			break;
 		case AST_FUNCTION_DEF: 
 			decompile_tree(n1, prog); // function header
-			fprintf(prog, " {");
+			//fprintf(prog, " {"); 
+			//that's inside the block
 			decompile_tree(n2, prog); // code block
-			fprintf(prog,"}\n");
+			//fprintf(prog,"}\n");
 			break;
 		case AST_HEADER: 
 			print_symbol(n1->type, prog); // function type
-			fprintf(prog, " %s ", id->id); // function name
-			fprintf(prog, "("); // empty parameters
+			fprintf(prog, " %s", id->id); // function name
+			//fprintf(prog, "("); // empty parameters
+			//double ()
 			if (n2 != NULL) {
-				decompile_tree(n2, prog);
+				decompile_tree(n2, prog); //ast_def_param
 			}
-			fprintf(prog, ")"); // empty parameters
+			//fprintf(prog, ")"); // empty parameters
 			break;
-		case AST_DEF_PARAM: // not used 
+		case AST_DEF_PARAM: // not used (how so?)
 			fprintf(prog,"(");
 			decompile_tree(n1,prog);
 			fprintf(prog,")");
@@ -116,29 +116,27 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			}
 			print_symbol(n1->type, prog);	
 			fprintf(prog, " %s ", id->id);
-
 			break;
 		case AST_BLOCK:
-			fprintf(prog, "{");
+			fprintf(prog, "{\n");
 			if(n1!= NULL){
 				decompile_tree(n1,prog);
 			}
-			fprintf(prog, "}");
+			fprintf(prog, "}\n");
 			break;
 		case AST_COMMANDS_L: 
 			decompile_tree(n2,prog); // recursion to the list head
-			fprintf(prog,";\n"); //<<<<<<<<<<<<, I'm not sure, but shouldn't it be here, in the middle?
+			fprintf(prog,";\n"); // << in the middle
 			decompile_tree(n1,prog); // print command
-			
 			break;
 		case AST_VECTOR_AS: 
-			fprintf(prog, " %s[", id->id); // identifier
+			fprintf(prog, "%s[", id->id); // identifier
 			decompile_tree(n1, prog); // position
 			fprintf(prog, "] = ");
 			decompile_tree(n3, prog); // assigned value
 			break;
 		case AST_VAR_AS:
-			fprintf(prog, " %s = ", id->id); // identifier
+			fprintf(prog, "%s = ", id->id); // identifier
 			decompile_tree(n1, prog); // assigned value
 			break;
 		case AST_READ: 
@@ -146,14 +144,14 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			break;
 		case AST_PRINT: 
 			fprintf(prog,"print ");
+			if (n1 != NULL)	 //first the recursion, then the value
+				decompile_tree(n1,prog);
 			if (id != NULL)	
 				fprintf(prog,"%s", id->id);
-			if (n1 != NULL)	
-				decompile_tree(n1,prog);
 			break;
 		case AST_RETURN:
 			fprintf(prog,"return ");
-			decompile_tree(n1,prog);
+			decompile_tree(n1,prog); //expression
 			break;
 		case AST_NOT_EXP: 
 			fprintf(prog,"!");
@@ -165,7 +163,7 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			break;
 		case AST_PAR_EXP:
 			fprintf(prog,"(");
-			decompile_tree(n1,prog);
+			decompile_tree(n1,prog); 
 			fprintf(prog,")");
 			break;
 		case AST_PLUS_EXP:
@@ -205,16 +203,67 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 		case AST_OR_EXP:
 			print_binary_op(" || ",n1,n2,prog);
 			break;
-		case AST_ID: break;
-		
-		case AST_ID_POINTER: break;
-		case AST_ID_ADDRESS: break;
-		case AST_VECTOR: break;
-		case AST_FUNCTION: break;
-		case AST_PARAM: break;
-		case AST_IF: break; //same for if and if then else
-		case AST_FOR: break;
-		case AST_WHILE: break;
+		case AST_ID: 
+			if (id != NULL) // it should always be the case	
+				fprintf(prog,"%s", id->id);
+			break;
+		case AST_ID_POINTER: 
+			if (id != NULL) 	
+				fprintf(prog,"#%s", id->id);
+			break;
+		case AST_ID_ADDRESS: 
+			if (id != NULL) 
+				fprintf(prog,"&%s", id->id);
+			break;
+		case AST_VECTOR: 
+			if (id != NULL) {
+				fprintf(prog,"%s[", id->id);
+				decompile_tree(n1,prog);
+				fprintf(prog,"]");
+			}
+			break;
+		case AST_FUNCTION: 
+			if (id != NULL) 
+				fprintf(prog,"%s", id->id);
+			if (n1 != NULL){
+				decompile_tree(n1,prog); //parameters
+			}
+			break;
+		case AST_PARAM: 
+			// CHECK IF WE CANNOT USE THE SAME SWITCH CASE THAN DEF PARAMETERS
+			break;
+		case AST_IF:  //same for if and if then else
+			fprintf(prog,"if (");
+			if(n1 != NULL)
+				decompile_tree(n1,prog);
+			fprintf(prog,") then ");
+			if(n2 != NULL)
+				decompile_tree(n2,prog);
+			if(n3 != NULL){
+				fprintf(prog, " else ");
+				decompile_tree(n3, prog);
+			}
+			break; 
+		case AST_FOR: 
+			fprintf(prog, "for (");
+			if((id != NULL)&&(n1 != NULL)&&(n2 != NULL)&&(n3 != NULL)) {
+				fprintf(prog, "%s = ", id->id);
+				decompile_tree(n1, prog);
+				fprintf(prog, " to ");
+				decompile_tree(n2,prog);
+				fprintf(prog, ") ");
+				decompile_tree(n3, prog);
+			}
+			break;
+		case AST_WHILE:  //KW_WHILE '(' expression ')' simple_command  {$$=astree_create(AST_WHILE,0,$3,$5,0,0);}
+			fprintf(prog, "while (");
+			if((n1 != NULL)&&(n2 != NULL)) {
+				fprintf("(");
+				decompile_tree(n1,prog);
+				fprintf(") ");
+				decompile_tree(n2, prog);
+			}
+			break;
 		case AST_REAL: // same behaviour for all literals 
 		case AST_INT:
 		case AST_CHAR: 
