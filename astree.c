@@ -70,10 +70,34 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			fprintf(prog, ";");
 			 
 			break;
-		case AST_FUNCTION_DEF: break;
-		case AST_HEADER: break;
-		case AST_DEF_PARAM: break;
-		case AST_DEF_PARAM_T: break;
+		case AST_FUNCTION_DEF: 
+			decompile_tree(n1, prog); // function header
+			fprintf(prog, " ");
+			decompile_tree(n2, prog); // code block
+			break;
+		case AST_HEADER: 
+			print_symbol(n1->type, prog); // function type
+			fprintf(" %s ", id->id); // function name
+			if (n2 == NULL) {
+				fprintf(prog, "()"); // empty parameters
+			} else {
+				decompile_tree(n2, prog);
+			}
+			break;
+		case AST_DEF_PARAM: 
+			fprintf(prog,"(");
+			decompile_tree(n1,prog);
+			fprintf(prog,")");
+			break;
+		case AST_DEF_PARAM_T: 
+			if (n2 != NULL) {
+				decompile_tree(n2, prog);
+				fprintf(prog,",");
+			}
+			print_symbol(n1->type, prog);	
+			fprintf(prog, " %s ", id->id);
+
+			break;
 		case AST_COMMANDS_L: break;
 		case AST_VECTOR_AS: break;
 		case AST_VAR_AS: break;
