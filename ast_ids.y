@@ -57,7 +57,13 @@
 %token AST_FOR 
 %token AST_WHILE
 %token AST_INIT_VALUES 
-//types 
+
+//types
+%token AST_INT_SYMBOL
+%token AST_REAL_SYMBOL
+%token AST_CHAR_SYMBOL
+
+//identifiers type 
 %token AST_INT 
 %token AST_REAL 
 %token AST_CHAR 

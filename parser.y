@@ -13,7 +13,7 @@ FILE* file_pointer; //to print our output tree :)
     hashNode* hashTable_pointer;
 }
 
-%start program
+%start program_root
 
 /*grammar rules*/
 %type<astree_pointer> program_root
@@ -90,13 +90,13 @@ FILE* file_pointer; //to print our output tree :)
 //---------------------- ROOT FOR SETTING OUR FILE 
 //(cannot have recursion, that's why we need a different production)
 program_root: 
-    program {$$=$1; /*the print goes here*/}
+    program {$$=$1; /*the print goes here*/ print_astnode($$,0);}
     ;
 
 //---------------------- MAIN FLOW
 //a program is a (empty) list of instructions
 program: 
-    program instruction     {$$=astree_create(AST_INITIAL,0,$2,$1,0,0); print_astnode($$,0);}
+    program instruction     {$$=astree_create(AST_INITIAL,0,$2,$1,0,0);}
     |                       {$$=0;} 
     ; 
 
