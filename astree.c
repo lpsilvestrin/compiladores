@@ -58,7 +58,17 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			decompile_tree(n2, prog); // value
 			fprintf(prog, ";");
 			break;
-		case AST_VECTOR_DEF: 
+		case AST_VECTOR_DEF:
+			print_symbol(n1->type, prog); // type
+			fprintf(prog, " #%s[", id->id); // identifier
+			decompile_tree(n2, prog); // size
+			fprintf(prog, "]");
+			if (n3 != NULL) {
+				fprintf(prog, " : ");
+				decompile_tree(n3, prog); // value initialization
+			}
+			fprintf(prog, ";");
+			 
 			break;
 		case AST_FUNCTION_DEF: break;
 		case AST_HEADER: break;
@@ -99,7 +109,12 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 		case AST_CHAR: 
 			fprintf(prog, "%s", tree->id->id);
 			break;
-		case AST_INIT_VALUES: break;
+		case AST_INIT_VALUES: 
+			// start recursion to the left
+			decompile_tree(n1, prog);
+			fprintf(prog, " ");
+			decompile_tree(n2, prog);
+			break;
 		default: break;
 	}
 	return 0;
