@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include "astree.h"
 #include "hashtable.h"
-
+#include "ast_ids.h"
+FILE* file_pointer; //to print our output tree :)
 %}
 
 %union
@@ -15,6 +16,7 @@
 %start program
 
 /*grammar rules*/
+%type<astree_pointer> program_root
 %type<astree_pointer> program
 %type<astree_pointer> instruction
 %type<astree_pointer> global_def
@@ -95,12 +97,17 @@
 
 
 %%
+//----------- ROOT FOR SETTING OUR FILE (cannot have recursion, that's why we need a different production)
+program_root: 
+    program {$$=$1; /*the print goes here*/}
+    ;
+
 //----------- MAIN FLOW
 //a program is a (empty) list of instructions
 //accepts empty production
 program: 
     program instruction     {$$=astree_create(AST_INITIAL,0,$2,$1,0,0); print_astnode($$,0);}
-    |                       {$$=0;} // <<<<<<<<<<<<<<< CHECK THIS
+    |                       {$$=0;} 
     ; 
 
 //the instructions is a list of global definitions and functions (without any order)
@@ -120,7 +127,7 @@ global_def:
 //an init value can only be scalar values
 global_var_def: 
     scalar_type TK_IDENTIFIER '=' init_value ';'        {$$=astree_create(AST_GLOBAL_VAR_DEF,$2,$1,$4,0,0);}
-    | scalar_type '#' TK_IDENTIFIER '=' init_value ';'  {$$=astree_create(AST_GLOBAL_VECTOR_DEF,$3,$1,$5,0,0);}  
+    | scalar_type '#' TK_IDENTIFIER '=' init_value ';'  {$$=astree_create(AST_GLOBAL_VAR_DEF,$3,$1,$5,0,0);}  
     ;
 
 //initialization is given by values separated by " " after a ":"
@@ -319,6 +326,10 @@ size:
 
 
 %%
+void setOutput(FILE *pointer) {
+    file_pointer = pointer;
+}
+
 int yyerror (char const *s) {
     fflush(stderr);
     fprintf(stderr,"ERROR: %s ---> Line: %d\n", s, getLineNumber());
