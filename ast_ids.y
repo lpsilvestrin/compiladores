@@ -61,7 +61,7 @@
 
 //types
 %token AST_INT_SYMBOL
-%token AST_REAL_SYMBOL
+%token AST_FLOAT_SYMBOL
 %token AST_CHAR_SYMBOL
 
 //identifiers type 

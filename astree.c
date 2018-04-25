@@ -52,11 +52,11 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 	if (tree == NULL) {
 		return 0;
 	}
-	ASTree *n1, *n2, *n3, *n4;
+	ASTree *n1, *n2, *n3;//, *n4;
 	n1 = tree->offspring[0];
 	n2 = tree->offspring[1];
 	n3 = tree->offspring[2];
-	n4 = tree->offspring[3];
+	//n4 = tree->offspring[3];
 	hashNode *id = tree->id;
 	switch(tree->type) {
 		case AST_INITIAL:
@@ -76,7 +76,7 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			decompile_tree(n2, prog); // value
 			fprintf(prog, ";\n");
 			break;
-		case AST_VECTOR_DEF:
+		case AST_GLOBAL_VECTOR_DEF:
 			print_symbol(n1->type, prog); // type
 			fprintf(prog, " #%s[", id->id); // identifier
 			decompile_tree(n2, prog); // size
@@ -258,9 +258,9 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 		case AST_WHILE:  //KW_WHILE '(' expression ')' simple_command  {$$=astree_create(AST_WHILE,0,$3,$5,0,0);}
 			fprintf(prog, "while (");
 			if((n1 != NULL)&&(n2 != NULL)) {
-				fprintf("(");
+				fprintf(prog,"(");
 				decompile_tree(n1,prog);
-				fprintf(") ");
+				fprintf(prog,") ");
 				decompile_tree(n2, prog);
 			}
 			break;
