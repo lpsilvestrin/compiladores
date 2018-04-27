@@ -91,7 +91,7 @@ FILE* file_pointer; //to print our output tree :)
 //---------------------- ROOT FOR SETTING OUR FILE 
 //(cannot have recursion, that's why we need a different production)
 program_root: 
-    program {$$=$1; /*the print goes here*/ print_astnode($$,0);}
+    program {$$=$1; decompile_tree($$, stderr); print_astnode($$,0);}
     ;
 
 //---------------------- MAIN FLOW
@@ -197,7 +197,7 @@ read_c:
 print_c: 
     KW_PRINT                {$$=0;} //it does not save tokens and intermediate productions 
     | print_c LIT_STRING    {$$=astree_create(AST_PRINT,$2,$1,0,0,0);}
-    | print_c expression    {$$=astree_create(AST_PRINT,$2,$1,0,0,0);}
+    | print_c expression    {$$=astree_create(AST_PRINT,0,$1,$2,0,0);}
     ;
 
 return_c: 
