@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "astree.h"
-#include "ast_ids.h"
+//#include "ast_ids.h"
 
 void print_binary_op(char* op, ASTree* n1, ASTree *n2, FILE* prog) {
 	decompile_tree(n1,prog);
