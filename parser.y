@@ -241,7 +241,7 @@ id:
     ;
 
 parameters_list: 
-	'(' ')'                         {$$=astree_create(AST_PARAM,0,0,0,0,0);}//{$$=0;} //accepts empty production
+	'(' ')'                         {$$=0;} //accepts empty production
     | '(' parameters_list_tail ')'  {$$=$2;}
     ;
 

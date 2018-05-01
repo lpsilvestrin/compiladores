@@ -229,12 +229,14 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 		case AST_FUNCTION: 
 			if (id != NULL) 
 				fprintf(prog,"%s", id->id);
+			fprintf(prog, "(");
 			if (n1 != NULL){
+				
 				decompile_tree(n1,prog); //parameters
 			}
+			fprintf(prog, ")");
 			break;
 		case AST_PARAM: 
-			fprintf(prog, "(");
 			if(n1 != NULL) {
 				decompile_tree(n1, prog);
 				if(n2 != NULL) {
@@ -242,7 +244,6 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 					decompile_tree(n2, prog);
 				}
 			}
-			fprintf(prog, ")");
 			break;
 		case AST_IF:  //same for if and if then else
 			fprintf(prog,"if (");
@@ -268,11 +269,14 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			}
 			break;
 		case AST_WHILE:  //KW_WHILE '(' expression ')' simple_command  {$$=astree_create(AST_WHILE,0,$3,$5,0,0);}
-			fprintf(prog, "while (");
-			if((n1 != NULL)&&(n2 != NULL)) {
-				fprintf(prog,"(");
+			fprintf(prog, "while");
+			fprintf(prog,"(");
+			if(n1 != NULL) {
 				decompile_tree(n1,prog);
-				fprintf(prog,") ");
+			} 
+			fprintf(prog,") ");
+			if(n2 != NULL) {
+
 				decompile_tree(n2, prog);
 			}
 			break;
