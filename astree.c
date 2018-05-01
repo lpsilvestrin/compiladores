@@ -151,7 +151,6 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 				fprintf(prog,"%s", id->id);
 			if (n2 != NULL)
 				decompile_tree(n2,prog);
-				
 			break;
 		case AST_RETURN:
 			fprintf(prog,"return ");
@@ -291,7 +290,7 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			fprintf(prog, " ");
 			decompile_tree(n2, prog);
 			break;
-		default: break;
+		//default: break;
 	}
 	return 0;
 }
