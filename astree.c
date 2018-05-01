@@ -78,7 +78,7 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			break;
 		case AST_GLOBAL_VECTOR_DEF:
 			print_symbol(n1->type, prog); // type
-			fprintf(prog, " #%s[", id->id); // identifier
+			fprintf(prog, " %s[", id->id); // identifier
 			decompile_tree(n2, prog); // size
 			fprintf(prog, "]");
 			if (n3 != NULL) {
@@ -97,14 +97,14 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 		case AST_HEADER: 
 			print_symbol(n1->type, prog); // function type
 			fprintf(prog, " %s", id->id); // function name
-			//fprintf(prog, "("); // empty parameters
+			fprintf(prog, "("); // empty parameters
 			//double ()
 			if (n2 != NULL) {
 				decompile_tree(n2, prog); //ast_def_param
 			}
-			//fprintf(prog, ")"); // empty parameters
+			fprintf(prog, ")"); // empty parameters
 			break;
-		case AST_DEF_PARAM: // not used (how so?)
+		case AST_DEF_PARAM: // not used 
 			fprintf(prog,"(");
 			decompile_tree(n1,prog);
 			fprintf(prog,")");

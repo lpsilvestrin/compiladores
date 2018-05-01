@@ -122,8 +122,8 @@ global_var_def:
 
 //initialization is given by values separated by " " after a ":"
 vector_def: 
-    scalar_type TK_IDENTIFIER '[' size ']' ';'                         {$$=astree_create(AST_VECTOR_DEF,$2,$1,$4,0,0);} 
-    | scalar_type TK_IDENTIFIER '[' size ']' ':' init_values_list ';'  {$$=astree_create(AST_VECTOR_DEF,$2,$1,$4,$7,0);}  
+    scalar_type TK_IDENTIFIER '[' size ']' ';'                         {$$=astree_create(AST_GLOBAL_VECTOR_DEF,$2,$1,$4,0,0);} 
+    | scalar_type TK_IDENTIFIER '[' size ']' ':' init_values_list ';'  {$$=astree_create(AST_GLOBAL_VECTOR_DEF,$2,$1,$4,$7,0);}  
     ;
 
 //---------------------- FUNCTION
