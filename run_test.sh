@@ -5,10 +5,6 @@ make
 
 for f in tests/*; do 
 	echo $f;
-	./etapa2 $f &> /dev/null
-	if [ $? -ne 0 ] 
-	then
-		echo "PROBLEMA!";
-	fi
+	./etapa3 $f $f".out"
 	
 done
