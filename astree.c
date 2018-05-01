@@ -222,7 +222,7 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 		case AST_VECTOR: 
 			if (id != NULL) {
 				fprintf(prog,"%s[", id->id);
-				decompile_tree(n1,prog);
+				decompile_tree(n1,prog); //expression
 				fprintf(prog,"]");
 			}
 			break;
@@ -234,7 +234,15 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			}
 			break;
 		case AST_PARAM: 
-			// CHECK IF WE CANNOT USE THE SAME SWITCH CASE THAN DEF PARAMETERS
+			fprintf(prog, "(");
+			if(n1 != NULL) {
+				decompile_tree(n1, prog);
+				if(n2 != NULL) {
+					fprintf(prog, ",");
+					decompile_tree(n2, prog);
+				}
+			}
+			fprintf(prog, ")");
 			break;
 		case AST_IF:  //same for if and if then else
 			fprintf(prog,"if (");

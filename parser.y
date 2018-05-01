@@ -241,13 +241,13 @@ id:
     ;
 
 parameters_list: 
-	'(' ')'                         {$$=0;} //accepts empty production
+	'(' ')'                         {$$=astree_create(AST_PARAM,0,0,0,0,0);}//{$$=0;} //accepts empty production
     | '(' parameters_list_tail ')'  {$$=$2;}
     ;
 
 parameters_list_tail:
-	expression                              {$$=$1;}
-    | parameters_list_tail ',' expression   {$$=astree_create(AST_PARAM,0,$3,$1,0,0);}
+	expression                              {$$=astree_create(AST_PARAM,0,$1,0,0,0);}//{$$=$1;}
+    | parameters_list_tail ',' expression   {$$=astree_create(AST_PARAM,0,$1,$3,0,0);}//{$$=astree_create(AST_PARAM,0,$3,$1,0,0);}
 	;
 
 //----------- FLOW CONTROL
