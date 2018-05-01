@@ -10,7 +10,7 @@ char function1(){
 char vector[100]: 0 0; // char vector[100]= {0,0,0,0,0};
 
 float function2(int a1, float a2, float a3, char a5){
-	#global3 = 'a';
+	global3 = 'a';
 	if((global3 != global2)+global2) then {;;;;;} else vector[2] = 3;
  
 }
