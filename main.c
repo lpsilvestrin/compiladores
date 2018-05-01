@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
 	}
 
 	FILE* f;
-	if((f = fopen(argv[2],"r"))==NULL) {
+	if((f = fopen(argv[2],"w"))==NULL) {
 		printf("Problem reading the file %s\n", argv[2]);
 		exit(1);
 	}
