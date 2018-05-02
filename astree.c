@@ -170,7 +170,6 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			fprintf(prog,")");
 			break;
 		case AST_PLUS_EXP:
-			break;
 			print_binary_op(" + ",n1,n2,prog);
 			break;
 		case AST_MINUS_EXP: 
