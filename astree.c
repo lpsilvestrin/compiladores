@@ -170,7 +170,6 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			fprintf(prog,")");
 			break;
 		case AST_PLUS_EXP:
-			break;
 			print_binary_op(" + ",n1,n2,prog);
 			break;
 		case AST_MINUS_EXP: 
@@ -246,8 +245,12 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			break;
 		case AST_IF:  //same for if and if then else
 			fprintf(prog,"if (");
-			if(n1 != NULL)
+			if(n1 != NULL) {
+				//fprintf(prog, "%d\n", n1->type);
 				decompile_tree(n1,prog);
+			}
+			//else
+			//	fprintf(prog, "N1 NULL\n");
 			fprintf(prog,") then ");
 			if(n2 != NULL)
 				decompile_tree(n2,prog);
