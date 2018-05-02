@@ -145,12 +145,18 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 		case AST_PRINT: 
 			if (n1 == NULL)
 				fprintf(prog,"print ");
-			if (n1 != NULL)	 //first the recursion, then the value
+			if (n1 != NULL)	{ //first the recursion, then the value
+				fprintf(prog," ");
 				decompile_tree(n1,prog);
-			if (id != NULL)	
+			}
+			if (id != NULL) {	
+				fprintf(prog," ");
 				fprintf(prog,"%s", id->id);
-			if (n2 != NULL)
+			}
+			if (n2 != NULL) {
+				fprintf(prog," ");
 				decompile_tree(n2,prog);
+			}
 			break;
 		case AST_RETURN:
 			fprintf(prog,"return ");
