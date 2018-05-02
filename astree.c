@@ -133,7 +133,7 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			fprintf(prog, "%s[", id->id); // identifier
 			decompile_tree(n1, prog); // position
 			fprintf(prog, "] = ");
-			decompile_tree(n3, prog); // assigned value
+			decompile_tree(n2, prog); // assigned value
 			break;
 		case AST_VAR_AS:
 			fprintf(prog, "%s = ", id->id); // identifier
