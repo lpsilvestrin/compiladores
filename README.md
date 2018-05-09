@@ -8,6 +8,9 @@ repositório com as etapas do trabalho da disciplina de compiladores
 3) não pode float em índice de array
 4) não pode somar ponteiros
 5) número da linha na ASTree [done]
+6) char, float e int são compatíveis
+7) incluir na hash um ponteiro pra AST (salvar parâmetros de funções)
+8) prototype da ast na hash para resolver conflito na compilação
 
 
 ** ISSUES:
