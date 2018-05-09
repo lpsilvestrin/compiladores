@@ -58,6 +58,7 @@
 
 typedef struct astree {
     int type; 
+    int line; 
     hashNode *id; //pointer for the info inside our hash
     struct astree *offspring[MAX_OFFSPRING];
 } ASTree;

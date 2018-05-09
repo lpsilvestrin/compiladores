@@ -84,7 +84,28 @@ void printHash(hashTable *table) {
 	for (int i = 0; i < size; i++) {
 		currNode = table->data[i];
 		while (currNode != NULL) {
-			printf("[HASH] entry %d = %s, type %d\n", i, currNode->id, currNode->type);
+			fprintf(stderr, "[HASH] entry %d = %s, type ", i, currNode->id);
+			int type = currNode->type;
+			switch(type) {
+				case SYMBOL_LIT_INT: 
+					fprintf(stderr, "int\n");
+				break;
+				case SYMBOL_LIT_FLOAT: 
+					fprintf(stderr, "float\n");
+				break;
+				case SYMBOL_LIT_CHAR: 
+					fprintf(stderr, "char\n");
+				break;
+				case SYMBOL_LIT_STRING: 
+					fprintf(stderr, "string\n");
+				break;
+				case SYMBOL_IDENTIFIER: 
+					fprintf(stderr, "NOT ASSIGNED\n");
+				break;
+				default: 
+					fprintf(stderr, "UNKNOWN %d\n", type);
+			}
+
 			currNode = currNode->next;
 		}
 	}

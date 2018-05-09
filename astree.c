@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "astree.h"
-//#include "ast_ids.h"
+
+extern int getLineNumber();
 
 void print_binary_op(char* op, ASTree* n1, ASTree *n2, FILE* prog) {
 	decompile_tree(n1,prog);
@@ -26,6 +27,7 @@ void print_symbol(int s, FILE* prog) {
 ASTree* astree_create(int type, hashNode *id, ASTree *offspring_0, ASTree *offspring_1, ASTree *offspring_2, ASTree *offspring_3){
     ASTree *node = (ASTree*)malloc(sizeof(ASTree));
     node->type = type;
+	node->line = getLineNumber();
     node->id = id;
     node->offspring[0] = offspring_0;
     node->offspring[1] = offspring_1;

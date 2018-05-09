@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include "astree.h"
 #include "hashtable.h"
-//#include "ast_ids.h"
+#include "semantic.h"
+
 extern int getLineNumber();
 FILE* file_pointer; //to print our output tree :)
 %}
@@ -91,7 +92,7 @@ FILE* file_pointer; //to print our output tree :)
 //---------------------- ROOT FOR SETTING OUR FILE 
 //(cannot have recursion, that's why we need a different production)
 program_root: 
-    program {$$=$1; decompile_tree($$, stderr); decompile_tree($$, file_pointer);/* print_astnode($$,0);*/}
+    program {$$=$1; semantic_analysis($$); decompile_tree($$, stderr); decompile_tree($$, file_pointer);}
     ;
 
 //---------------------- MAIN FLOW
