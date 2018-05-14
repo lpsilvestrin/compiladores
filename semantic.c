@@ -2,9 +2,9 @@
 #include "astree.h"
 #include "hashtable.h"
 
-void assign_types(ASTree *node){
-    //declaration can be: function, vector or variable
-    print_astnode(node);
+void assign_types(ASTree *node) {
+    print_astnode(node); //for debug sake
+
     //AST_FUNCTION_DEF
     if(node->type == AST_FUNCTION_DEF){
         //TO DO 
@@ -15,7 +15,8 @@ void assign_types(ASTree *node){
         //como tipar o assignment?? vetor[xx]: 1 2 3 4 "l" 6.7
         //TO DO
     }
-    //AST_GLOBAL_VAR_DEF
+
+    //AST_GLOBAL_VAR_DEF & AST_GLOBAL_POINTER_DEF
     if((node->type == AST_GLOBAL_VAR_DEF)||(node->type == AST_GLOBAL_POINTER_DEF)){
         print_type(node->id); //hash pointer
         if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
@@ -51,6 +52,7 @@ void assign_types(ASTree *node){
         //TO DO
     }
 
+
     //recursion
     for(int i =MAX_OFFSPRING-1; i >= 0; i--){
         if(node->offspring[i] != NULL)
@@ -58,7 +60,49 @@ void assign_types(ASTree *node){
     }
 }
 
-void semantic_analysis(ASTree *root){
+//check if int var = X x = int type
+void check_assignment_types(ASTree *node) {
+    
+    //print_astnode(node); //for debug sake
+
+    //AST_FUNCTION_DEF
+    if(node->type == AST_FUNCTION_DEF){
+        //TO DO 
+    }
+
+    //AST_GLOBAL_VECTOR_DEF
+    if(node->type == AST_GLOBAL_VECTOR_DEF){
+        //como tipar o assignment?? vetor[xx]: 1 2 3 4 "l" 6.7
+        //TO DO
+    }
+
+    //AST_GLOBAL_VAR_DEF & AST_GLOBAL_POINTER_DEF
+    if((node->type == AST_GLOBAL_VAR_DEF)||(node->type == AST_GLOBAL_POINTER_DEF)){
+        //TO DO
+    }
+
+    //AST_DEF_PARAM_T
+    if(node->type == AST_DEF_PARAM_T){
+        //TO DO
+    }
+
+
+    //recursion
+    for(int i =MAX_OFFSPRING-1; i >= 0; i--){
+        if(node->offspring[i] != NULL)
+            assign_types(node->offspring[i]);
+    }
+
+}
+
+//check if var[] -> var = array type; var(la,la,la) -> var = function type
+void check_variables_usage(ASTree *node) {
+    
+}
+
+void semantic_analysis(ASTree *root) {
     assign_types(root);
+    check_assignment_types(root);
+    check_variables_usage(root);
 }
 
