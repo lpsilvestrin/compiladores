@@ -5,19 +5,21 @@
 void assign_types(ASTree *node) {
     print_astnode(node); //for debug sake
 
+	switch(node->type) {
     //AST_FUNCTION_DEF
-    if(node->type == AST_FUNCTION_DEF){
-        //TO DO 
-    }
+	case AST_FUNCTION_DEF:
+	//TO DO 
+		break;
+    
 
     //AST_GLOBAL_VECTOR_DEF
-    if(node->type == AST_GLOBAL_VECTOR_DEF){
-        //como tipar o assignment?? vetor[xx]: 1 2 3 4 "l" 6.7
-        //TO DO
-    }
-
-    //AST_GLOBAL_VAR_DEF & AST_GLOBAL_POINTER_DEF
-    if((node->type == AST_GLOBAL_VAR_DEF)||(node->type == AST_GLOBAL_POINTER_DEF)){
+	case AST_GLOBAL_VECTOR_DEF:
+	//como tipar o assignment?? vetor[xx]: 1 2 3 4 "l" 6.7
+	//TO DO
+	break;
+    
+    //AST_GLOBAL_VAR_DEF 
+   	case AST_GLOBAL_VAR_DEF:
         print_type(node->id); //hash pointer
         if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
             int type = node->offspring[0]->type;
@@ -45,11 +47,18 @@ void assign_types(ASTree *node) {
             fprintf(stderr, "[SEMANTIC] Variable %s already assigned with type: ", node->id->id);
             print_type(node->id);
         }
-    }
+		break;
+    
+	case AST_GLOBAL_POINTER_DEF:
+		print_type(node->id);
+		assign_pointer_type(node);
+		break;
+	
 
     //AST_DEF_PARAM_T
-    if(node->type == AST_DEF_PARAM_T){
+    case AST_DEF_PARAM_T:
         //TO DO
+		break;
     }
 
 
@@ -84,7 +93,7 @@ void assign_pointer_type(ASTree *node) {
 				break;
 		}
 	} else{
-		fprintf(stderr, "[SEMANTIC] Variable %s already assigned with type: ", node->id->id);
+		fprintf(stderr, "[SEMANTIC] Variable %s already declared with type: ", node->id->id);
 		print_type(node->id);
 	}
 	
