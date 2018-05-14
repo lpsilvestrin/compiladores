@@ -111,7 +111,7 @@ void printHash(hashTable *table) {
 	}
 }
 
-void print_type(hashNode *entry){
+void print_type(hashNode *entry) {
 	int type = entry->type;
 	switch(type){
 		case SYMBOL_LIT_INT:
@@ -132,4 +132,8 @@ void print_type(hashNode *entry){
 		default:
 			fprintf(stderr, "[HASH] ERROR!!\n");
 	}
+}
+
+void set_param_list(hashNode *entry, ASTree *pointer) {
+	entry->list_head = pointer;
 }
