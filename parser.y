@@ -98,7 +98,7 @@ program_root:
 //---------------------- MAIN FLOW
 //a program is a (empty) list of instructions
 program: 
-    program instruction     {$$=astree_create(AST_INITIAL,0,$2,$1,0,0);}
+    program instruction     {$$=astree_create(AST_GLOBAL,0,$2,$1,0,0);}
     |                       {$$=0;} 
     ; 
 

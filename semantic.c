@@ -4,7 +4,7 @@
 
 void assign_types(ASTree *node){
     //declaration can be: function, vector or variable
-
+    print_astnode(node);
     //AST_FUNCTION_DEF
     if(node->type == AST_FUNCTION_DEF){
         //TO DO 
@@ -16,52 +16,43 @@ void assign_types(ASTree *node){
         //TO DO
     }
     //AST_GLOBAL_VAR_DEF
-    if(node->type == AST_GLOBAL_VAR_DEF){
-        //scalar_type TK_IDENTIFIER '=' init_value ';' {$$=astree_create(AST_GLOBAL_VAR_DEF,$2,$1,$4,0,0);}
+    if((node->type == AST_GLOBAL_VAR_DEF)||(node->type == AST_GLOBAL_POINTER_DEF)){
+        print_type(node->id); //hash pointer
         if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
-            //get type 
             int type = node->offspring[0]->type;
             switch(type){
                 case AST_CHAR_SYMBOL: 
                 node->id->type = SYMBOL_LIT_CHAR;
+                fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+                print_type(node->id);
                 break;
                 case AST_INT_SYMBOL: 
                 node->id->type = SYMBOL_LIT_INT;
+                fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+                print_type(node->id);
                 break;
                 case AST_FLOAT_SYMBOL: 
                 node->id->type = SYMBOL_LIT_FLOAT;
+                fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+                print_type(node->id);
                 break;
-                default: break;
+                default: 
+                fprintf(stderr, "[SEMANTIC] ERROR\n");
+                break;
             }
         } else{
-            fprintf(stderr, "Variable %s already assigned with type: ", node->id->id);
-            int type = node->id->type;
-            switch(type){
-                case SYMBOL_LIT_CHAR: 
-                    fprintf(stderr, "char\n");
-                break;
-                case SYMBOL_LIT_INT: 
-                    fprintf(stderr, "int\n");
-                break;
-                case SYMBOL_LIT_FLOAT: 
-                    fprintf(stderr, "float\n");
-                break;
-                default: break;
-            }
+            fprintf(stderr, "[SEMANTIC] Variable %s already assigned with type: ", node->id->id);
+            print_type(node->id);
         }
+    }
 
-    }
-    //AST_GLOBAL_POINTER_DEF
-    if(node->type == AST_GLOBAL_POINTER_DEF){
-        //TO DO
-    }
     //AST_DEF_PARAM_T
     if(node->type == AST_DEF_PARAM_T){
         //TO DO
     }
 
     //recursion
-    for(int i =0; i < MAX_OFFSPRING; i++){
+    for(int i =MAX_OFFSPRING-1; i >= 0; i--){
         if(node->offspring[i] != NULL)
             assign_types(node->offspring[i]);
     }
@@ -70,3 +61,4 @@ void assign_types(ASTree *node){
 void semantic_analysis(ASTree *root){
     assign_types(root);
 }
+

@@ -36,19 +36,6 @@ ASTree* astree_create(int type, hashNode *id, ASTree *offspring_0, ASTree *offsp
     return node;
 }
 
-void print_astnode(ASTree* node, int level) {
-	// print tree level indentation
-	for(int i = 0; i < level; i++) {
-		printf("-");
-	}
-	if(node->id != NULL)
-		printf("ast_type: %d, id; %s\n", node->type, node->id->id);
-	// tree recursion from right to the left
-	for(int i = MAX_OFFSPRING-1; i >= 0; i--) {
-		if (node->offspring[i] != NULL) 
-			print_astnode(node->offspring[i], level+1);
-	}
-}
 
 int decompile_tree(ASTree* tree, FILE *prog) {
 	if (tree == NULL) {
@@ -61,7 +48,7 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 	//n4 = tree->offspring[3];
 	hashNode *id = tree->id;
 	switch(tree->type) {
-		case AST_INITIAL:
+		case AST_GLOBAL:
 			decompile_tree(n2, prog);
 			fprintf(prog, " ");	
 			decompile_tree(n1, prog);
@@ -304,4 +291,159 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 		//default: break;
 	}
 	return 0;
+}
+
+void print_astnode(ASTree* node) {
+	int type = node->type;
+    switch(type){
+        case AST_GLOBAL: 
+			fprintf(stderr, "AST_GLOBAL\n");
+			break;
+        case AST_GLOBAL_VAR_DEF: 
+			fprintf(stderr, "AST_GLOBAL_VAR_DEF\n");
+			break;
+        case AST_GLOBAL_POINTER_DEF: 
+			fprintf(stderr, "AST_GLOBAL_POINTER_DEF\n");
+			break;
+        case AST_GLOBAL_VECTOR_DEF: 
+			fprintf(stderr, "AST_GLOBAL_VECTOR_DEF\n");
+			break;
+        case AST_FUNCTION_DEF: 
+			fprintf(stderr, "AST_FUNCTION_DEF\n");
+			break;
+        case AST_DEF_PARAM: 
+			fprintf(stderr, "AST_DEF_PARAM\n");
+			break;
+        case AST_DEF_PARAM_T: 
+			fprintf(stderr, "AST_DEF_PARAM_T\n");
+			break;
+        case AST_BLOCK: 
+			fprintf(stderr, "AST_BLOCK\n");
+			break;
+        case AST_COMMANDS_L: 
+			fprintf(stderr, "AST_COMMANDS_L\n");
+			break;
+        case AST_VAR_AS: 
+			fprintf(stderr, "AST_VAR_AS\n");
+			break;
+        case AST_VECTOR_AS: 
+			fprintf(stderr, "AST_VECTOR_AS\n");
+			break;
+        case AST_READ: 
+			fprintf(stderr, "AST_READ\n");
+			break;
+        case AST_PRINT: 
+			fprintf(stderr, "AST_PRINT\n");
+			break;
+        case AST_RETURN: 
+			fprintf(stderr, "AST_RETURN\n");
+			break;
+        case AST_NOT_EXP: 
+			fprintf(stderr, "AST_NOT_EXP\n");
+			break;
+        case AST_NEG_EXP: 
+			fprintf(stderr, "AST_NEG_EXP\n");
+			break;
+        case AST_PAR_EXP: 
+			fprintf(stderr, "AST_PAR_EXP\n");
+			break;
+        case AST_PLUS_EXP: 
+			fprintf(stderr, "AST_PLUS_EXP\n");
+			break;
+        case AST_MINUS_EXP: 
+			fprintf(stderr, "AST_MINUS_EXP\n");
+			break;
+        case AST_MUL_EXP: 
+			fprintf(stderr, "AST_MUL_EXP\n");
+			break;
+        case AST_DIV_EXP: 
+			fprintf(stderr, "AST_DIV_EXP\n");
+			break;
+        case AST_LESS_EXP: 
+			fprintf(stderr, "AST_LESS_EXP\n");
+			break;
+        case AST_GREAT_EXP: 
+			fprintf(stderr, "AST_GREAT_EXP\n");
+			break;
+        case AST_LE_EXP: 
+			fprintf(stderr, "AST_LE_EXP\n");
+			break;
+        case AST_GE_EXP: 
+			fprintf(stderr, "AST_GE_EXP\n");
+			break;
+        case AST_EQ_EXP:
+			fprintf(stderr, "AST_EQ_EXP\n");
+			break;
+        case AST_NE_EXP:
+			fprintf(stderr, "AST_NE_EXP\n");
+			break;
+        case AST_AND_EXP:
+			fprintf(stderr, "AST_AND_EXP\n");
+			break;
+        case AST_OR_EXP: 
+			fprintf(stderr, "AST_OR_EXP\n");
+			break;
+        case AST_ID: 
+			fprintf(stderr, "AST_ID\n");
+			break;
+        case AST_ID_POINTER: 
+			fprintf(stderr, "AST_ID_POINTER\n");
+			break;
+        case AST_ID_ADDRESS: 
+			fprintf(stderr, "AST_ID_ADDRESS\n");
+			break;
+        case AST_VECTOR_DEF: 
+			fprintf(stderr, "AST_VECTOR_DEF\n");
+			break;
+        case AST_VECTOR: 
+			fprintf(stderr, "AST_VECTOR\n");
+			break;
+        case AST_FUNCTION: 
+			fprintf(stderr, "AST_FUNCTION\n");
+			break;
+        case AST_PARAM:
+			fprintf(stderr, "AST_PARAM\n");
+			break;
+        case AST_IF: 
+			fprintf(stderr, "AST_IF\n");
+			break;
+        case AST_FOR: 
+			fprintf(stderr, "AST_FOR\n");
+			break;
+        case AST_WHILE: 
+			fprintf(stderr, "AST_WHILE\n");
+			break;
+        case AST_INIT_VALUES: 
+			fprintf(stderr, "AST_INIT_VALUES\n");
+			break;
+        case AST_INT_SYMBOL: 
+			fprintf(stderr, "AST_INT_SYMBOL\n");
+			break;
+        case AST_FLOAT_SYMBOL: 
+			fprintf(stderr, "AST_FLOAT_SYMBOL\n");
+			break;
+        case AST_CHAR_SYMBOL: 
+			fprintf(stderr, "AST_CHAR_SYMBOL\n");
+			break;
+        case AST_INT:
+			fprintf(stderr, "AST_INT\n");
+			break;
+        case AST_REAL: 
+			fprintf(stderr, "AST_REAL\n");
+			break;
+        case AST_CHAR: 
+            fprintf(stderr, "AST_CHAR\n");
+            break;
+        default: 
+            fprintf(stderr, "ERROR\n");
+            break;
+    }
+}
+void debug_AST(ASTree *node){
+    print_astnode(node);
+    for(int i =0; i < MAX_OFFSPRING; i++){
+        if(node->offspring[i] != NULL)
+            debug_AST(node->offspring[i]);
+    }
+
 }

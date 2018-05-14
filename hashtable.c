@@ -110,3 +110,26 @@ void printHash(hashTable *table) {
 		}
 	}
 }
+
+void print_type(hashNode *entry){
+	int type = entry->type;
+	switch(type){
+		case SYMBOL_LIT_INT:
+			fprintf(stderr, "[HASH] SYMBOL_LIT_INT\n");
+			break;
+		case SYMBOL_LIT_FLOAT:
+			fprintf(stderr, "[HASH] SYMBOL_LIT_FLOAT\n");
+			break;
+		case SYMBOL_LIT_CHAR:
+			fprintf(stderr, "[HASH] SYMBOL_LIT_CHAR\n");
+			break;
+		case SYMBOL_LIT_STRING:
+			fprintf(stderr, "[HASH] SYMBOL_LIT_STRING\n");
+			break;
+		case SYMBOL_IDENTIFIER:
+			fprintf(stderr, "[HASH] SYMBOL_IDENTIFIER\n");
+			break;
+		default:
+			fprintf(stderr, "[HASH] ERROR!!\n");
+	}
+}
