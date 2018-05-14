@@ -14,11 +14,15 @@
 #define _KEYSIZE 256
 #define _VALSIZE 256
 
+typedef struct astree ASTree; //prototype
+
+
 typedef struct HashNode {
 	char* id; //the id string
 	int type; //the type 
 	char* value; //some content
 	struct HashNode* next;
+	ASTree *list_head; //pointer for list
 } hashNode;
 
 typedef struct HashTable {
@@ -32,5 +36,7 @@ void initNode(hashNode **node);
 void printHash(hashTable *table);
 int getHash(char* key, hashTable *table, hashNode **entry);
 hashNode* insertHash(hashNode *entry, hashTable *table);
+void print_type(hashNode *entry);
+void set_param_list(hashNode *entry, ASTree *pointer);
 
 #endif //_HASHTABLE_H
