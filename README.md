@@ -4,6 +4,7 @@ repositório com as etapas do trabalho da disciplina de compiladores
 ** TO DO:
 
 1) aritméticas só entre números
+1.1) pode somar/subtrair um numero e um ponteiro
 2) lógicas só entre booleanos (testar resultado)
 3) não pode float em índice de array
 4) não pode somar ponteiros
