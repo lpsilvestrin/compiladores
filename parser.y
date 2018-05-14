@@ -135,7 +135,7 @@ function_def:
 
 // the header have a return type, an identifier and a list of arguments
 header:
-    scalar_type TK_IDENTIFIER def_parameters   {$$=astree_create(AST_HEADER,$2,$1,$3,0,0);}
+    scalar_type TK_IDENTIFIER def_parameters   {$$=astree_create(AST_HEADER,$2,$1,$3,0,0); $2->list_head=$3;}
     ; 
 
 def_parameters: 
