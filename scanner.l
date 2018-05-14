@@ -48,11 +48,11 @@ print   {return KW_PRINT; }
 
 [,;:()[\]{}+\-*/<>=!&$#]  {return yytext[0]; }
 
-[0-9]+                  {yylval.hashTable_pointer = updateSymbolsTable(yytext, SYMBOL_LIT_INT);/*checkSymbolsTable(yytext)*/;return LIT_INTEGER; }
-[0-9]+[.][0-9]+         {yylval.hashTable_pointer = updateSymbolsTable(yytext, SYMBOL_LIT_REAL);/*checkSymbolsTable(yytext)*/;return LIT_REAL; }
-'([^'\"]|\\['\"nt])'    {yylval.hashTable_pointer = updateSymbolsTable(yytext, SYMBOL_LIT_CHAR);/*checkSymbolsTable(yytext)*/;return LIT_CHAR; }
-\"(\\.|[^"])*\"         {yylval.hashTable_pointer = updateSymbolsTable(yytext, SYMBOL_LIT_STRING);/*checkSymbolsTable(yytext)*/;return LIT_STRING; }
-[a-zA-Z][a-zA-Z0-9_-]*  {yylval.hashTable_pointer = updateSymbolsTable(yytext, SYMBOL_IDENTIFIER);/*checkSymbolsTable(yytext)*/;return TK_IDENTIFIER; }
+[0-9]+                  {yylval.hashTable_pointer = updateSymbolsTable(yytext, SYMBOL_LIT_INT);return LIT_INTEGER; }
+[0-9]+[.][0-9]+         {yylval.hashTable_pointer = updateSymbolsTable(yytext, SYMBOL_LIT_FLOAT);return LIT_REAL; }
+'([^'\"]|\\['\"nt])'    {yylval.hashTable_pointer = updateSymbolsTable(yytext, SYMBOL_LIT_CHAR);return LIT_CHAR; }
+\"(\\.|[^"])*\"         {yylval.hashTable_pointer = updateSymbolsTable(yytext, SYMBOL_LIT_STRING);return LIT_STRING; }
+[a-zA-Z][a-zA-Z0-9_-]*  {yylval.hashTable_pointer = updateSymbolsTable(yytext, SYMBOL_IDENTIFIER);return TK_IDENTIFIER; }
 
 <<EOF>>   {running = 0; printf("EOF REACHED\n"); return running;}
 " "       {}

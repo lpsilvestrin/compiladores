@@ -12,7 +12,7 @@ extern hashTable *SymbolsTable;
 
 int main(int argc, char** argv) {
 	if (argc < 3) {
-		printf("Usage: etapa3 <input_file> <output_file>\n");
+		printf("Usage: etapa4 <input_file> <output_file>\n");
 		exit(1);
 	}
 	if((yyin = fopen(argv[1], "r"))==NULL) {

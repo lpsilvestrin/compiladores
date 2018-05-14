@@ -6,7 +6,7 @@
 
 
 
-#define AST_INITIAL 258
+#define AST_GLOBAL 258
 #define AST_GLOBAL_VAR_DEF 259
 #define AST_GLOBAL_POINTER_DEF 260
 #define AST_GLOBAL_VECTOR_DEF 261
@@ -58,12 +58,14 @@
 
 typedef struct astree {
     int type; 
+    int line; 
     hashNode *id; //pointer for the info inside our hash
     struct astree *offspring[MAX_OFFSPRING];
 } ASTree;
 
 ASTree* astree_create(int type, hashNode *id, ASTree *offspring_0, ASTree *offspring_1, ASTree *offspring_2, ASTree *offspring_3);
-void print_astnode(ASTree* node, int level);
 int decompile_tree(ASTree* tree, FILE *prog);
+void print_astnode(ASTree* node);
+void debug_AST(ASTree *node);
 
 #endif

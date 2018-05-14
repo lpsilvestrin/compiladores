@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include "astree.h"
 #include "hashtable.h"
-//#include "ast_ids.h"
+#include "semantic.h"
+
 extern int getLineNumber();
 FILE* file_pointer; //to print our output tree :)
 %}
@@ -91,13 +92,13 @@ FILE* file_pointer; //to print our output tree :)
 //---------------------- ROOT FOR SETTING OUR FILE 
 //(cannot have recursion, that's why we need a different production)
 program_root: 
-    program {$$=$1; decompile_tree($$, stderr); decompile_tree($$, file_pointer);/* print_astnode($$,0);*/}
+    program {$$=$1; semantic_analysis($$); decompile_tree($$, stderr); decompile_tree($$, file_pointer);}
     ;
 
 //---------------------- MAIN FLOW
 //a program is a (empty) list of instructions
 program: 
-    program instruction     {$$=astree_create(AST_INITIAL,0,$2,$1,0,0);}
+    program instruction     {$$=astree_create(AST_GLOBAL,0,$2,$1,0,0);}
     |                       {$$=0;} 
     ; 
 
@@ -134,7 +135,7 @@ function_def:
 
 // the header have a return type, an identifier and a list of arguments
 header:
-    scalar_type TK_IDENTIFIER def_parameters   {$$=astree_create(AST_HEADER,$2,$1,$3,0,0);}
+    scalar_type TK_IDENTIFIER def_parameters   {$$=astree_create(AST_HEADER,$2,$1,$3,0,0); $2->list_head=$3;}
     ; 
 
 def_parameters: 

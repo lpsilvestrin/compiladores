@@ -1,0 +1,6 @@
+int x = '1';
+float m = 'm';
+char z = 1.4;
+char x = 'z';
+float z = 2.2;
+int m = 11;

@@ -6,20 +6,26 @@
 #include <string.h>
 
 #define SYMBOL_LIT_INT 1
-#define SYMBOL_LIT_REAL 2
-#define SYMBOL_LIT_BOOL 3
+#define SYMBOL_LIT_FLOAT 2
 #define SYMBOL_LIT_CHAR 4
 #define SYMBOL_LIT_STRING 5
 #define SYMBOL_IDENTIFIER 7
+#define SYMBOL_PTR_INT 8
+#define SYMBOL_PTR_FLOAT 9
+#define SYMBOL_PTR_CHAR 10
 
 #define _KEYSIZE 256
 #define _VALSIZE 256
+
+typedef struct astree ASTree; //prototype
+
 
 typedef struct HashNode {
 	char* id; //the id string
 	int type; //the type 
 	char* value; //some content
 	struct HashNode* next;
+	ASTree *list_head; //pointer for list
 } hashNode;
 
 typedef struct HashTable {
@@ -27,11 +33,13 @@ typedef struct HashTable {
 	struct HashNode** data;
 } hashTable;
 
-int getHash(char* key, hashTable *table, hashNode **entry);
 unsigned long hashKey(unsigned char *str);
 void initHash(hashTable **table, int size);
 void initNode(hashNode **node);
-hashNode* insertHash(hashNode *entry, hashTable *table);
 void printHash(hashTable *table);
+int getHash(char* key, hashTable *table, hashNode **entry);
+hashNode* insertHash(hashNode *entry, hashTable *table);
+void print_type(hashNode *entry);
+void set_param_list(hashNode *entry, ASTree *pointer);
 
 #endif //_HASHTABLE_H
