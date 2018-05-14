@@ -32,7 +32,7 @@ void assign_types(ASTree *node) {
                 fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
                 print_type(node->id);
                 break;
-                case AST_FLOAT_SYMBOL: 
+               case AST_FLOAT_SYMBOL: 
                 node->id->type = SYMBOL_LIT_FLOAT;
                 fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
                 print_type(node->id);
@@ -58,6 +58,36 @@ void assign_types(ASTree *node) {
         if(node->offspring[i] != NULL)
             assign_types(node->offspring[i]);
     }
+}
+
+void assign_pointer_type(ASTree *node) {
+	if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
+		int type = node->offspring[0]->type;
+		switch(type){
+			case AST_CHAR_SYMBOL: 
+				node->id->type = SYMBOL_PTR_CHAR;
+				fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+				print_type(node->id);
+				break;
+			case AST_INT_SYMBOL: 
+				node->id->type = SYMBOL_PTR_INT;
+				fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+				print_type(node->id);
+				break;
+		   case AST_FLOAT_SYMBOL: 
+				node->id->type = SYMBOL_PTR_FLOAT;
+				fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+				print_type(node->id);
+				break;
+			default: 
+				fprintf(stderr, "[SEMANTIC] ERROR\n");
+				break;
+		}
+	} else{
+		fprintf(stderr, "[SEMANTIC] Variable %s already assigned with type: ", node->id->id);
+		print_type(node->id);
+	}
+	
 }
 
 //check if int var = X x = int type
