@@ -157,6 +157,59 @@ int assert_type(ASTree *node, int type) {
 	return assert;
 }
 
+// return the type of an expression
+int get_exp_type(ASTree *node, ASTree *scope) {
+	int type = -1; // invalid type
+	switch(node->type) {
+	case AST_CHAR:
+		type = SYMBOL_LIT_CHAR;
+		break;
+	case AST_INT:
+		type = SYMBOL_LIT_INT;
+		break;
+	case AST_REAL:
+		type = SYMBOL_LIT_FLOAT;
+		break;
+	// identifiers
+	case AST_ID_POINTER:
+	case AST_ID:
+	case AST_VECTOR:
+	case AST_FUNCTION:
+		type = get_from_scope(node->id, scope);
+		break;
+	}
+	return type;	
+}
+
+int get_from_scope(hashNode* id, ASTree *scope) {
+	// if it is not in the scope, search in the hash (GLOBAL)
+	if (scope == NULL) {
+		return id->type; 
+	}	
+	char *param = scope->id->id;
+	if (strcmp(id->id, param) == 0) {
+		// if they match, return the type from the param_list type keyword
+		return kw2type(scope->offspring[0]->type);
+	} 
+	// if dont match, look at the next parameter in the list
+	return get_from_scope(id, scope->offspring[1]);
+	
+}
+
+// convert type keywords to the respective type
+int kw2type(int kw) {
+	int type = -1; // invalid type
+	switch(kw) {
+	case AST_CHAR_SYMBOL: type = SYMBOL_LIT_CHAR;
+		break;
+	case AST_INT_SYMBOL: type = SYMBOL_LIT_INT;
+		break;
+	case AST_FLOAT_SYMBOL: type = SYMBOL_LIT_FLOAT;
+		break;
+	}
+	return type;
+}
+
 // assert if plus expression 
 int assert_plus_exp(ASTree *node, int type) {
 	ASTree *n1 = node->offspring[0];
