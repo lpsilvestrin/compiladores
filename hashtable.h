@@ -13,6 +13,7 @@
 #define SYMBOL_PTR_INT 8
 #define SYMBOL_PTR_FLOAT 9
 #define SYMBOL_PTR_CHAR 10
+#define SYMBOL_LIT_BOOL 11
 
 #define _KEYSIZE 256
 #define _VALSIZE 256

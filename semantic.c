@@ -8,7 +8,6 @@ void assign_types(ASTree *node) {
 	switch(node->type) {
     //AST_FUNCTION_DEF
 	case AST_FUNCTION_DEF:
-	//TO DO 
 		break;
     
     //AST_GLOBAL_VAR_DEF 
@@ -110,6 +109,11 @@ int ptr2scalar(int ptr_type) {
 
 int assert_type(ASTree *node, int type) {
 	int assert = 1; // 1 is correct type and 0 is wrong type
+	int node_type = -1;
+	ASTree *n1 = node->offspring[0];
+	ASTree *n2 = node->offspring[1];
+	if (node->id != NULL)
+		node_type = node->id->type;
 	switch(node->type) {
 	case AST_CHAR:
 		assert = (type == SYMBOL_LIT_CHAR);
@@ -122,15 +126,62 @@ int assert_type(ASTree *node, int type) {
 		break;
 	case AST_INIT_VALUES:
 		// check the type of the list of init values
-		if (node->offspring[1] != NULL)
-			assert = assert_type(node->offspring[1], type)
-					&& assert_type(node->offspring[0], type);
+		if (n2 != NULL)
+			assert = assert_type(n2, type)
+					&& assert_type(n1, type);
 		break;
-			
+	case AST_ID_POINTER:
+	case AST_ID:
+		assert = (node_type == type);
+		break;
+	case AST_VECTOR:
+		break; //TODO
+	case AST_FUNCTION:
+		break; // TODO
+	case AST_NOT_EXP:
+		assert = assert_type(n1, SYMBOL_LIT_BOOL); 	
+		break;
+	case AST_NEG_EXP:
+		assert = assert_type(n1, SYMBOL_LIT_INT) 
+				|| assert_type(n1, SYMBOL_LIT_FLOAT);
+		break;
+	case AST_PAR_EXP:
+		assert = assert_type(n1, type);
+		break;
+	case AST_PLUS_EXP:
+		//TODO : assert_plus_type
+		break;
+	default:
+		break;
 	}
 	return assert;
 }
 
+// assert if plus expression 
+int assert_plus_exp(ASTree *node, int type) {
+	ASTree *n1 = node->offspring[0];
+	ASTree *n2 = node->offspring[1];
+	int assert =  (((assert_ptr_type(n1) || assert_ptr_type(n2))
+		&& !(assert_ptr_type(n1) && assert_ptr_type(n2))) // only one can be pointer
+		|| (assert_arit_type(n1) || assert_arit_type(n2))) // at least one should be aritmetic
+		&& (!assert_type(n1,SYMBOL_LIT_BOOL) && !assert_type(n2,SYMBOL_LIT_BOOL)); // none of them should be boolean 
+	// test the return type
+	int final_type;
+	// TODO: testar se tipo de retorno da soma é o mesmo passar por parametro
+	return assert;
+}
+
+int assert_arit_type(ASTree *node) {
+	return assert_type(node, SYMBOL_LIT_INT)
+		|| assert_type(node, SYMBOL_LIT_CHAR)
+		|| assert_type(node, SYMBOL_LIT_FLOAT);
+}
+
+int assert_ptr_type(ASTree *node) {
+	return assert_type(node, SYMBOL_PTR_INT)
+		|| assert_type(node, SYMBOL_PTR_CHAR)
+		|| assert_type(node, SYMBOL_PTR_FLOAT);
+}
 
 //check if int var = X x = int type
 void check_assignment_types(ASTree *node) {
