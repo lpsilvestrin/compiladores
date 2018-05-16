@@ -114,7 +114,9 @@ int assert_type(ASTree *node, int type, ASTree* scope) {
 		assert = (node_type == type);
 		break;
 	case AST_VECTOR:
-		break; //TODO
+		assert = (ptr2scaler(node_type) == type) &&
+				assert_type(n1, SYMBOL_LIT_INT, scope);
+		break; 
 	case AST_FUNCTION:
 		assert = assert_param_list_type(n1, node->id->list_head, scope) &&
 			(type == node_type);
