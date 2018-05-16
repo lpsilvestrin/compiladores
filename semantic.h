@@ -4,7 +4,10 @@
 void assign_types(ASTree *node);
 void assign_fun_type(ASTree *node);
 void assign_var_type(ASTree *node);
+void assign_vector_type(ASTree *node);
 void assign_pointer_type(ASTree *node);
+void assign_param_type(ASTree *node);
+
 
 int get_exp_type(ASTree *node, ASTree *scope);
 int get_from_scope(hashNode* id, ASTree *scope);

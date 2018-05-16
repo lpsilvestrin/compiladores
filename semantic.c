@@ -147,6 +147,8 @@ int assert_ptr_type(ASTree *node) {
 }
 
 
+/*Assignment functions*/
+
 
 void assign_fun_type(ASTree *node){
 
@@ -218,33 +220,35 @@ void assign_pointer_type(ASTree *node) {
 	
 }
 
+void assign_vector_type(ASTree *node) {
+	
+}
+
+void assign_param_type(ASTree *node) {
+
+}
+
 /**********************/
 
-//NOT READY
 //1: check assignments
 void assign_types(ASTree *node) {
     print_astnode(node); //for debug sake
 
 	switch(node->type) {
-    //AST_FUNCTION_DEF
 	case AST_FUNCTION_DEF:
 		assign_fun_type(node);
 		break;
-    
-    //AST_GLOBAL_VAR_DEF 
    	case AST_GLOBAL_VAR_DEF:
         assign_var_type(node);
 		break;
     case AST_GLOBAL_VECTOR_DEF:
+		assign_vector_type(node);
+		break;
 	case AST_GLOBAL_POINTER_DEF:
-		print_type(node->id);
 		assign_pointer_type(node);
 		break;
-	
-
-    //AST_DEF_PARAM_T
     case AST_DEF_PARAM_T:
-        //TO DO
+        assign_param_type(node);
 		break;
     }
     //recursion
