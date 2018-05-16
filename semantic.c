@@ -236,7 +236,7 @@ void assign_fun_type(ASTree *node){ //TO DO: FIX RETURNS!!!
 		free(params);
 	}
 	//check assignments
-	check_assignment_types(block, node->id->list_head);
+	check_assignment_types(block, old->id->list_head);
 }
 
 void assign_var_type(ASTree *node) {
