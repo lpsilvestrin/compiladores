@@ -138,7 +138,8 @@ int assert_type(ASTree *node, int type, ASTree* scope) {
 
 		break;
 	case AST_NOT_EXP:
-		assert = assert_type(n1, SYMBOL_LIT_BOOL, scope); 	
+		assert = assert_type(n1, SYMBOL_LIT_BOOL, scope); 
+		assert = (type == SYMBOL_LIT_BOOL);	
 		break;
 	case AST_NEG_EXP:
 		assert = assert_type(n1, SYMBOL_LIT_INT, scope) 
