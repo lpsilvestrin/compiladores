@@ -3,7 +3,6 @@
 #include "semantic.h"
 #include "hashtable.h"
 
-
 int ptr2scalar(int ptr_type) {
 	switch(ptr_type) {
 		case SYMBOL_PTR_CHAR: return SYMBOL_LIT_CHAR;
@@ -13,7 +12,6 @@ int ptr2scalar(int ptr_type) {
 	fprintf(stderr, "[SEMANTIC] invalid ptr type\n");
 	return -1;
 }
-
 
 // return the type of an expression
 int get_exp_type(ASTree *node, ASTree *scope) {
@@ -32,11 +30,31 @@ int get_exp_type(ASTree *node, ASTree *scope) {
 	case AST_ID_POINTER:
 	case AST_ID:
 	case AST_VECTOR:
-	case AST_FUNCTION:
 		type = get_from_scope(node->id, scope);
 		break;
+	case AST_FUNCTION:
+		break;
+
+	
 	}
 	return type;	
+}
+
+int assert_param_list_type(ASTree *node, ASTree *param_types, ASTree* scope) {
+	int assert = 1;
+
+	if (node == NULL) {
+	// if empty parameters, return true
+		if (param_types == NULL) 
+			return 1;
+		else
+			return 0;
+	}
+	if (param_types == NULL)
+		return 0;
+	int param_type = kw2type(param_types->offspring[0]->type);
+	return assert_type(node->offspring[0], param_type, scope) && 
+		assert_param_list_type(node->offspring[1], param_types->offspring[1], scope); 
 }
 
 int get_from_scope(hashNode* id, ASTree *scope) {
@@ -68,14 +86,13 @@ int kw2type(int kw) {
 	return type;
 }
 
-
-int assert_type(ASTree *node, int type) {
+int assert_type(ASTree *node, int type, ASTree* scope) {
 	int assert = 1; // 1 is correct type and 0 is wrong type
 	int node_type = -1;
 	ASTree *n1 = node->offspring[0];
 	ASTree *n2 = node->offspring[1];
 	if (node->id != NULL)
-		node_type = node->id->type;
+		node_type = get_from_scope(node->id, scope);
 	switch(node->type) {
 	case AST_CHAR:
 		assert = (type == SYMBOL_LIT_CHAR);
@@ -89,27 +106,31 @@ int assert_type(ASTree *node, int type) {
 	case AST_INIT_VALUES:
 		// check the type of the list of init values
 		if (n2 != NULL)
-			assert = assert_type(n2, type)
-					&& assert_type(n1, type);
+			assert = assert_type(n2, type, scope)
+					&& assert_type(n1, type, scope);
 		break;
 	case AST_ID_POINTER:
 	case AST_ID:
 		assert = (node_type == type);
 		break;
 	case AST_VECTOR:
-
 		break; //TODO
 	case AST_FUNCTION:
+		assert = assert_param_list_type(n1, node->id->list_head, scope) &&
+			(type == node_type);
 		break; // TODO
+	case AST_PARAM:
+
+		break;
 	case AST_NOT_EXP:
-		assert = assert_type(n1, SYMBOL_LIT_BOOL); 	
+		assert = assert_type(n1, SYMBOL_LIT_BOOL, scope); 	
 		break;
 	case AST_NEG_EXP:
-		assert = assert_type(n1, SYMBOL_LIT_INT) 
-				|| assert_type(n1, SYMBOL_LIT_FLOAT);
+		assert = assert_type(n1, SYMBOL_LIT_INT, scope) 
+				|| assert_type(n1, SYMBOL_LIT_FLOAT, scope);
 		break;
 	case AST_PAR_EXP:
-		assert = assert_type(n1, type);
+		assert = assert_type(n1, type, scope);
 		break;
 	case AST_PLUS_EXP:
 		//TODO : assert_plus_type
@@ -120,30 +141,31 @@ int assert_type(ASTree *node, int type) {
 	return assert;
 }
 
+
 // assert if plus expression 
-int assert_plus_exp(ASTree *node, int type) {
+int assert_plus_exp(ASTree *node, int type, ASTree *scope) {
 	ASTree *n1 = node->offspring[0];
 	ASTree *n2 = node->offspring[1];
-	int assert =  (((assert_ptr_type(n1) || assert_ptr_type(n2))
-		&& !(assert_ptr_type(n1) && assert_ptr_type(n2))) // only one can be pointer
-		|| (assert_arit_type(n1) || assert_arit_type(n2))) // at least one should be aritmetic
-		&& (!assert_type(n1,SYMBOL_LIT_BOOL) && !assert_type(n2,SYMBOL_LIT_BOOL)); // none of them should be boolean 
+	int assert =  (((assert_ptr_type(n1, scope) || assert_ptr_type(n2, scope))
+		&& !(assert_ptr_type(n1, scope) && assert_ptr_type(n2, scope))) // only one can be pointer
+		|| (assert_arit_type(n1,scope) || assert_arit_type(n2,scope))) // at least one should be aritmetic
+		&& (!assert_type(n1,SYMBOL_LIT_BOOL, scope) && !assert_type(n2,SYMBOL_LIT_BOOL, scope)); // none of them should be boolean 
 	// test the return type
 	//int final_type;
 	// TODO: testar se tipo de retorno da soma é o mesmo passar por parametro
 	return assert;
 }
 
-int assert_arit_type(ASTree *node) {
-	return assert_type(node, SYMBOL_LIT_INT)
-		|| assert_type(node, SYMBOL_LIT_CHAR)
-		|| assert_type(node, SYMBOL_LIT_FLOAT);
+int assert_arit_type(ASTree *node, ASTree *scope) {
+	return assert_type(node, SYMBOL_LIT_INT, scope)
+		|| assert_type(node, SYMBOL_LIT_CHAR, scope)
+		|| assert_type(node, SYMBOL_LIT_FLOAT, scope);
 }
 
-int assert_ptr_type(ASTree *node) {
-	return assert_type(node, SYMBOL_PTR_INT)
-		|| assert_type(node, SYMBOL_PTR_CHAR)
-		|| assert_type(node, SYMBOL_PTR_FLOAT);
+int assert_ptr_type(ASTree *node, ASTree *scope) {
+	return assert_type(node, SYMBOL_PTR_INT, scope)
+		|| assert_type(node, SYMBOL_PTR_CHAR, scope)
+		|| assert_type(node, SYMBOL_PTR_FLOAT, scope);
 }
 
 
@@ -249,8 +271,9 @@ void assign_vector_type(ASTree *node) {
 		print_type(node->id);
 	}
 
-	if(node->offspring[2] != NULL) { //there are init values 
-		if(assert_type(node->offspring[2],type) == 0) {
+	if(node->offspring[2] != NULL) { //there are init values
+		// assert type with global environment 
+		if(assert_type(node->offspring[2],type,NULL) == 0) {
 			fprintf(stderr, "[SEMANTIC PROBLEM] Incorrect initialization value to vector %s\n", node->id->id);
 		}
 	}
