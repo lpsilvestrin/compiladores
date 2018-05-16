@@ -311,6 +311,9 @@ void print_astnode(ASTree* node) {
         case AST_FUNCTION_DEF: 
 			fprintf(stderr, "AST_FUNCTION_DEF\n");
 			break;
+		case AST_HEADER: 
+			fprintf(stderr, "AST_HEADER\n");
+			break;	
         case AST_DEF_PARAM: 
 			fprintf(stderr, "AST_DEF_PARAM\n");
 			break;
@@ -435,7 +438,7 @@ void print_astnode(ASTree* node) {
             fprintf(stderr, "AST_CHAR\n");
             break;
         default: 
-            fprintf(stderr, "ERROR\n");
+            fprintf(stderr, "ERROR >>%d<<\n", type);
             break;
     }
 }
