@@ -280,7 +280,6 @@ void assign_vector_type(ASTree *node) {
 		}
 	} else{
 		fprintf(stderr, "[SEMANTIC PROBLEM] Variable %s already declared with type: ", node->id->id);
-		print_type(node->id);
 	}
 	int size_type = node->offspring[1]->type;
 	if(size_type != AST_INT) {
@@ -290,6 +289,7 @@ void assign_vector_type(ASTree *node) {
 
 	if(node->offspring[2] != NULL) { //there are init values
 		// assert type with global environment 
+		type = kw2type(type);
 		if(assert_type(node->offspring[2],type,NULL) == 0) {
 			fprintf(stderr, "[SEMANTIC PROBLEM] Incorrect initialization value to vector %s\n", node->id->id);
 		}
