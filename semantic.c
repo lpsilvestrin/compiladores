@@ -5,41 +5,7 @@
 
 
 
-void assign_pointer_type(ASTree *node) {
-	if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
-		int type = node->offspring[0]->type;
-		switch(type){
-			case AST_CHAR_SYMBOL: 
-				node->id->type = SYMBOL_PTR_CHAR;
-				fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
-				print_type(node->id);
-				break;
-			case AST_INT_SYMBOL: 
-				node->id->type = SYMBOL_PTR_INT;
-				fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
-				print_type(node->id);
-				break;
-		   case AST_FLOAT_SYMBOL: 
-				node->id->type = SYMBOL_PTR_FLOAT;
-				fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
-				print_type(node->id);
-				break;
-			default: 
-				fprintf(stderr, "[SEMANTIC] ERROR\n");
-				break;
-		}
-	} else{
-		fprintf(stderr, "[SEMANTIC] Variable %s already declared with type: ", node->id->id);
-		print_type(node->id);
-	}
-	// assert the init value list type
-	if (node->offspring[2] != NULL) {
-		int assert = assert_type(node->offspring[2], ptr2scalar(node->id->type));
-		if (assert == 0)
-			fprintf(stderr, "[SEMANTIC] incorrect vector initialization\n");
-	}
-	
-}
+
 
 int ptr2scalar(int ptr_type) {
 	switch(ptr_type) {
@@ -182,21 +148,12 @@ int assert_ptr_type(ASTree *node) {
 
 
 
+void assign_fun_type(ASTree *node){
 
+}
 
-//NOT READY
-//1: check assignments
-void assign_types(ASTree *node) {
-    print_astnode(node); //for debug sake
-
-	switch(node->type) {
-    //AST_FUNCTION_DEF
-	case AST_FUNCTION_DEF:
-		break;
-    
-    //AST_GLOBAL_VAR_DEF 
-   	case AST_GLOBAL_VAR_DEF:
-        print_type(node->id); //hash pointer
+void assign_var_type(ASTree *node) {
+	print_type(node->id); //hash pointer
         if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
             int type = node->offspring[0]->type;
             switch(type){
@@ -223,6 +180,60 @@ void assign_types(ASTree *node) {
             fprintf(stderr, "[SEMANTIC] Variable %s already assigned with type: ", node->id->id);
             print_type(node->id);
         }
+}
+
+void assign_pointer_type(ASTree *node) {
+	if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
+		int type = node->offspring[0]->type;
+		switch(type){
+			case AST_CHAR_SYMBOL: 
+				node->id->type = SYMBOL_PTR_CHAR;
+				fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+				print_type(node->id);
+				break;
+			case AST_INT_SYMBOL: 
+				node->id->type = SYMBOL_PTR_INT;
+				fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+				print_type(node->id);
+				break;
+		   case AST_FLOAT_SYMBOL: 
+				node->id->type = SYMBOL_PTR_FLOAT;
+				fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+				print_type(node->id);
+				break;
+			default: 
+				fprintf(stderr, "[SEMANTIC] ERROR\n");
+				break;
+		}
+	} else{
+		fprintf(stderr, "[SEMANTIC] Variable %s already declared with type: ", node->id->id);
+		print_type(node->id);
+	}
+	// assert the init value list type
+	if (node->offspring[2] != NULL) {
+		int assert = assert_type(node->offspring[2], ptr2scalar(node->id->type));
+		if (assert == 0)
+			fprintf(stderr, "[SEMANTIC] incorrect vector initialization\n");
+	}
+	
+}
+
+/**********************/
+
+//NOT READY
+//1: check assignments
+void assign_types(ASTree *node) {
+    print_astnode(node); //for debug sake
+
+	switch(node->type) {
+    //AST_FUNCTION_DEF
+	case AST_FUNCTION_DEF:
+		assign_fun_type(node);
+		break;
+    
+    //AST_GLOBAL_VAR_DEF 
+   	case AST_GLOBAL_VAR_DEF:
+        assign_var_type(node);
 		break;
     case AST_GLOBAL_VECTOR_DEF:
 	case AST_GLOBAL_POINTER_DEF:
@@ -236,8 +247,6 @@ void assign_types(ASTree *node) {
         //TO DO
 		break;
     }
-
-
     //recursion
     for(int i =MAX_OFFSPRING-1; i >= 0; i--){
         if(node->offspring[i] != NULL)
