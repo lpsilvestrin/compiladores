@@ -3,64 +3,7 @@
 #include "semantic.h"
 #include "hashtable.h"
 
-void assign_types(ASTree *node) {
-    print_astnode(node); //for debug sake
 
-	switch(node->type) {
-    //AST_FUNCTION_DEF
-	case AST_FUNCTION_DEF:
-		break;
-    
-    //AST_GLOBAL_VAR_DEF 
-   	case AST_GLOBAL_VAR_DEF:
-        print_type(node->id); //hash pointer
-        if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
-            int type = node->offspring[0]->type;
-            switch(type){
-                case AST_CHAR_SYMBOL: 
-                node->id->type = SYMBOL_LIT_CHAR;
-                fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
-                print_type(node->id);
-                break;
-                case AST_INT_SYMBOL: 
-                node->id->type = SYMBOL_LIT_INT;
-                fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
-                print_type(node->id);
-                break;
-               case AST_FLOAT_SYMBOL: 
-                node->id->type = SYMBOL_LIT_FLOAT;
-                fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
-                print_type(node->id);
-                break;
-                default: 
-                fprintf(stderr, "[SEMANTIC] ERROR\n");
-                break;
-            }
-        } else{
-            fprintf(stderr, "[SEMANTIC] Variable %s already assigned with type: ", node->id->id);
-            print_type(node->id);
-        }
-		break;
-    case AST_GLOBAL_VECTOR_DEF:
-	case AST_GLOBAL_POINTER_DEF:
-		print_type(node->id);
-		assign_pointer_type(node);
-		break;
-	
-
-    //AST_DEF_PARAM_T
-    case AST_DEF_PARAM_T:
-        //TO DO
-		break;
-    }
-
-
-    //recursion
-    for(int i =MAX_OFFSPRING-1; i >= 0; i--){
-        if(node->offspring[i] != NULL)
-            assign_types(node->offspring[i]);
-    }
-}
 
 void assign_pointer_type(ASTree *node) {
 	if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
@@ -237,7 +180,74 @@ int assert_ptr_type(ASTree *node) {
 		|| assert_type(node, SYMBOL_PTR_FLOAT);
 }
 
-//check if int var = X x = int type
+
+
+
+
+//NOT READY
+//1: check assignments
+void assign_types(ASTree *node) {
+    print_astnode(node); //for debug sake
+
+	switch(node->type) {
+    //AST_FUNCTION_DEF
+	case AST_FUNCTION_DEF:
+		break;
+    
+    //AST_GLOBAL_VAR_DEF 
+   	case AST_GLOBAL_VAR_DEF:
+        print_type(node->id); //hash pointer
+        if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
+            int type = node->offspring[0]->type;
+            switch(type){
+                case AST_CHAR_SYMBOL: 
+                node->id->type = SYMBOL_LIT_CHAR;
+                fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+                print_type(node->id);
+                break;
+                case AST_INT_SYMBOL: 
+                node->id->type = SYMBOL_LIT_INT;
+                fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+                print_type(node->id);
+                break;
+               case AST_FLOAT_SYMBOL: 
+                node->id->type = SYMBOL_LIT_FLOAT;
+                fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+                print_type(node->id);
+                break;
+                default: 
+                fprintf(stderr, "[SEMANTIC] ERROR\n");
+                break;
+            }
+        } else{
+            fprintf(stderr, "[SEMANTIC] Variable %s already assigned with type: ", node->id->id);
+            print_type(node->id);
+        }
+		break;
+    case AST_GLOBAL_VECTOR_DEF:
+	case AST_GLOBAL_POINTER_DEF:
+		print_type(node->id);
+		assign_pointer_type(node);
+		break;
+	
+
+    //AST_DEF_PARAM_T
+    case AST_DEF_PARAM_T:
+        //TO DO
+		break;
+    }
+
+
+    //recursion
+    for(int i =MAX_OFFSPRING-1; i >= 0; i--){
+        if(node->offspring[i] != NULL)
+            assign_types(node->offspring[i]);
+    }
+}
+
+
+//NOT READY
+//2: check if int var = X x = int type
 void check_assignment_types(ASTree *node) {
     
     //print_astnode(node); //for debug sake
@@ -272,7 +282,8 @@ void check_assignment_types(ASTree *node) {
 
 }
 
-//check if var[] -> var = array type; var(la,la,la) -> var = function type
+//NOT READY
+//3: check if var[] -> var = array type; var(la,la,la) -> var = function type
 void check_variables_usage(ASTree *node) {
     
 }
