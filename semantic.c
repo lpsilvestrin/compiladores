@@ -13,6 +13,16 @@ int ptr2scalar(int ptr_type) {
 	return -1;
 }
 
+int scalar2ptr(int scalar_type) {
+	switch(scalar_type) {
+		case SYMBOL_LIT_CHAR: return SYMBOL_PTR_CHAR;
+		case SYMBOL_LIT_INT: return SYMBOL_PTR_INT;
+			case SYMBOL_LIT_FLOAT: return SYMBOL_PTR_FLOAT;
+	}
+	fprintf(stderr, "[SEMANTIC] invalid scalar type\n");
+	return -1;
+}
+
 // return the type of an expression
 int get_exp_type(ASTree *node, ASTree *scope) {
 	int type = -1; // invalid type
@@ -113,8 +123,11 @@ int assert_type(ASTree *node, int type, ASTree* scope) {
 	case AST_ID:
 		assert = (node_type == type);
 		break;
+	case AST_ID_ADDRESS:
+		assert = (scalar2ptr(node_type) == type);
+		break;
 	case AST_VECTOR:
-		assert = (ptr2scaler(node_type) == type) &&
+		assert = (ptr2scalar(node_type) == type) &&
 				assert_type(n1, SYMBOL_LIT_INT, scope);
 		break; 
 	case AST_FUNCTION:
