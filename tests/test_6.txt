@@ -10,5 +10,5 @@ int vec2[1];
 char vec3[3]: 0 0 0;
 char vec4[3]: 'a' 'b' 'c';
 
-int #p;
+int #p = 0;
 

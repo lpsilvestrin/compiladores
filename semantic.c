@@ -173,7 +173,37 @@ int assert_ptr_type(ASTree *node, ASTree *scope) {
 
 
 void assign_fun_type(ASTree *node){
-	//TO DO
+	//print_type(node->id); //hash pointer
+        if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
+            int type = node->offspring[0]->type;
+            switch(type){
+                case AST_CHAR_SYMBOL: 
+                node->id->type = SYMBOL_FUN_CHAR;
+                fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
+                print_type(node->id);
+                break;
+                case AST_INT_SYMBOL: 
+                node->id->type = SYMBOL_FUN_INT;
+                fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
+                print_type(node->id);
+                break;
+               case AST_FLOAT_SYMBOL: 
+                node->id->type = SYMBOL_FUN_FLOAT;
+                fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
+                print_type(node->id);
+                break;
+                default: 
+                fprintf(stderr, "[SEMANTIC] ERROR\n");
+                break;
+            }
+        } else{
+            fprintf(stderr, "[SEMANTIC PROBLEM] Function %s already declared with type: ", node->id->id);
+            print_type(node->id);
+        }
+		if(node->offspring[1] != NULL) {//check parameters
+
+		}
+		
 }
 
 void assign_var_type(ASTree *node) {
@@ -289,7 +319,7 @@ void assign_param_type(ASTree *node) {
 void assign_types(ASTree *node) {
     print_astnode(node); //for debug sake
 	switch(node->type) {
-	case AST_FUNCTION_DEF:
+	case AST_HEADER: //function
 		assign_fun_type(node);
 		break;
    	case AST_GLOBAL_VAR_DEF:
