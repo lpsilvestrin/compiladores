@@ -147,9 +147,13 @@ int assert_type(ASTree *node, int type, ASTree* scope) {
 		assert = assert_type(n1, SYMBOL_LIT_INT, scope) 
 				|| assert_type(n1, SYMBOL_LIT_FLOAT, scope);
 		break;
+	case AST_MUL_EXP:
+	case AST_DIV_EXP:
+		break;
 	case AST_PAR_EXP:
 		assert = assert_type(n1, type, scope);
 		break;
+	case AST_MINUS_EXP:
 	case AST_PLUS_EXP:
 		//TODO : assert_plus_type
 		break;
