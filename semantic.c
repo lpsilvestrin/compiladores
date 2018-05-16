@@ -1,5 +1,6 @@
 
 #include "astree.h"
+#include "semantic.h"
 #include "hashtable.h"
 
 void assign_types(ASTree *node) {
@@ -219,7 +220,7 @@ int assert_plus_exp(ASTree *node, int type) {
 		|| (assert_arit_type(n1) || assert_arit_type(n2))) // at least one should be aritmetic
 		&& (!assert_type(n1,SYMBOL_LIT_BOOL) && !assert_type(n2,SYMBOL_LIT_BOOL)); // none of them should be boolean 
 	// test the return type
-	int final_type;
+	//int final_type;
 	// TODO: testar se tipo de retorno da soma é o mesmo passar por parametro
 	return assert;
 }

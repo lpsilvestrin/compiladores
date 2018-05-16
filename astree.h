@@ -4,8 +4,6 @@
 
 #define MAX_OFFSPRING 4 //suggested by our teacher
 
-
-
 #define AST_GLOBAL 258
 #define AST_GLOBAL_VAR_DEF 259
 #define AST_GLOBAL_POINTER_DEF 260
