@@ -174,7 +174,8 @@ int assert_ptr_type(ASTree *node, ASTree *scope) {
 /*Assignment functions*/
 
 void assign_fun_type(ASTree *node){ //TO DO: FIX RETURNS!!!
-	//print_type(node->id); //hash pointer
+	ASTree *block = node->offspring[1]; //saves the block
+	node = node->offspring[0]; //goes to the header
 	if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
 		int type = node->offspring[0]->type;
 		switch(type){
@@ -202,7 +203,7 @@ void assign_fun_type(ASTree *node){ //TO DO: FIX RETURNS!!!
 		print_type(node->id);
 	}
 
-	ASTree *old = node;
+	ASTree *old = node; //old = header
 	if(node->offspring[1] != NULL) {//check parameters
 		node = node->offspring[1];
 		hashTable *params;
@@ -223,8 +224,8 @@ void assign_fun_type(ASTree *node){ //TO DO: FIX RETURNS!!!
 		printHash(params);
 		free(params);
 	}
-
-		
+	//check assignments
+	check_assignment_types(block, old);
 }
 
 void assign_var_type(ASTree *node) {
@@ -338,8 +339,6 @@ void assign_vector_type(ASTree *node) {
 			fprintf(stderr, "[SEMANTIC PROBLEM] Incorrect initialization value to vector %s\n", node->id->id);
 		}
 	}
-
-	//check assignments
 }
 
 /**********************/
@@ -348,7 +347,7 @@ void assign_vector_type(ASTree *node) {
 void assign_types(ASTree *node) {
     print_astnode(node); //for debug sake
 	switch(node->type) {
-	case AST_HEADER: //function
+	case AST_FUNCTION_DEF: //function
 		assign_fun_type(node);
 		break;
    	case AST_GLOBAL_VAR_DEF:
@@ -374,25 +373,31 @@ void assign_types(ASTree *node) {
 //NOT READY
 //2: check if int var = X x = int type
 void check_assignment_types(ASTree *node, ASTree *scope) {
-    
-    //print_astnode(node); //for debug sake
-	/*switch(node->type) {
+    print_astnode(node); //for debug sake
+	int type;
+	switch(node->type) {
 		case AST_VECTOR_AS:  //{$$=astree_create(AST_VECTOR_AS,$1,$3,$6,0,0);}
-			int type = get_from_scope(node->id, scope);
-			if(assert_type(,type,NULL) == 0) {
-			fprintf(stderr, "[SEMANTIC PROBLEM] Incorrect initialization value to vector %s\n", node->id->id);
+			if(node->id == NULL){
+				fprintf(stderr, "RIP OUR HASH\n");
+			}
+			type = get_from_scope(node->id, scope);
+			if(assert_type(node->offspring[1],type,scope) == 0) {
+			fprintf(stderr, "[SEMANTIC PROBLEM] Incorrect assignment value to vector %s\n", node->id->id);
 			}
 			break;
 		case AST_VAR_AS: //{$$=astree_create(AST_VAR_AS,$1,$3,0,0,0);}
-		
+			type = get_from_scope(node->id, scope);
+			if(assert_type(node->offspring[1],type,scope) == 0) {
+			fprintf(stderr, "[SEMANTIC PROBLEM] Incorrect assignment value to variable %s\n", node->id->id);
+			}
 			break;
 		default: break;
 	}
     //recursion
     for(int i =MAX_OFFSPRING-1; i >= 0; i--){
         if(node->offspring[i] != NULL)
-            check_assignment_types(node->offspring[i]);
-    }*/
+            check_assignment_types(node->offspring[i], scope);
+    }
 
 }
 
