@@ -11,7 +11,7 @@ int ptr2scalar(int ptr_type, int line) {
 		case SYMBOL_PTR_INT: return SYMBOL_LIT_INT;
 			case SYMBOL_PTR_FLOAT: return SYMBOL_LIT_FLOAT;
 	}
-	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid ptr type\n", line);
+	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid ptr type\n", line-1);
 	return -1;
 }
 
@@ -21,7 +21,7 @@ int scalar2ptr(int scalar_type, int line) {
 		case SYMBOL_LIT_INT: return SYMBOL_PTR_INT;
 			case SYMBOL_LIT_FLOAT: return SYMBOL_PTR_FLOAT;
 	}
-	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid scalar type on line\n", line);
+	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid scalar type on line\n", line-1);
 	return -1;
 }
 
