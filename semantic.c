@@ -151,7 +151,7 @@ int assert_ptr_type(ASTree *node) {
 
 
 void assign_fun_type(ASTree *node){
-
+	//TO DO
 }
 
 void assign_var_type(ASTree *node) {
@@ -214,6 +214,41 @@ void assign_pointer_type(ASTree *node) {
 }
 
 void assign_vector_type(ASTree *node) {
+	//TO DO
+	//check if [X] => type X = int
+	//check if the elements (if they exist) are from the same type than vec type 
+
+	if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
+		int type = node->offspring[0]->type;
+		switch(type){
+			case AST_CHAR_SYMBOL: 
+				node->id->type = SYMBOL_VEC_CHAR;
+				fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+				print_type(node->id);
+				break;
+			case AST_INT_SYMBOL: 
+				node->id->type = SYMBOL_VEC_INT;
+				fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+				print_type(node->id);
+				break;
+		   case AST_FLOAT_SYMBOL: 
+				node->id->type = SYMBOL_VEC_FLOAT;
+				fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+				print_type(node->id);
+				break;
+			default: 
+				fprintf(stderr, "[SEMANTIC] ERROR\n");
+				break;
+		}
+	} else{
+		fprintf(stderr, "[SEMANTIC] Variable %s already declared with type: ", node->id->id);
+		print_type(node->id);
+	}
+
+
+
+
+
 	/*	// assert the init value list type
 	if (node->offspring[2] != NULL) {
 		int assert = assert_type(node->offspring[2], ptr2scalar(node->id->type));
@@ -224,7 +259,7 @@ void assign_vector_type(ASTree *node) {
 }
 
 void assign_param_type(ASTree *node) {
-
+	//TO DO
 }
 
 /**********************/

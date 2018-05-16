@@ -14,6 +14,9 @@
 #define SYMBOL_PTR_FLOAT 9
 #define SYMBOL_PTR_CHAR 10
 #define SYMBOL_LIT_BOOL 11
+#define SYMBOL_VEC_INT 12
+#define SYMBOL_VEC_FLOAT 13
+#define SYMBOL_VEC_CHAR 14
 
 #define _KEYSIZE 256
 #define _VALSIZE 256
