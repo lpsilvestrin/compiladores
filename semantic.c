@@ -175,89 +175,97 @@ int assert_ptr_type(ASTree *node, ASTree *scope) {
 
 void assign_fun_type(ASTree *node){ //TO DO: FIX RETURNS!!!
 	//print_type(node->id); //hash pointer
-        if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
-            int type = node->offspring[0]->type;
-            switch(type){
-                case AST_CHAR_SYMBOL: 
-                node->id->type = SYMBOL_FUN_CHAR;
-                fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
-                print_type(node->id);
-                break;
-                case AST_INT_SYMBOL: 
-                node->id->type = SYMBOL_FUN_INT;
-                fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
-                print_type(node->id);
-                break;
-               case AST_FLOAT_SYMBOL: 
-                node->id->type = SYMBOL_FUN_FLOAT;
-                fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
-                print_type(node->id);
-                break;
-                default: 
-                fprintf(stderr, "[SEMANTIC] ERROR\n");
-                break;
-            }
-        } else{
-            fprintf(stderr, "[SEMANTIC PROBLEM] Function %s already declared with type: ", node->id->id);
-            print_type(node->id);
-        }
+	if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
+		int type = node->offspring[0]->type;
+		switch(type){
+			case AST_CHAR_SYMBOL: 
+			node->id->type = SYMBOL_FUN_CHAR;
+			fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
+			print_type(node->id);
+			break;
+			case AST_INT_SYMBOL: 
+			node->id->type = SYMBOL_FUN_INT;
+			fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
+			print_type(node->id);
+			break;
+			case AST_FLOAT_SYMBOL: 
+			node->id->type = SYMBOL_FUN_FLOAT;
+			fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
+			print_type(node->id);
+			break;
+			default: 
+			fprintf(stderr, "[SEMANTIC] ERROR\n");
+			break;
+		}
+	} else{
+		fprintf(stderr, "[SEMANTIC PROBLEM] Function %s already declared with type: ", node->id->id);
+		print_type(node->id);
+	}
 
-		ASTree *old = node;
-		if(node->offspring[1] != NULL) {//check parameters
+	ASTree *old = node;
+	if(node->offspring[1] != NULL) {//check parameters
+		node = node->offspring[1];
+		hashTable *params;
+		initHash(&params, MAX_PARAM_SIZE);
+		do{
+			hashNode *n;
+			initNode(&n);
+			strcpy(n->id, node->id->id); // atribuindo identificador como key
+			n->type = node->id->type;
+			hashNode* res =insertHash(n, params);
+			if (res != n) {
+				free(n);
+				fprintf(stderr, "[SEMANTIC PROBLEM] On function %s: parameter %s was declared twice.\n", old->id->id, node->id->id);
+				break;
+			}
 			node = node->offspring[1];
-			hashTable *params;
-			initHash(&params, MAX_PARAM_SIZE);
-			do{
-				hashNode *n;
-				initNode(&n);
-				strcpy(n->id, node->id->id); // atribuindo identificador como key
-				n->type = node->id->type;
-				hashNode* res =insertHash(n, params);
-				if (res != n) {
-					free(n);
-					fprintf(stderr, "[SEMANTIC PROBLEM] On function %s: parameter %s was declared twice.\n", old->id->id, node->id->id);
-					break;
-				}
-				node = node->offspring[1];
-			}while(node != NULL);
-			printHash(params);
-			free(params);
-		}		
+		}while(node != NULL);
+		printHash(params);
+		free(params);
+	}
+
+		
 }
 
 void assign_var_type(ASTree *node) {
 	//print_type(node->id); //hash pointer
-        if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
-            int type = node->offspring[0]->type;
-            switch(type){
-                case AST_CHAR_SYMBOL: 
-                node->id->type = SYMBOL_LIT_CHAR;
-                fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
-                print_type(node->id);
-                break;
-                case AST_INT_SYMBOL: 
-                node->id->type = SYMBOL_LIT_INT;
-                fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
-                print_type(node->id);
-                break;
-               case AST_FLOAT_SYMBOL: 
-                node->id->type = SYMBOL_LIT_FLOAT;
-                fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
-                print_type(node->id);
-                break;
-                default: 
-                fprintf(stderr, "[SEMANTIC] ERROR\n");
-                break;
-            }
-        } else{
-            fprintf(stderr, "[SEMANTIC PROBLEM] Variable %s already declared with type: ", node->id->id);
-            print_type(node->id);
-        }
+	int type;
+	if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
+		type = node->offspring[0]->type;
+		switch(type){
+			case AST_CHAR_SYMBOL: 
+			node->id->type = SYMBOL_LIT_CHAR;
+			fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
+			print_type(node->id);
+			break;
+			case AST_INT_SYMBOL: 
+			node->id->type = SYMBOL_LIT_INT;
+			fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
+			print_type(node->id);
+			break;
+			case AST_FLOAT_SYMBOL: 
+			node->id->type = SYMBOL_LIT_FLOAT;
+			fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
+			print_type(node->id);
+			break;
+			default: 
+			fprintf(stderr, "[SEMANTIC] ERROR\n");
+			break;
+		}
+	} else{
+		fprintf(stderr, "[SEMANTIC PROBLEM] Variable %s already declared with type: ", node->id->id);
+		print_type(node->id);
+	}
+	type = kw2type(type);
+	if(assert_type(node->offspring[1],type,NULL) == 0) {
+		fprintf(stderr, "[SEMANTIC PROBLEM] Incorrect initialization value for variable %s\n", node->id->id);
+		}
 }
 
 void assign_pointer_type(ASTree *node) {
+	int type;
 	if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
-		int type = node->offspring[0]->type;
+		type = node->offspring[0]->type;
 		switch(type){
 			case AST_CHAR_SYMBOL: 
 				node->id->type = SYMBOL_PTR_CHAR;
@@ -282,6 +290,10 @@ void assign_pointer_type(ASTree *node) {
 		fprintf(stderr, "[SEMANTIC PROBLEM] Variable %s already declared with type: ", node->id->id);
 		print_type(node->id);
 	}
+	type = kw2type(type);
+	if(assert_type(node->offspring[1],type,NULL) == 0) {
+		fprintf(stderr, "[SEMANTIC PROBLEM] Incorrect initialization value for pointer %s\n", node->id->id);
+		}
 }
 
 void assign_vector_type(ASTree *node) {
@@ -326,6 +338,8 @@ void assign_vector_type(ASTree *node) {
 			fprintf(stderr, "[SEMANTIC PROBLEM] Incorrect initialization value to vector %s\n", node->id->id);
 		}
 	}
+
+	//check assignments
 }
 
 /**********************/
@@ -359,37 +373,26 @@ void assign_types(ASTree *node) {
 
 //NOT READY
 //2: check if int var = X x = int type
-void check_assignment_types(ASTree *node) {
+void check_assignment_types(ASTree *node, ASTree *scope) {
     
     //print_astnode(node); //for debug sake
-
-    //AST_FUNCTION_DEF
-    if(node->type == AST_FUNCTION_DEF){
-        //TO DO 
-    }
-
-    //AST_GLOBAL_VECTOR_DEF
-    if(node->type == AST_GLOBAL_VECTOR_DEF){
-        //como tipar o assignment?? vetor[xx]: 1 2 3 4 "l" 6.7
-        //TO DO
-    }
-
-    //AST_GLOBAL_VAR_DEF & AST_GLOBAL_POINTER_DEF
-    if((node->type == AST_GLOBAL_VAR_DEF)||(node->type == AST_GLOBAL_POINTER_DEF)){
-        //TO DO
-    }
-
-    //AST_DEF_PARAM_T
-    if(node->type == AST_DEF_PARAM_T){
-        //TO DO
-    }
-
-
+	/*switch(node->type) {
+		case AST_VECTOR_AS:  //{$$=astree_create(AST_VECTOR_AS,$1,$3,$6,0,0);}
+			int type = get_from_scope(node->id, scope);
+			if(assert_type(,type,NULL) == 0) {
+			fprintf(stderr, "[SEMANTIC PROBLEM] Incorrect initialization value to vector %s\n", node->id->id);
+			}
+			break;
+		case AST_VAR_AS: //{$$=astree_create(AST_VAR_AS,$1,$3,0,0,0);}
+		
+			break;
+		default: break;
+	}
     //recursion
     for(int i =MAX_OFFSPRING-1; i >= 0; i--){
         if(node->offspring[i] != NULL)
             check_assignment_types(node->offspring[i]);
-    }
+    }*/
 
 }
 
@@ -401,7 +404,7 @@ void check_variables_usage(ASTree *node) {
 
 void semantic_analysis(ASTree *root) {
     assign_types(root);
-    check_assignment_types(root);
+    //check_assignment_types(root, NULL);
     check_variables_usage(root);
 }
 
