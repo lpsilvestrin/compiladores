@@ -150,8 +150,17 @@ int assert_type(ASTree *node, int type, ASTree* scope) {
 	case AST_PLUS_EXP:
 		//TODO : assert_plus_type
 		break;
-	//case AST_LE_EXP:
-	//	assert = assert_type(n1, SYMBOL_LIT_
+	case AST_LESS_EXP:
+	case AST_GREAT_EXP:
+	case AST_GE_EXP:
+	case AST_EQ_EXP:
+	case AST_NE_EXP:
+	case AST_AND_EXP:
+	case AST_OR_EXP:
+	case AST_LE_EXP:
+	assert = assert_type(n1, SYMBOL_LIT_BOOL, scope);
+	assert = assert && assert_type(n2, SYMBOL_LIT_BOOL, scope);
+	assert = assert && (type == SYMBOL_LIT_BOOL, scope);
 	default:
 		break;
 	}
