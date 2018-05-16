@@ -111,6 +111,15 @@ void printHash(hashTable *table) {
 				case SYMBOL_PTR_CHAR: 
 					fprintf(stderr, "char pointer\n");
 				break;
+				case SYMBOL_VEC_INT: 
+					fprintf(stderr, "int vector\n");
+				break;
+				case SYMBOL_VEC_FLOAT: 
+					fprintf(stderr, "float vector\n");
+				break;
+				case SYMBOL_VEC_CHAR: 
+					fprintf(stderr, "char vector\n");
+				break;
 				default: 
 					fprintf(stderr, "UNKNOWN %d\n", type);
 			}
@@ -146,6 +155,15 @@ void print_type(hashNode *entry) {
 			break;
 		case SYMBOL_PTR_CHAR:
 			fprintf(stderr, "[HASH] SYMBOL_PTR_CHAR\n");
+			break;
+		case SYMBOL_VEC_INT:
+			fprintf(stderr, "[HASH] SYMBOL_VEC_INT\n");
+			break;
+		case SYMBOL_VEC_FLOAT:
+			fprintf(stderr, "[HASH] SYMBOL_VEC_FLOAT\n");
+			break;
+		case SYMBOL_VEC_CHAR:
+			fprintf(stderr, "[HASH] SYMBOL_VEC_CHAR\n");
 			break;
 		default:
 			fprintf(stderr, "[HASH] ERROR!!\n");

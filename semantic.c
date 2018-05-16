@@ -4,9 +4,6 @@
 #include "hashtable.h"
 
 
-
-
-
 int ptr2scalar(int ptr_type) {
 	switch(ptr_type) {
 		case SYMBOL_PTR_CHAR: return SYMBOL_LIT_CHAR;
@@ -17,55 +14,6 @@ int ptr2scalar(int ptr_type) {
 	return -1;
 }
 
-int assert_type(ASTree *node, int type) {
-	int assert = 1; // 1 is correct type and 0 is wrong type
-	int node_type = -1;
-	ASTree *n1 = node->offspring[0];
-	ASTree *n2 = node->offspring[1];
-	if (node->id != NULL)
-		node_type = node->id->type;
-	switch(node->type) {
-	case AST_CHAR:
-		assert = (type == SYMBOL_LIT_CHAR);
-		break;
-	case AST_INT:
-		assert = (type == SYMBOL_LIT_INT);
-		break;
-	case AST_REAL:
-		assert = (type == SYMBOL_LIT_FLOAT);
-		break;
-	case AST_INIT_VALUES:
-		// check the type of the list of init values
-		if (n2 != NULL)
-			assert = assert_type(n2, type)
-					&& assert_type(n1, type);
-		break;
-	case AST_ID_POINTER:
-	case AST_ID:
-		assert = (node_type == type);
-		break;
-	case AST_VECTOR:
-		break; //TODO
-	case AST_FUNCTION:
-		break; // TODO
-	case AST_NOT_EXP:
-		assert = assert_type(n1, SYMBOL_LIT_BOOL); 	
-		break;
-	case AST_NEG_EXP:
-		assert = assert_type(n1, SYMBOL_LIT_INT) 
-				|| assert_type(n1, SYMBOL_LIT_FLOAT);
-		break;
-	case AST_PAR_EXP:
-		assert = assert_type(n1, type);
-		break;
-	case AST_PLUS_EXP:
-		//TODO : assert_plus_type
-		break;
-	default:
-		break;
-	}
-	return assert;
-}
 
 // return the type of an expression
 int get_exp_type(ASTree *node, ASTree *scope) {
@@ -120,6 +68,58 @@ int kw2type(int kw) {
 	return type;
 }
 
+
+int assert_type(ASTree *node, int type) {
+	int assert = 1; // 1 is correct type and 0 is wrong type
+	int node_type = -1;
+	ASTree *n1 = node->offspring[0];
+	ASTree *n2 = node->offspring[1];
+	if (node->id != NULL)
+		node_type = node->id->type;
+	switch(node->type) {
+	case AST_CHAR:
+		assert = (type == SYMBOL_LIT_CHAR);
+		break;
+	case AST_INT:
+		assert = (type == SYMBOL_LIT_INT);
+		break;
+	case AST_REAL:
+		assert = (type == SYMBOL_LIT_FLOAT);
+		break;
+	case AST_INIT_VALUES:
+		// check the type of the list of init values
+		if (n2 != NULL)
+			assert = assert_type(n2, type)
+					&& assert_type(n1, type);
+		break;
+	case AST_ID_POINTER:
+	case AST_ID:
+		assert = (node_type == type);
+		break;
+	case AST_VECTOR:
+
+		break; //TODO
+	case AST_FUNCTION:
+		break; // TODO
+	case AST_NOT_EXP:
+		assert = assert_type(n1, SYMBOL_LIT_BOOL); 	
+		break;
+	case AST_NEG_EXP:
+		assert = assert_type(n1, SYMBOL_LIT_INT) 
+				|| assert_type(n1, SYMBOL_LIT_FLOAT);
+		break;
+	case AST_PAR_EXP:
+		assert = assert_type(n1, type);
+		break;
+	case AST_PLUS_EXP:
+		//TODO : assert_plus_type
+		break;
+	default:
+		break;
+	}
+	return assert;
+}
+
 // assert if plus expression 
 int assert_plus_exp(ASTree *node, int type) {
 	ASTree *n1 = node->offspring[0];
@@ -161,17 +161,17 @@ void assign_var_type(ASTree *node) {
             switch(type){
                 case AST_CHAR_SYMBOL: 
                 node->id->type = SYMBOL_LIT_CHAR;
-                fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+                fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
                 print_type(node->id);
                 break;
                 case AST_INT_SYMBOL: 
                 node->id->type = SYMBOL_LIT_INT;
-                fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+                fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
                 print_type(node->id);
                 break;
                case AST_FLOAT_SYMBOL: 
                 node->id->type = SYMBOL_LIT_FLOAT;
-                fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+                fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
                 print_type(node->id);
                 break;
                 default: 
@@ -190,17 +190,17 @@ void assign_pointer_type(ASTree *node) {
 		switch(type){
 			case AST_CHAR_SYMBOL: 
 				node->id->type = SYMBOL_PTR_CHAR;
-				fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+				fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
 				print_type(node->id);
 				break;
 			case AST_INT_SYMBOL: 
 				node->id->type = SYMBOL_PTR_INT;
-				fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+				fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
 				print_type(node->id);
 				break;
 		   case AST_FLOAT_SYMBOL: 
 				node->id->type = SYMBOL_PTR_FLOAT;
-				fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+				fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
 				print_type(node->id);
 				break;
 			default: 
@@ -216,23 +216,23 @@ void assign_pointer_type(ASTree *node) {
 void assign_vector_type(ASTree *node) {
 	//TO DO
 	//check if the elements (if they exist) are from the same type than vec type 
-
+	int type;
 	if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
-		int type = node->offspring[0]->type;
+		type = node->offspring[0]->type;
 		switch(type){
 			case AST_CHAR_SYMBOL: 
 				node->id->type = SYMBOL_VEC_CHAR;
-				fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+				fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
 				print_type(node->id);
 				break;
 			case AST_INT_SYMBOL: 
 				node->id->type = SYMBOL_VEC_INT;
-				fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+				fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
 				print_type(node->id);
 				break;
 		   case AST_FLOAT_SYMBOL: 
 				node->id->type = SYMBOL_VEC_FLOAT;
-				fprintf(stderr, "[SEMANTIC] Changing variable %s type:", node->id->id);
+				fprintf(stderr, "[SEMANTIC] Changing variable %s type: ", node->id->id);
 				print_type(node->id);
 				break;
 			default: 
@@ -245,12 +245,14 @@ void assign_vector_type(ASTree *node) {
 	}
 	int size_type = node->offspring[1]->type;
 	if(size_type != AST_INT) {
-		fprintf(stderr, "[SEMANTIC PROBLEM] Vector must have an integer as size. Given type ", node->id->id);
+		fprintf(stderr, "[SEMANTIC PROBLEM] Vector must have an integer as size. Given type ");
 		print_type(node->id);
 	}
 
 	if(node->offspring[2] != NULL) { //there are init values 
-		//DO SOMETHING!!
+		if(assert_type(node->offspring[2],type) == 0) {
+			fprintf(stderr, "[SEMANTIC PROBLEM] Incorrect initialization value to vector %s\n", node->id->id);
+		}
 	}
 }
 
@@ -319,7 +321,7 @@ void check_assignment_types(ASTree *node) {
     //recursion
     for(int i =MAX_OFFSPRING-1; i >= 0; i--){
         if(node->offspring[i] != NULL)
-            assign_types(node->offspring[i]);
+            check_assignment_types(node->offspring[i]);
     }
 
 }
@@ -327,12 +329,12 @@ void check_assignment_types(ASTree *node) {
 //NOT READY
 //3: check if var[] -> var = array type; var(la,la,la) -> var = function type
 void check_variables_usage(ASTree *node) {
-    
+    //TO DO
 }
 
 void semantic_analysis(ASTree *root) {
     assign_types(root);
-    //check_assignment_types(root);
-    //check_variables_usage(root);
+    check_assignment_types(root);
+    check_variables_usage(root);
 }
 

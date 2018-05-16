@@ -49,7 +49,6 @@ FILE* file_pointer; //to print our output tree :)
 %type<astree_pointer> init_values_list
 %type<astree_pointer> scalar_type
 %type<astree_pointer> id
-%type<astree_pointer> size
 
 /*lang181 special tokens*/
 %token KW_CHAR
@@ -123,8 +122,8 @@ global_var_def:
 
 //initialization is given by values separated by " " after a ":"
 vector_def: 
-    scalar_type TK_IDENTIFIER '[' size ']' ';'                         {$$=astree_create(AST_GLOBAL_VECTOR_DEF,$2,$1,$4,0,0);} 
-    | scalar_type TK_IDENTIFIER '[' size ']' ':' init_values_list ';'  {$$=astree_create(AST_GLOBAL_VECTOR_DEF,$2,$1,$4,$7,0);}  
+    scalar_type TK_IDENTIFIER '[' init_value ']' ';'                         {$$=astree_create(AST_GLOBAL_VECTOR_DEF,$2,$1,$4,0,0);} 
+    | scalar_type TK_IDENTIFIER '[' init_value ']' ':' init_values_list ';'  {$$=astree_create(AST_GLOBAL_VECTOR_DEF,$2,$1,$4,$7,0);}  
     ;
 
 //---------------------- FUNCTION
@@ -295,10 +294,6 @@ init_values_list:
     init_value                      {$$=$1;}
     | init_values_list init_value   {$$=astree_create(AST_INIT_VALUES,0,$1,$2,0,0);}
     ; 
-
-size:
-    LIT_INTEGER {$$=astree_create(AST_INT,$1,0,0,0,0);}
-    ;    
 
 
 %%

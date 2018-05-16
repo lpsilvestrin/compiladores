@@ -4,3 +4,8 @@ char z = 1.4;
 char x = 'z';
 float z = 2.2;
 int m = 11;
+
+int vec[2.5];
+int vec2[1];
+char vec3[3]: 0 0 0;
+char vec4[3]: 'a' 'b' 'c';
