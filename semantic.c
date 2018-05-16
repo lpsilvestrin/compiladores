@@ -46,17 +46,26 @@ int assert_param_list_type(ASTree *node, ASTree *param_types, ASTree* scope) {
 	int assert = 1;
 
 	if (node == NULL) {
-	// if empty parameters, return true
+	// if both have empty parameters, return true
 		if (param_types == NULL) 
 			return 1;
-		else
+		else // if one of them is empty and the other isn't, return false
 			return 0;
 	}
 	if (param_types == NULL)
 		return 0;
 	int param_type = kw2type(param_types->offspring[0]->type);
-	return assert_type(node->offspring[0], param_type, scope) && 
-		assert_param_list_type(node->offspring[1], param_types->offspring[1], scope); 
+	ASTree *exp, *list_rest;
+	// test in which node of the parameter listthe expression is
+	if (node->offspring[1] == NULL) {
+		exp = node->offspring[0];
+		list_rest = NULL;
+	} else {
+		exp = node->offspring[1];
+		list_rest = node->offspring[0];
+	}
+	return assert_type(exp, param_type, scope) && 
+		assert_param_list_type(list_rest, param_types->offspring[1], scope); 
 }
 
 int get_from_scope(hashNode* id, ASTree *scope) {
