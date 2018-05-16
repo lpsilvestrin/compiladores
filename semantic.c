@@ -179,7 +179,7 @@ void assign_var_type(ASTree *node) {
                 break;
             }
         } else{
-            fprintf(stderr, "[SEMANTIC] Variable %s already assigned with type: ", node->id->id);
+            fprintf(stderr, "[SEMANTIC PROBLEM] Variable %s already declared with type: ", node->id->id);
             print_type(node->id);
         }
 }
@@ -208,14 +208,13 @@ void assign_pointer_type(ASTree *node) {
 				break;
 		}
 	} else{
-		fprintf(stderr, "[SEMANTIC] Variable %s already declared with type: ", node->id->id);
+		fprintf(stderr, "[SEMANTIC PROBLEM] Variable %s already declared with type: ", node->id->id);
 		print_type(node->id);
 	}
 }
 
 void assign_vector_type(ASTree *node) {
 	//TO DO
-	//check if [X] => type X = int
 	//check if the elements (if they exist) are from the same type than vec type 
 
 	if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
@@ -241,21 +240,18 @@ void assign_vector_type(ASTree *node) {
 				break;
 		}
 	} else{
-		fprintf(stderr, "[SEMANTIC] Variable %s already declared with type: ", node->id->id);
+		fprintf(stderr, "[SEMANTIC PROBLEM] Variable %s already declared with type: ", node->id->id);
+		print_type(node->id);
+	}
+	int size_type = node->offspring[1]->type;
+	if(size_type != AST_INT) {
+		fprintf(stderr, "[SEMANTIC PROBLEM] Vector must have an integer as size. Given type ", node->id->id);
 		print_type(node->id);
 	}
 
-
-
-
-
-	/*	// assert the init value list type
-	if (node->offspring[2] != NULL) {
-		int assert = assert_type(node->offspring[2], ptr2scalar(node->id->type));
-		if (assert == 0)
-			fprintf(stderr, "[SEMANTIC] incorrect vector initialization\n");
-	}*/
-
+	if(node->offspring[2] != NULL) { //there are init values 
+		//DO SOMETHING!!
+	}
 }
 
 void assign_param_type(ASTree *node) {
