@@ -1,6 +1,8 @@
 
 #include "astree.h"
 
+#define MAX_PARAM_SIZE 30
+
 /*void assign_types(ASTree *node);
 void assign_fun_type(ASTree *node);
 void assign_var_type(ASTree *node);

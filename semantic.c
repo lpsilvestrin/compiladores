@@ -3,6 +3,8 @@
 #include "semantic.h"
 #include "hashtable.h"
 
+
+
 int ptr2scalar(int ptr_type) {
 	switch(ptr_type) {
 		case SYMBOL_PTR_CHAR: return SYMBOL_LIT_CHAR;
@@ -198,8 +200,7 @@ int assert_ptr_type(ASTree *node, ASTree *scope) {
 
 /*Assignment functions*/
 
-
-void assign_fun_type(ASTree *node){
+void assign_fun_type(ASTree *node){ //TO DO: FIX RETURNS!!!
 	//print_type(node->id); //hash pointer
         if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
             int type = node->offspring[0]->type;
@@ -227,10 +228,28 @@ void assign_fun_type(ASTree *node){
             fprintf(stderr, "[SEMANTIC PROBLEM] Function %s already declared with type: ", node->id->id);
             print_type(node->id);
         }
-		if(node->offspring[1] != NULL) {//check parameters
 
-		}
-		
+		ASTree *old = node;
+		if(node->offspring[1] != NULL) {//check parameters
+			node = node->offspring[1];
+			hashTable *params;
+			initHash(&params, MAX_PARAM_SIZE);
+			do{
+				hashNode *n;
+				initNode(&n);
+				strcpy(n->id, node->id->id); // atribuindo identificador como key
+				n->type = node->id->type;
+				hashNode* res =insertHash(n, params);
+				if (res != n) {
+					free(n);
+					fprintf(stderr, "[SEMANTIC PROBLEM] On function %s: parameter %s was declared twice.\n", old->id->id, node->id->id);
+					break;
+				}
+				node = node->offspring[1];
+			}while(node != NULL);
+			printHash(params);
+			free(params);
+		}		
 }
 
 void assign_var_type(ASTree *node) {
@@ -336,10 +355,6 @@ void assign_vector_type(ASTree *node) {
 	}
 }
 
-void assign_param_type(ASTree *node) {
-	//TO DO
-}
-
 /**********************/
 
 //1: check assignments
@@ -358,8 +373,7 @@ void assign_types(ASTree *node) {
 	case AST_GLOBAL_POINTER_DEF:
 		assign_pointer_type(node);
 		break;
-    case AST_DEF_PARAM_T:
-        assign_param_type(node);
+    default:
 		break;
     }
     //recursion
