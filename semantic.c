@@ -64,7 +64,9 @@ int get_from_scope(hashNode* id, ASTree *scope) {
 	if (scope == NULL) {
 		return id->type; 
 	}	
+	
 	char *param = scope->id->id;
+	
 	if (strcmp(id->id, param) == 0) {
 		// if they match, return the type from the param_list type keyword
 		return kw2type(scope->offspring[0]->type);
@@ -380,14 +382,19 @@ void check_assignment_types(ASTree *node, ASTree *scope) {
 			if(node->id == NULL){
 				fprintf(stderr, "RIP OUR HASH\n");
 			}
+			fprintf(stderr, "get from scope\n");
 			type = get_from_scope(node->id, scope);
 			if(assert_type(node->offspring[1],type,scope) == 0) {
 			fprintf(stderr, "[SEMANTIC PROBLEM] Incorrect assignment value to vector %s\n", node->id->id);
 			}
 			break;
 		case AST_VAR_AS: //{$$=astree_create(AST_VAR_AS,$1,$3,0,0,0);}
+			if(node->id == NULL){
+				fprintf(stderr, "RIP OUR HASH\n");
+			}
+			fprintf(stderr, "get from scope\n");
 			type = get_from_scope(node->id, scope);
-			if(assert_type(node->offspring[1],type,scope) == 0) {
+			if(assert_type(node->offspring[0],type,scope) == 0) {
 			fprintf(stderr, "[SEMANTIC PROBLEM] Incorrect assignment value to variable %s\n", node->id->id);
 			}
 			break;
