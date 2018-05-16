@@ -139,7 +139,7 @@ header:
 
 def_parameters: 
 	'(' ')' {$$=0;} //empty list of arguments
-	| '(' def_parameters_tail ')'   {$$=$2;}//{$$=astree_create(AST_DEF_PARAM,0,$2,0,0,0);}
+	| '(' def_parameters_tail ')'   {$$=$2;}
     ;
 
 def_parameters_tail:
