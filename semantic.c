@@ -177,30 +177,33 @@ int assert_ptr_type(ASTree *node, ASTree *scope) {
 
 
 
-int assert_type(ASTree *node, int type, ASTree* scope) {
-	int assert = 1; // 1 is correct type and 0 is wrong type
+int get_type(ASTree *node, ASTree* scope) {
 	int node_type = -1;
+	int type = -1; // invalid type
 	ASTree *n1 = node->offspring[0];
 	ASTree *n2 = node->offspring[1];
+	int tn1, tn2;
 	//ASTree *n3 = node->offspring[2];
 	if (node->id != NULL)
 		node_type = get_from_scope(node->id, scope);
 	switch(node->type) {
 	case AST_CHAR:
-		assert = (type == SYMBOL_LIT_CHAR);
+		type = SYMBOL_LIT_CHAR;
 		break;
 	case AST_INT:
-		assert = (type == SYMBOL_LIT_INT);
+		type = SYMBOL_LIT_INT;
 		break;
 	case AST_REAL:
-		assert = (type == SYMBOL_LIT_FLOAT);
+		type = SYMBOL_LIT_FLOAT;
 		break;
 	case AST_INIT_VALUES:
 		// check the type of the list of init values
 		// TODO: acho que isso não ta 100% certo
+		tn1 = get_type(n1, scope);
 		if (n2 != NULL)
-			assert = assert_type(n2, type, scope)
-					&& assert_type(n1, type, scope);
+			tn2 = get_type(n2, scope);
+		if (tn1 == tn2)
+			type = tn1;
 		break;
 	case AST_ID_POINTER:
 		assert = test_ptr_type(node_type);
