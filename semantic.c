@@ -178,6 +178,9 @@ int assert_type(ASTree *node, int type, ASTree* scope) {
 			assert = assert_arit_type(n2, scope);
 		else
 			assert = 0;
+		assert = assert && ((type == SYMBOL_LIT_INT) ||
+				(type == SYMBOL_LIT_CHAR) ||
+				(type == SYMBOL_LIT_FLOAT));
 		break;
 	case AST_LESS_EXP:
 	case AST_GREAT_EXP:
@@ -193,21 +196,6 @@ int assert_type(ASTree *node, int type, ASTree* scope) {
 	default:
 		break;
 	}
-	return assert;
-}
-
-
-// assert if plus expression 
-int assert_plus_exp(ASTree *node, int type, ASTree *scope) {
-	ASTree *n1 = node->offspring[0];
-	ASTree *n2 = node->offspring[1];
-	int assert =  (((assert_ptr_type(n1, scope) || assert_ptr_type(n2, scope))
-		&& !(assert_ptr_type(n1, scope) && assert_ptr_type(n2, scope))) // only one can be pointer
-		|| (assert_arit_type(n1,scope) || assert_arit_type(n2,scope))) // at least one should be aritmetic
-		&& (!assert_type(n1,SYMBOL_LIT_BOOL, scope) && !assert_type(n2,SYMBOL_LIT_BOOL, scope)); // none of them should be boolean 
-	// test the return type
-	//int final_type;
-	// TODO: testar se tipo de retorno da soma é o mesmo passar por parametro
 	return assert;
 }
 
