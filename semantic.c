@@ -3,7 +3,26 @@
 #include "semantic.h"
 #include "hashtable.h"
 
+int fun2type(int fun_type, int line) {
+	switch(fun_type) {
+		case SYMBOL_FUN_CHAR: return SYMBOL_LIT_CHAR;
+		case SYMBOL_FUN_INT: return SYMBOL_LIT_INT;
+			case SYMBOL_FUN_FLOAT: return SYMBOL_LIT_FLOAT;
+	}
+	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid fun type\n", line-1);
+	return -1;
+}
 
+int vec2scalar(int vec_type, int line) {
+	switch(vec_type) {
+		case SYMBOL_VEC_CHAR: return SYMBOL_LIT_CHAR;
+		case SYMBOL_VEC_INT: return SYMBOL_LIT_INT;
+			case SYMBOL_VEC_FLOAT: return SYMBOL_LIT_FLOAT;
+	}
+	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid vector type\n", line-1);
+	return -1;
+
+}
 
 int ptr2scalar(int ptr_type, int line) {
 	switch(ptr_type) {
@@ -13,6 +32,29 @@ int ptr2scalar(int ptr_type, int line) {
 	}
 	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid ptr type\n", line-1);
 	return -1;
+}
+
+int compat_types(int t1, int t2) {
+	switch(t1) {
+	case SYMBOL_LIT_INT:
+		test_arit_type(t2);
+		break;	
+	case SYMBOL_LIT_CHAR:
+		test_arit_type(t2);
+		break;	
+	case SYMBOL_LIT_FLOAT:
+		test_arit_type(t2);
+		break;
+	case SYMBOL_PTR_INT:
+		test_ptr_type(t2);
+		break;	
+	case SYMBOL_PTR_CHAR:
+		test_ptr_type(t2);
+		break;	
+	case SYMBOL_PTR_FLOAT:
+		test_ptr_type(t2);
+		break;	
+	}
 }
 
 int scalar2ptr(int scalar_type, int line) {
@@ -172,12 +214,12 @@ int assert_type(ASTree *node, int type, ASTree* scope) {
 		assert = assert && (scalar2ptr(node_type, node->line) == type);
 		break;
 	case AST_VECTOR:
-		assert = (ptr2scalar(node_type, node->line) == type) &&
+		assert = (vec2scalar(node_type, node->line) == type) &&
 				assert_type(n1, SYMBOL_LIT_INT, scope);
 		break; 
 	case AST_FUNCTION:
 		assert = assert_param_list_type(n1, node->id->list_head, scope) &&
-			(type == node_type);
+			(type == fun2type(node_type, node->line));
 		break; // TODO
 	case AST_PARAM:
 
