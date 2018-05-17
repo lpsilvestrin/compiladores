@@ -34,6 +34,16 @@ int ptr2scalar(int ptr_type, int line) {
 	return -1;
 }
 
+int scalar2ptr(int scalar_type, int line) {
+	switch(scalar_type) {
+		case SYMBOL_LIT_CHAR: return SYMBOL_PTR_CHAR;
+		case SYMBOL_LIT_INT: return SYMBOL_PTR_INT;
+			case SYMBOL_LIT_FLOAT: return SYMBOL_PTR_FLOAT;
+	}
+	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid scalar type on line\n", line-1);
+	return -1;
+}
+
 int compat_types(int t1, int t2) { //returns (0,1) (false, true)
 	int type;
 	switch(t1) {
@@ -62,15 +72,7 @@ int compat_types(int t1, int t2) { //returns (0,1) (false, true)
 
 
 
-int scalar2ptr(int scalar_type, int line) {
-	switch(scalar_type) {
-		case SYMBOL_LIT_CHAR: return SYMBOL_PTR_CHAR;
-		case SYMBOL_LIT_INT: return SYMBOL_PTR_INT;
-			case SYMBOL_LIT_FLOAT: return SYMBOL_PTR_FLOAT;
-	}
-	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid scalar type on line\n", line-1);
-	return -1;
-}
+
 
 
 int assert_param_list_type(ASTree *node, ASTree *param_types, ASTree* scope) {
@@ -141,19 +143,10 @@ int test_ptr_type(int type) {
 			(type == SYMBOL_PTR_INT) ||
 			(type == SYMBOL_PTR_FLOAT);
 }
-/*
-int assert_arit_type(ASTree *node, ASTree *scope) {
-	return assert_type(node, SYMBOL_LIT_INT, scope)
-		|| assert_type(node, SYMBOL_LIT_CHAR, scope)
-		|| assert_type(node, SYMBOL_LIT_FLOAT, scope);
-}
 
-int assert_ptr_type(ASTree *node, ASTree *scope) {
-	return assert_type(node, SYMBOL_PTR_INT, scope)
-		|| assert_type(node, SYMBOL_PTR_CHAR, scope)
-		|| assert_type(node, SYMBOL_PTR_FLOAT, scope);
-}
-*/
+
+
+
 
 
 int get_type(ASTree *node, ASTree* scope) {
@@ -398,8 +391,6 @@ int assert_type(ASTree *node, int type, ASTree* scope){
 }
 
 void assign_vector_type(ASTree *node) {
-	//TO DO
-	//check if the elements (if they exist) are from the same type than vec type 
 	int type;
 	if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
 		type = node->offspring[0]->type;
@@ -428,21 +419,14 @@ void assign_vector_type(ASTree *node) {
 		print_type(node->id);
 	}
 
-	if(node->offspring[2] != NULL) { //there are init values
-		// assert type with global environment 
-		fprintf(stderr, "%d\n", type);
+	if(node->offspring[2] != NULL) { //there are init values 
 		type = kw2type(type);
 		int init_values_type = get_type(node->offspring[2], NULL);
-		fprintf(stderr, "%d\n", type);
-		fprintf(stderr, "%d\n", init_values_type);
-		fprintf(stderr, "%d\n",compat_types(type, init_values_type));
-		if(compat_types(type, init_values_type) == 0) {
+		if(type != init_values_type) {
 			fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect initialization value to vector %s\n", node->line, node->id->id);
 		}
 	}
 }
-
-/**********************/
 
 
 void assign_types(ASTree *node) {
@@ -512,4 +496,30 @@ void check_assignment_types(ASTree *node, ASTree *scope) {
 void semantic_analysis(ASTree *root) {
     assign_types(root);
 }
+
+
+
+
+
+
+
+
+
+/////////////// TRASH
+
+
+
+/*
+int assert_arit_type(ASTree *node, ASTree *scope) {
+	return assert_type(node, SYMBOL_LIT_INT, scope)
+		|| assert_type(node, SYMBOL_LIT_CHAR, scope)
+		|| assert_type(node, SYMBOL_LIT_FLOAT, scope);
+}
+
+int assert_ptr_type(ASTree *node, ASTree *scope) {
+	return assert_type(node, SYMBOL_PTR_INT, scope)
+		|| assert_type(node, SYMBOL_PTR_CHAR, scope)
+		|| assert_type(node, SYMBOL_PTR_FLOAT, scope);
+}
+*/
 

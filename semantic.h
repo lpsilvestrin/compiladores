@@ -9,7 +9,10 @@ int vec2scalar(int vec_type, int line);
 int ptr2scalar(int ptr_type, int line);
 
 
+
 void assign_types(ASTree *node);
+void assign_vector_type(ASTree *node);
+
 
 void check_assignment_types(ASTree *node, ASTree *scope);
 
