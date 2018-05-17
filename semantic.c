@@ -128,6 +128,7 @@ int assert_type(ASTree *node, int type, ASTree* scope) {
 		break;
 	case AST_INIT_VALUES:
 		// check the type of the list of init values
+		// TODO: acho que isso não ta 100% certo
 		if (n2 != NULL)
 			assert = assert_type(n2, type, scope)
 					&& assert_type(n1, type, scope);
