@@ -43,7 +43,19 @@ int scalar2ptr(int scalar_type, int line) {
 	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid scalar type on line\n", line-1);
 	return -1;
 }
-
+// convert type keywords to the respective type
+int kw2type(int kw) {
+	int type = -1; // invalid type
+	switch(kw) {
+	case AST_CHAR_SYMBOL: type = SYMBOL_LIT_CHAR;
+		break;
+	case AST_INT_SYMBOL: type = SYMBOL_LIT_INT;
+		break;
+	case AST_FLOAT_SYMBOL: type = SYMBOL_LIT_FLOAT;
+		break;
+	}
+	return type;
+}
 int compat_types(int t1, int t2) { //returns (0,1) (false, true)
 	int type;
 	switch(t1) {
@@ -118,19 +130,7 @@ int get_from_scope(hashNode* id, ASTree *scope) {
 	
 }
 
-// convert type keywords to the respective type
-int kw2type(int kw) {
-	int type = -1; // invalid type
-	switch(kw) {
-	case AST_CHAR_SYMBOL: type = SYMBOL_LIT_CHAR;
-		break;
-	case AST_INT_SYMBOL: type = SYMBOL_LIT_INT;
-		break;
-	case AST_FLOAT_SYMBOL: type = SYMBOL_LIT_FLOAT;
-		break;
-	}
-	return type;
-}
+
 
 int test_arit_type(int type) {
 	return (type == SYMBOL_LIT_CHAR) || 
@@ -270,7 +270,6 @@ int get_type(ASTree *node, ASTree* scope) {
 	}
 	return type;
 }
-
 
 /*Assignment functions*/
 
@@ -493,7 +492,6 @@ void check_assignment_types(ASTree *node, ASTree *scope) {
     }
 
 }
-
 
 //1: check assignments
 //2: check if int var = X x = int type
