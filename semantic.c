@@ -67,32 +67,6 @@ int scalar2ptr(int scalar_type, int line) {
 	return -1;
 }
 
-// return the type of an expression
-int get_exp_type(ASTree *node, ASTree *scope) {
-	int type = -1; // invalid type
-	switch(node->type) {
-	case AST_CHAR:
-		type = SYMBOL_LIT_CHAR;
-		break;
-	case AST_INT:
-		type = SYMBOL_LIT_INT;
-		break;
-	case AST_REAL:
-		type = SYMBOL_LIT_FLOAT;
-		break;
-	// identifiers
-	case AST_ID_POINTER:
-	case AST_ID:
-	case AST_VECTOR:
-		type = get_from_scope(node->id, scope);
-		break;
-	case AST_FUNCTION:
-		break;
-
-	
-	}
-	return type;	
-}
 
 int assert_param_list_type(ASTree *node, ASTree *param_types, ASTree* scope) {
 	int assert = 1;
@@ -116,7 +90,7 @@ int assert_param_list_type(ASTree *node, ASTree *param_types, ASTree* scope) {
 		exp = node->offspring[1];
 		list_rest = node->offspring[0];
 	}
-	return assert_type(exp, param_type, scope) && 
+	return (get_type(exp, scope) == param_type) &&
 		assert_param_list_type(list_rest, param_types->offspring[1], scope); 
 }
 
@@ -162,7 +136,7 @@ int test_ptr_type(int type) {
 			(type == SYMBOL_PTR_INT) ||
 			(type == SYMBOL_PTR_FLOAT);
 }
-
+/*
 int assert_arit_type(ASTree *node, ASTree *scope) {
 	return assert_type(node, SYMBOL_LIT_INT, scope)
 		|| assert_type(node, SYMBOL_LIT_CHAR, scope)
@@ -174,7 +148,7 @@ int assert_ptr_type(ASTree *node, ASTree *scope) {
 		|| assert_type(node, SYMBOL_PTR_CHAR, scope)
 		|| assert_type(node, SYMBOL_PTR_FLOAT, scope);
 }
-
+*/
 
 
 int get_type(ASTree *node, ASTree* scope) {
@@ -206,72 +180,79 @@ int get_type(ASTree *node, ASTree* scope) {
 			type = tn1;
 		break;
 	case AST_ID_POINTER:
-		assert = test_ptr_type(node_type);
-		assert = assert &&(type == ptr2scalar(node_type, node->line));
+		if (test_ptr_type(node_type))
+			type = ptr2scalar(node_type, node->line);
 		break;
 	case AST_ID:
-		assert = (node_type == type);
+		type = node_type;
 		break;
 	case AST_ID_ADDRESS:
-		assert = test_arit_type(node_type);
-		assert = assert && (scalar2ptr(node_type, node->line) == type);
+		if(test_arit_type(node_type))
+			type = scalar2ptr(node_type, node->line);
 		break;
 	case AST_VECTOR:
-		assert = (vec2scalar(node_type, node->line) == type) &&
-				assert_type(n1, SYMBOL_LIT_INT, scope);
+		// test address type
+		if (get_type(n1, scope) == SYMBOL_LIT_INT)
+			type = vec2scalar(node_type, node->line);
+				
 		break; 
 	case AST_FUNCTION:
-		assert = assert_param_list_type(n1, node->id->list_head, scope) &&
-			(type == fun2type(node_type, node->line));
+		if (assert_param_list_type(n1, node->id->list_head, scope))
+			type = fun2type(node_type, node->line);
 		break; // TODO
 	case AST_PARAM:
 
 		break;
 	case AST_NOT_EXP:
-		assert = assert_type(n1, SYMBOL_LIT_BOOL, scope); 
-		assert = assert && (type == SYMBOL_LIT_BOOL);	
+		if (get_type(n1, scope) == SYMBOL_LIT_BOOL)
+			type = SYMBOL_LIT_BOOL;	
 		break;
 	case AST_NEG_EXP:
-		assert = assert_type(n1, SYMBOL_LIT_INT, scope) 
-				|| assert_type(n1, SYMBOL_LIT_FLOAT, scope);
+		tn1 = get_type(n1, scope);
+		if (test_arit_type(tn1))
+			type = tn1;
 		break;
 	case AST_MUL_EXP:
 	case AST_DIV_EXP:
-		assert = (type == SYMBOL_LIT_INT);
-		assert = assert || (type == SYMBOL_LIT_FLOAT);
-		assert = assert || (type == SYMBOL_LIT_CHAR);
-		assert = assert && assert_arit_type(n1, scope);
-		assert = assert && assert_arit_type(n2, scope);
+		tn1 = get_type(n1, scope);
+		tn2 = get_type(n2, scope);
+		if (test_arit_type(tn1) && test_arit_type(tn2))
+			type = tn1;
 		break;
 	case AST_PAR_EXP:
-		assert = assert_type(n1, type, scope);
+		type = get_type(n1, scope);
 		break;
 	case AST_MINUS_EXP:
 	case AST_PLUS_EXP:
-		if (assert_arit_type(n1, scope))
-			assert = assert_arit_type(n2, scope) 
-				|| assert_ptr_type(n2, scope);
-		else if (assert_ptr_type(n1, scope)) 
-			assert = assert_arit_type(n2, scope);
-		else
-			assert = 0;
-		assert = assert && ((type == SYMBOL_LIT_INT) ||
-				(type == SYMBOL_LIT_CHAR) ||
-				(type == SYMBOL_LIT_FLOAT));
+		tn1 = get_type(n1, scope);
+		tn2 = get_type(n2, scope);
+		if (test_arit_type(tn1))
+			if (test_ptr_type(tn2) || test_ptr_type(tn2))
+				type = tn2;
+		else if (test_ptr_type(tn1) && test_arit_type(tn2))
+			type = tn1;
 		break;
 	case AST_LESS_EXP:
 	case AST_GREAT_EXP:
 	case AST_GE_EXP:
 	case AST_EQ_EXP:
 	case AST_NE_EXP:
+	case AST_LE_EXP:
+		tn1 = get_type(n1, scope);
+		tn2 = get_type(n2, scope);
+		if (test_arit_type(tn1) &&
+			test_arit_type(tn2))
+			type = SYMBOL_LIT_BOOL;
+		break;
 	case AST_AND_EXP:
 	case AST_OR_EXP:
-	case AST_LE_EXP:
-		assert = assert_type(n1, SYMBOL_LIT_BOOL, scope);
-		assert = assert && assert_type(n2, SYMBOL_LIT_BOOL, scope);
-		assert = assert && (type == SYMBOL_LIT_BOOL);
+		tn1 = get_type(n1, scope);
+		tn2 = get_type(n2, scope);
+		if (tn1 == SYMBOL_LIT_BOOL &&
+			tn2 == SYMBOL_LIT_BOOL)
+			type = SYMBOL_LIT_BOOL;
 		break;
-	case AST_IF:
+	/*case AST_IF:
 		assert = assert_type(n1, SYMBOL_LIT_BOOL, scope);
 		//assert = assert && assert_type(n2, 0, scope);
 		//if (n3 != NULL)
@@ -286,11 +267,11 @@ int get_type(ASTree *node, ASTree* scope) {
 		assert = assert && assert_type(n1, SYMBOL_LIT_INT, scope);
 		assert = assert && assert_type(n2, SYMBOL_LIT_INT, scope);
 		//assert = assert && assert_type(n3, 0, scope);
-		break;
+		break;*/
 	default:
 		break;
 	}
-	return assert;
+	return type;
 }
 
 
