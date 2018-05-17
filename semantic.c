@@ -81,12 +81,7 @@ int compat_types(int t1, int t2) { //returns (0,1) (false, true)
 	return type;
 }
 
-
-
-
-
-
-
+///TO VERIFY
 int assert_param_list_type(ASTree *node, ASTree *param_types, ASTree* scope) {
 	int assert = 1;
 
@@ -130,8 +125,6 @@ int get_from_scope(hashNode* id, ASTree *scope) {
 	
 }
 
-
-
 int test_arit_type(int type) {
 	return (type == SYMBOL_LIT_CHAR) || 
 			(type == SYMBOL_LIT_INT) ||
@@ -144,11 +137,6 @@ int test_ptr_type(int type) {
 			(type == SYMBOL_PTR_FLOAT);
 }
 
-
-
-
-
-
 int get_type(ASTree *node, ASTree* scope) {
 	int node_type = -1;
 	int type = -1; // invalid type
@@ -156,8 +144,12 @@ int get_type(ASTree *node, ASTree* scope) {
 	ASTree *n2 = node->offspring[1];
 	int tn1, tn2;
 	//ASTree *n3 = node->offspring[2];
-	if (node->id != NULL)
-		node_type = get_from_scope(node->id, scope);
+	if(node == NULL) { 
+		fprintf(stderr, "[SEMANTIC] INTERNAL ERROR: get_type with NULL node");
+		return type;
+	} 
+	node_type = get_from_scope(node->id, scope);
+
 	switch(node->type) {
 	case AST_CHAR:
 		type = SYMBOL_LIT_CHAR;
@@ -177,6 +169,7 @@ int get_type(ASTree *node, ASTree* scope) {
 		if (tn1 == tn2)
 			type = tn1;
 		break;
+	
 	case AST_ID_POINTER:
 		if (test_ptr_type(node_type))
 			type = ptr2scalar(node_type, node->line);
@@ -459,7 +452,7 @@ void check_assignment_types(ASTree *node, ASTree *scope) {
 				break;
 			}
 			//check the index type
-			type = get_type(node->id, scope);
+			type = get_type(node, scope);
 			if(type == -1) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect index type for vector %s\n", node->line, node->id->id);
 			}
@@ -477,7 +470,7 @@ void check_assignment_types(ASTree *node, ASTree *scope) {
 				fprintf(stderr, "RIP OUR HASH\n");
 				break;
 			}
-			type = get_type(node->id, scope);
+			type = get_type(node, scope);
 			assignment = get_type(node->offspring[0], scope);
 			if(type != assignment) {
 			fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect assignment value for variable %s\n", node->line, node->id->id);
