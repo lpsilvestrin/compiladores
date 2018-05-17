@@ -109,6 +109,32 @@ int kw2type(int kw) {
 	return type;
 }
 
+int test_arit_type(int type) {
+	return (type == SYMBOL_LIT_CHAR) || 
+			(type == SYMBOL_LIT_INT) ||
+			(type == SYMBOL_LIT_FLOAT);
+}
+
+int test_ptr_type(int type) {
+	return (type == SYMBOL_PTR_CHAR) || 
+			(type == SYMBOL_PTR_INT) ||
+			(type == SYMBOL_PTR_FLOAT);
+}
+
+int assert_arit_type(ASTree *node, ASTree *scope) {
+	return assert_type(node, SYMBOL_LIT_INT, scope)
+		|| assert_type(node, SYMBOL_LIT_CHAR, scope)
+		|| assert_type(node, SYMBOL_LIT_FLOAT, scope);
+}
+
+int assert_ptr_type(ASTree *node, ASTree *scope) {
+	return assert_type(node, SYMBOL_PTR_INT, scope)
+		|| assert_type(node, SYMBOL_PTR_CHAR, scope)
+		|| assert_type(node, SYMBOL_PTR_FLOAT, scope);
+}
+
+
+
 int assert_type(ASTree *node, int type, ASTree* scope) {
 	int assert = 1; // 1 is correct type and 0 is wrong type
 	int node_type = -1;
@@ -202,30 +228,6 @@ int assert_type(ASTree *node, int type, ASTree* scope) {
 		break;
 	}
 	return assert;
-}
-
-int test_arit_type(int type) {
-	return (type == SYMBOL_LIT_CHAR) || 
-			(type == SYMBOL_LIT_INT) ||
-			(type == SYMBOL_LIT_FLOAT);
-}
-
-int test_ptr_type(int type) {
-	return (type == SYMBOL_PTR_CHAR) || 
-			(type == SYMBOL_PTR_INT) ||
-			(type == SYMBOL_PTR_FLOAT);
-}
-
-int assert_arit_type(ASTree *node, ASTree *scope) {
-	return assert_type(node, SYMBOL_LIT_INT, scope)
-		|| assert_type(node, SYMBOL_LIT_CHAR, scope)
-		|| assert_type(node, SYMBOL_LIT_FLOAT, scope);
-}
-
-int assert_ptr_type(ASTree *node, ASTree *scope) {
-	return assert_type(node, SYMBOL_PTR_INT, scope)
-		|| assert_type(node, SYMBOL_PTR_CHAR, scope)
-		|| assert_type(node, SYMBOL_PTR_FLOAT, scope);
 }
 
 
