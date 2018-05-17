@@ -189,10 +189,9 @@ int get_type(ASTree *node, ASTree* scope) {
 			type = scalar2ptr(node_type, node->line);
 		break;
 	case AST_VECTOR:
-		// test address type
+		// test index type
 		if (get_type(n1, scope) == SYMBOL_LIT_INT)
 			type = vec2scalar(node_type, node->line);
-				
 		break; 
 	case AST_FUNCTION:
 		if (assert_param_list_type(n1, node->id->list_head, scope))
@@ -275,7 +274,7 @@ int get_type(ASTree *node, ASTree* scope) {
 
 /*Assignment functions*/
 
-void assign_fun_type(ASTree *node){ 
+void assign_fun_type(ASTree *node){  
 	ASTree *block = node->offspring[1]; //saves the block
 	node = node->offspring[0]; //goes to the header
 	if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
@@ -326,7 +325,7 @@ void assign_fun_type(ASTree *node){
 	check_assignment_types(block, old->id->list_head);
 }
 
-void assign_var_type(ASTree *node) {
+void assign_var_type(ASTree *node) { 
 	int type;
 	if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
 		type = node->offspring[0]->type;
@@ -351,7 +350,8 @@ void assign_var_type(ASTree *node) {
 		print_type(node->id);
 	}
 	type = kw2type(type);
-	if(assert_type(node->offspring[1],type,NULL) == 0) {
+	int assignment = get_type(node->offspring[1], NULL);
+	if(type != assignment) {
 		fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect initialization value for variable %s\n", node->line, node->id->id);
 		}
 }
@@ -381,13 +381,10 @@ void assign_pointer_type(ASTree *node) {
 		print_type(node->id);
 	}
 	type = kw2type(type);
-	if(assert_type(node->offspring[1],type,NULL) == 0) {
+	int assignment = get_type(node->offspring[1], NULL);
+	if(type != assignment) {
 		fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect initialization value for pointer %s\n", node->line, node->id->id);
 		}
-}
-
-int assert_type(ASTree *node, int type, ASTree* scope){
-
 }
 
 void assign_vector_type(ASTree *node) {
@@ -416,9 +413,8 @@ void assign_vector_type(ASTree *node) {
 	int size_type = node->offspring[1]->type;
 	if(size_type != AST_INT) {
 		fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Vector must have an integer as size. Given type ", node->line);
-		print_type(node->id);
+		print_type(node->offspring[1]->id);
 	}
-
 	if(node->offspring[2] != NULL) { //there are init values 
 		type = kw2type(type);
 		int init_values_type = get_type(node->offspring[2], NULL);
@@ -427,7 +423,6 @@ void assign_vector_type(ASTree *node) {
 		}
 	}
 }
-
 
 void assign_types(ASTree *node) {
     print_astnode(node); //for debug sake
@@ -454,29 +449,39 @@ void assign_types(ASTree *node) {
     }
 }
 
-
 void check_assignment_types(ASTree *node, ASTree *scope) {
     print_astnode(node); //for debug sake
 	int type;
+	int assignment;
 	switch(node->type) {
 		case AST_VECTOR_AS:  //{$$=astree_create(AST_VECTOR_AS,$1,$3,$6,0,0);}
 			if(node->id == NULL){
 				fprintf(stderr, "RIP OUR HASH\n");
+				break;
 			}
-			fprintf(stderr, "get from scope\n");
-			type = get_from_scope(node->id, scope);
-			if(assert_type(node->offspring[1],type,scope) == 0) {
-			fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect assignment value to vector %s\n", node->line, node->id->id);
+			//check the index type
+			type = get_type(node->id, scope);
+			if(type == -1) {
+				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect index type for vector %s\n", node->line, node->id->id);
 			}
+			else{
+				//check the assignment
+				assignment = get_type(node->offspring[1], scope);
+				if(type != assignment) {
+				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect assignment value for vector %s\n", node->line, node->id->id);
+				}
+			}
+			
 			break;
 		case AST_VAR_AS: //{$$=astree_create(AST_VAR_AS,$1,$3,0,0,0);}
 			if(node->id == NULL){
 				fprintf(stderr, "RIP OUR HASH\n");
+				break;
 			}
-			fprintf(stderr, "get from scope\n");
-			type = get_from_scope(node->id, scope);
-			if(assert_type(node->offspring[0],type,scope) == 0) {
-			fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect assignment value to variable %s\n", node->line, node->id->id);
+			type = get_type(node->id, scope);
+			assignment = get_type(node->offspring[0], scope);
+			if(type != assignment) {
+			fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect assignment value for variable %s\n", node->line, node->id->id);
 			}
 			break;
 		default: break;

@@ -1,6 +1,31 @@
 # compiladores
 repositório com as etapas do trabalho da disciplina de compiladores
 
+
+** O que funciona:
+
+1) verificação de tipo de definição
+1.1) vetores [DONE]
+1.2) variaveis
+1.3) ponteiros
+1.4) funcoes
+2) verificação de tipo de assignment
+2.1) vetores [DONE]
+2.2) variaveis
+2.3) ponteiros
+2.4) funcoes
+3) verificação de tipo correto para tamanho do vetor 
+3.1) definition [DONE]
+3.2) assignment
+
+
+
+
+
+
+
+
+/// old
 ** TO DO:
 
 1) aritméticas só entre números
