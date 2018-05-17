@@ -84,19 +84,18 @@ int compat_types(int t1, int t2) { //returns (0,1) (false, true)
 ///TO VERIFY
 int assert_param_list_type(ASTree *node, ASTree *param_types, ASTree* scope) {
 	int assert = 1;
-
 	if (node == NULL) {
-	// if both have empty parameters, return true
+		// if both have empty parameters, return true
 		if (param_types == NULL) 
 			return 1;
 		else // if one of them is empty and the other isn't, return false
 			return 0;
 	}
-	if (param_types == NULL)
+	if (param_types == NULL) 
 		return 0;
 	int param_type = kw2type(param_types->offspring[0]->type);
 	ASTree *exp, *list_rest;
-	// test in which node of the parameter listthe expression is
+	// test in which node of the parameter list the expression is
 	if (node->offspring[1] == NULL) {
 		exp = node->offspring[0];
 		list_rest = NULL;
@@ -138,17 +137,16 @@ int test_ptr_type(int type) {
 }
 
 int get_type(ASTree *node, ASTree* scope) {
-	int node_type = -1;
+	int hash_node_type = -1;
 	int type = -1; // invalid type
 	ASTree *n1 = node->offspring[0];
 	ASTree *n2 = node->offspring[1];
 	int tn1, tn2;
-	//ASTree *n3 = node->offspring[2];
 	if(node == NULL) { 
 		fprintf(stderr, "[SEMANTIC] INTERNAL ERROR: get_type with NULL node");
 		return type;
 	} 
-	node_type = get_from_scope(node->id, scope);
+	hash_node_type = get_from_scope(node->id, scope);
 
 	switch(node->type) {
 	case AST_CHAR:
@@ -160,39 +158,37 @@ int get_type(ASTree *node, ASTree* scope) {
 	case AST_REAL:
 		type = SYMBOL_LIT_FLOAT;
 		break;
-	case AST_INIT_VALUES:
+	case AST_INIT_VALUES: //TO DO CHECK THIS
 		// check the type of the list of init values
-		// TODO: acho que isso não ta 100% certo
-		tn1 = get_type(n1, scope);
-		if (n2 != NULL)
+		tn1 = get_type(n1, scope); 
+		if (n2 != NULL) {
 			tn2 = get_type(n2, scope);
-		if (tn1 == tn2)
+			if (tn1 == tn2)
+				type = tn1;
+		} else {
 			type = tn1;
+		}
 		break;
-	
 	case AST_ID_POINTER:
-		if (test_ptr_type(node_type))
-			type = ptr2scalar(node_type, node->line);
+		if (test_ptr_type(hash_node_type))
+			type = ptr2scalar(hash_node_type, node->line);
 		break;
 	case AST_ID:
-		type = node_type;
+		type = hash_node_type;
 		break;
 	case AST_ID_ADDRESS:
-		if(test_arit_type(node_type))
-			type = scalar2ptr(node_type, node->line);
+		if(test_arit_type(hash_node_type))
+			type = scalar2ptr(hash_node_type, node->line);
 		break;
 	case AST_VECTOR:
 		// test index type
 		if (get_type(n1, scope) == SYMBOL_LIT_INT)
-			type = vec2scalar(node_type, node->line);
+			type = vec2scalar(hash_node_type, node->line);
 		break; 
 	case AST_FUNCTION:
 		if (assert_param_list_type(n1, node->id->list_head, scope))
-			type = fun2type(node_type, node->line);
-		break; // TODO
-	case AST_PARAM:
-
-		break;
+			type = fun2type(hash_node_type, node->line);
+		break; 
 	case AST_NOT_EXP:
 		if (get_type(n1, scope) == SYMBOL_LIT_BOOL)
 			type = SYMBOL_LIT_BOOL;	
@@ -209,7 +205,7 @@ int get_type(ASTree *node, ASTree* scope) {
 		if (test_arit_type(tn1) && test_arit_type(tn2))
 			type = tn1;
 		break;
-	case AST_PAR_EXP:
+	case AST_PAR_EXP: // ()
 		type = get_type(n1, scope);
 		break;
 	case AST_MINUS_EXP:
@@ -242,22 +238,6 @@ int get_type(ASTree *node, ASTree* scope) {
 			tn2 == SYMBOL_LIT_BOOL)
 			type = SYMBOL_LIT_BOOL;
 		break;
-	/*case AST_IF:
-		assert = assert_type(n1, SYMBOL_LIT_BOOL, scope);
-		//assert = assert && assert_type(n2, 0, scope);
-		//if (n3 != NULL)
-			//assert = assert && assert_type(n3, 0,scope);
-		break;
-	case AST_WHILE:
-		assert = assert_type(n1, SYMBOL_LIT_BOOL, scope);
-		//assert = assert && assert_type(n2, 0, scope);
-		break;
-	case AST_FOR:
-		assert = (node_type == SYMBOL_LIT_INT);
-		assert = assert && assert_type(n1, SYMBOL_LIT_INT, scope);
-		assert = assert && assert_type(n2, SYMBOL_LIT_INT, scope);
-		//assert = assert && assert_type(n3, 0, scope);
-		break;*/
 	default:
 		break;
 	}
@@ -313,8 +293,8 @@ void assign_fun_type(ASTree *node){
 		printHash(params);
 		free(params);
 	}
-	//check assignments
-	check_assignment_types(block, old->id->list_head);
+	//check what's inside
+	check_commands(block, old->id->list_head);
 }
 
 void assign_var_type(ASTree *node) { 
@@ -416,7 +396,132 @@ void assign_vector_type(ASTree *node) {
 	}
 }
 
-void assign_types(ASTree *node) {
+void check_commands(ASTree *node, ASTree *scope) {
+    print_astnode(node); //for debug sake
+	int type;
+	int assignment;
+	ASTree *n1, *n2;
+	switch(node->type) {
+		case AST_VECTOR_AS:  //{$$=astree_create(AST_VECTOR_AS,$1,$3,$6,0,0);}
+			if(node->id == NULL){
+				fprintf(stderr, "RIP OUR HASH\n");
+				break;
+			}
+			//check the index type
+			type = kw2type(node->type);
+			type = get_type(node, scope);
+			if(type == -1) {
+				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect index type for vector %s\n", node->line, node->id->id);
+			}
+			else{
+				//check the assignment
+				assignment = get_type(node->offspring[1], scope);
+				if(type != assignment) {
+				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect assignment value for vector %s\n", node->line, node->id->id);
+				}
+			}
+			
+			break;
+		case AST_VAR_AS: //{$$=astree_create(AST_VAR_AS,$1,$3,0,0,0);}
+			if(node->id == NULL){
+				fprintf(stderr, "RIP OUR HASH\n");
+				break;
+			}
+			type = kw2type(node->type);
+			type = get_type(node, scope);
+			assignment = get_type(node->offspring[0], scope);
+			if(type != assignment) {
+				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect assignment value for variable %s\n", node->line, node->id->id);
+			}
+			break;
+		case AST_READ:  //arithmetic expression
+			if(node == NULL){
+				fprintf(stderr, "[SEMANTIC] INTERNAL PROBLEM: AST_READ null node\n");
+			}
+			type = kw2type(node->type);
+			type = get_type(node, scope); //must be an scalar
+			
+			break;
+		case AST_PRINT: // arithmetic expression OR string
+			if(node == NULL){
+				fprintf(stderr, "[SEMANTIC] INTERNAL PROBLEM: AST_PRINT null node\n");
+			}
+			if(node->id == NULL){ //
+				n1 = node->offspring[0];
+				n2 = node->offspring[1];
+				if(n1 == NULL) { // end of recursion
+					if(n2 == NULL) {
+						fprintf(stderr, "[SEMANTIC] INTERNAL PROBLEM: AST_PRINT null node\n");
+					}
+					type = kw2type(n2->type);
+					type = get_type(n2, scope);
+					if(!test_arit_type(type)){
+						fprintf(stderr, "[SEMANTIC PROBLEM] line %d: print function accepts string and arihtmetic value. Given type ", node->line);
+						print_type(node->id);
+					}
+				} else {
+					check_commands(n1, scope);
+				}
+
+			}
+			/*print_c: 
+    		KW_PRINT                {$$=0;} //it does not save tokens and intermediate productions 
+    		| print_c LIT_STRING    {$$=astree_create(AST_PRINT,$2,$1,0,0,0);}
+			| print_c expression    {$$=astree_create(AST_PRINT,0,$1,$2,0,0);}
+			;
+			*/
+			 break; 
+		case AST_RETURN: //aritmetic expression
+			if(node == NULL){
+				fprintf(stderr, "[SEMANTIC] INTERNAL PROBLEM: AST_RETURN null node\n");
+			}
+			break; 
+		case AST_IF: 
+			if(node == NULL){
+				fprintf(stderr, "[SEMANTIC] INTERNAL PROBLEM: AST_IF null node\n");
+			}
+			break;
+		case AST_FOR: 
+			if(node == NULL){
+				fprintf(stderr, "[SEMANTIC] INTERNAL PROBLEM: AST_FOR null node\n");
+			}
+			break;
+		case AST_WHILE: 
+			if(node == NULL){
+				fprintf(stderr, "[SEMANTIC] INTERNAL PROBLEM: AST_WHILE null node\n");
+			}
+			break;
+		default: break;
+	}
+    //recursion
+    for(int i =MAX_OFFSPRING-1; i >= 0; i--){
+        if(node->offspring[i] != NULL)
+            check_commands(node->offspring[i], scope);
+    }
+
+	//case AST_IF:
+		//assert = assert_type(n1, SYMBOL_LIT_BOOL, scope);
+		//assert = assert && assert_type(n2, 0, scope);
+		//if (n3 != NULL)
+			//assert = assert && assert_type(n3, 0,scope);
+	//	break;
+	//case AST_WHILE:
+		//assert = assert_type(n1, SYMBOL_LIT_BOOL, scope);
+		//assert = assert && assert_type(n2, 0, scope);
+	//	break;
+	//case AST_FOR:
+		//assert = (hash_node_type == SYMBOL_LIT_INT);
+		//assert = assert && assert_type(n1, SYMBOL_LIT_INT, scope);
+		//assert = assert && assert_type(n2, SYMBOL_LIT_INT, scope);
+		//assert = assert && assert_type(n3, 0, scope);
+	//	break;
+
+}
+
+//1: check assignments
+//2: check if int var = X x = int type
+//3: check if var[] -> var = array type; var(la,la,la) -> var = function type
+void semantic_analysis(ASTree *node) {
     print_astnode(node); //for debug sake
 	switch(node->type) {
 	case AST_FUNCTION_DEF: //function
@@ -437,60 +542,8 @@ void assign_types(ASTree *node) {
     //recursion
     for(int i =MAX_OFFSPRING-1; i >= 0; i--){
         if(node->offspring[i] != NULL)
-            assign_types(node->offspring[i]);
+            semantic_analysis(node->offspring[i]);
     }
-}
-
-void check_assignment_types(ASTree *node, ASTree *scope) {
-    print_astnode(node); //for debug sake
-	int type;
-	int assignment;
-	switch(node->type) {
-		case AST_VECTOR_AS:  //{$$=astree_create(AST_VECTOR_AS,$1,$3,$6,0,0);}
-			if(node->id == NULL){
-				fprintf(stderr, "RIP OUR HASH\n");
-				break;
-			}
-			//check the index type
-			type = get_type(node, scope);
-			if(type == -1) {
-				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect index type for vector %s\n", node->line, node->id->id);
-			}
-			else{
-				//check the assignment
-				assignment = get_type(node->offspring[1], scope);
-				if(type != assignment) {
-				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect assignment value for vector %s\n", node->line, node->id->id);
-				}
-			}
-			
-			break;
-		case AST_VAR_AS: //{$$=astree_create(AST_VAR_AS,$1,$3,0,0,0);}
-			if(node->id == NULL){
-				fprintf(stderr, "RIP OUR HASH\n");
-				break;
-			}
-			type = get_type(node, scope);
-			assignment = get_type(node->offspring[0], scope);
-			if(type != assignment) {
-			fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect assignment value for variable %s\n", node->line, node->id->id);
-			}
-			break;
-		default: break;
-	}
-    //recursion
-    for(int i =MAX_OFFSPRING-1; i >= 0; i--){
-        if(node->offspring[i] != NULL)
-            check_assignment_types(node->offspring[i], scope);
-    }
-
-}
-
-//1: check assignments
-//2: check if int var = X x = int type
-//3: check if var[] -> var = array type; var(la,la,la) -> var = function type
-void semantic_analysis(ASTree *root) {
-    assign_types(root);
 }
 
 
