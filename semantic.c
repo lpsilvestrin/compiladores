@@ -160,6 +160,11 @@ int assert_type(ASTree *node, int type, ASTree* scope) {
 		break;
 	case AST_MUL_EXP:
 	case AST_DIV_EXP:
+		assert = (type == SYMBOL_LIT_INT);
+		assert = assert || (type == SYMBOL_LIT_FLOAT);
+		assert = assert || (type == SYMBOL_LIT_CHAR);
+		assert = assert && assert_arit_type(n1, scope);
+		assert = assert && assert_arit_type(n2, scope);
 		break;
 	case AST_PAR_EXP:
 		assert = assert_type(n1, type, scope);
