@@ -140,6 +140,7 @@ int assert_type(ASTree *node, int type, ASTree* scope) {
 	int node_type = -1;
 	ASTree *n1 = node->offspring[0];
 	ASTree *n2 = node->offspring[1];
+	ASTree *n3 = node->offspring[2];
 	if (node->id != NULL)
 		node_type = get_from_scope(node->id, scope);
 	switch(node->type) {
@@ -224,6 +225,22 @@ int assert_type(ASTree *node, int type, ASTree* scope) {
 		assert = assert_type(n1, SYMBOL_LIT_BOOL, scope);
 		assert = assert && assert_type(n2, SYMBOL_LIT_BOOL, scope);
 		assert = assert && (type == SYMBOL_LIT_BOOL, scope);
+		break;
+	case AST_IF:
+		assert = assert_type(n1, SYMBOL_LIT_BOOL, scope);
+		//assert = assert && assert_type(n2, 0, scope);
+		//if (n3 != NULL)
+			//assert = assert && assert_type(n3, 0,scope);
+		break;
+	case AST_WHILE:
+		assert = assert_type(n1, SYMBOL_LIT_BOOL, scope);
+		//assert = assert && assert_type(n2, 0, scope);
+		break;
+	case AST_FOR:
+		assert = (node_type == SYMBOL_LIT_INT);
+		assert = assert && assert_type(n1, SYMBOL_LIT_INT, scope);
+		assert = assert && assert_type(n2, SYMBOL_LIT_INT, scope);
+		//assert = assert && assert_type(n3, 0, scope);
 		break;
 	default:
 		break;
