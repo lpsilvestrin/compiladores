@@ -171,7 +171,13 @@ int assert_type(ASTree *node, int type, ASTree* scope) {
 		break;
 	case AST_MINUS_EXP:
 	case AST_PLUS_EXP:
-		//TODO : assert_plus_type
+		if (assert_arit_type(n1, scope))
+			assert = assert_arit_type(n2, scope) 
+				|| assert_ptr_type(n2, scope);
+		else if (assert_ptr_type(n1, scope)) 
+			assert = assert_arit_type(n2, scope);
+		else
+			assert = 0;
 		break;
 	case AST_LESS_EXP:
 	case AST_GREAT_EXP:
