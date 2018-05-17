@@ -9,7 +9,7 @@ int fun2type(int fun_type, int line) {
 		case SYMBOL_FUN_INT: return SYMBOL_LIT_INT;
 			case SYMBOL_FUN_FLOAT: return SYMBOL_LIT_FLOAT;
 	}
-	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid fun type\n", line-1);
+	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid function type\n", line-1);
 	return -1;
 }
 
@@ -30,32 +30,37 @@ int ptr2scalar(int ptr_type, int line) {
 		case SYMBOL_PTR_INT: return SYMBOL_LIT_INT;
 			case SYMBOL_PTR_FLOAT: return SYMBOL_LIT_FLOAT;
 	}
-	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid ptr type\n", line-1);
+	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid pointer type\n", line-1);
 	return -1;
 }
 
-int compat_types(int t1, int t2) {
+int compat_types(int t1, int t2) { //returns (0,1) (false, true)
+	int type;
 	switch(t1) {
 	case SYMBOL_LIT_INT:
-		test_arit_type(t2);
+		type = test_arit_type(t2);
 		break;	
 	case SYMBOL_LIT_CHAR:
-		test_arit_type(t2);
+		type = test_arit_type(t2);
 		break;	
 	case SYMBOL_LIT_FLOAT:
-		test_arit_type(t2);
+		type = test_arit_type(t2);
 		break;
 	case SYMBOL_PTR_INT:
-		test_ptr_type(t2);
+		type = test_ptr_type(t2);
 		break;	
 	case SYMBOL_PTR_CHAR:
-		test_ptr_type(t2);
+		type = test_ptr_type(t2);
 		break;	
 	case SYMBOL_PTR_FLOAT:
-		test_ptr_type(t2);
+		type = test_ptr_type(t2);
 		break;	
 	}
+	return type;
 }
+
+
+
 
 int scalar2ptr(int scalar_type, int line) {
 	switch(scalar_type) {
@@ -277,7 +282,7 @@ int get_type(ASTree *node, ASTree* scope) {
 
 /*Assignment functions*/
 
-void assign_fun_type(ASTree *node){ //TO DO: FIX RETURN!!!
+void assign_fun_type(ASTree *node){ 
 	ASTree *block = node->offspring[1]; //saves the block
 	node = node->offspring[0]; //goes to the header
 	if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
@@ -388,6 +393,10 @@ void assign_pointer_type(ASTree *node) {
 		}
 }
 
+int assert_type(ASTree *node, int type, ASTree* scope){
+
+}
+
 void assign_vector_type(ASTree *node) {
 	//TO DO
 	//check if the elements (if they exist) are from the same type than vec type 
@@ -421,8 +430,13 @@ void assign_vector_type(ASTree *node) {
 
 	if(node->offspring[2] != NULL) { //there are init values
 		// assert type with global environment 
+		fprintf(stderr, "%d\n", type);
 		type = kw2type(type);
-		if(assert_type(node->offspring[2],type,NULL) == 0) {
+		int init_values_type = get_type(node->offspring[2], NULL);
+		fprintf(stderr, "%d\n", type);
+		fprintf(stderr, "%d\n", init_values_type);
+		fprintf(stderr, "%d\n",compat_types(type, init_values_type));
+		if(compat_types(type, init_values_type) == 0) {
 			fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect initialization value to vector %s\n", node->line, node->id->id);
 		}
 	}
@@ -430,7 +444,7 @@ void assign_vector_type(ASTree *node) {
 
 /**********************/
 
-//1: check assignments
+
 void assign_types(ASTree *node) {
     print_astnode(node); //for debug sake
 	switch(node->type) {
@@ -457,8 +471,6 @@ void assign_types(ASTree *node) {
 }
 
 
-//NOT READY
-//2: check if int var = X x = int type
 void check_assignment_types(ASTree *node, ASTree *scope) {
     print_astnode(node); //for debug sake
 	int type;
@@ -493,14 +505,11 @@ void check_assignment_types(ASTree *node, ASTree *scope) {
 
 }
 
-//NOT READY
-//3: check if var[] -> var = array type; var(la,la,la) -> var = function type
-void check_variables_usage(ASTree *node) {
-    //TO DO
-}
 
+//1: check assignments
+//2: check if int var = X x = int type
+//3: check if var[] -> var = array type; var(la,la,la) -> var = function type
 void semantic_analysis(ASTree *root) {
     assign_types(root);
-    //check_variables_usage(root);
 }
 
