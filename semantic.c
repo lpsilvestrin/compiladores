@@ -133,11 +133,15 @@ int assert_type(ASTree *node, int type, ASTree* scope) {
 					&& assert_type(n1, type, scope);
 		break;
 	case AST_ID_POINTER:
+		assert = (node_type == SYMBOL_PTR
+		assert = (type == ptr2scalar(node->id->type, node->line));
+		break;
 	case AST_ID:
 		assert = (node_type == type);
 		break;
 	case AST_ID_ADDRESS:
-		assert = (scalar2ptr(node_type, node->line) == type);
+		assert = test_ptr_type(node_type);
+		assert = assert && (scalar2ptr(node_type, node->line) == type);
 		break;
 	case AST_VECTOR:
 		assert = (ptr2scalar(node_type, node->line) == type) &&
@@ -197,6 +201,18 @@ int assert_type(ASTree *node, int type, ASTree* scope) {
 		break;
 	}
 	return assert;
+}
+
+int test_arit_type(int type) {
+	return (type == SYMBOL_LIT_CHAR) || 
+			(type == SYMBOL_LIT_INT) ||
+			(type == SYMBOL_LIT_FLOAT);
+}
+
+int test_ptr_type(int type) {
+	return (type == SYMBOL_PTR_CHAR) || 
+			(type == SYMBOL_PTR_INT) ||
+			(type == SYMBOL_PTR_FLOAT);
 }
 
 int assert_arit_type(ASTree *node, ASTree *scope) {
