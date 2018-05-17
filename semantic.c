@@ -221,9 +221,10 @@ int assert_type(ASTree *node, int type, ASTree* scope) {
 	case AST_AND_EXP:
 	case AST_OR_EXP:
 	case AST_LE_EXP:
-	assert = assert_type(n1, SYMBOL_LIT_BOOL, scope);
-	assert = assert && assert_type(n2, SYMBOL_LIT_BOOL, scope);
-	assert = assert && (type == SYMBOL_LIT_BOOL, scope);
+		assert = assert_type(n1, SYMBOL_LIT_BOOL, scope);
+		assert = assert && assert_type(n2, SYMBOL_LIT_BOOL, scope);
+		assert = assert && (type == SYMBOL_LIT_BOOL, scope);
+		break;
 	default:
 		break;
 	}
