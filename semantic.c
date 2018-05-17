@@ -3,6 +3,7 @@
 #include "semantic.h"
 #include "hashtable.h"
 
+
 int fun2type(int fun_type, int line) {
 	switch(fun_type) {
 		case SYMBOL_FUN_CHAR: return SYMBOL_LIT_CHAR;
@@ -87,8 +88,9 @@ int assert_param_list_type(ASTree *node, ASTree *param_types, ASTree* scope) {
 		// if both have empty parameters, return true
 		if (param_types == NULL) 
 			return 1;
-		else // if one of them is empty and the other isn't, return false
+		else { // if one of them is empty and the other isn't, return false
 			return 0;
+		}
 	}
 	if (param_types == NULL) 
 		return 0;
@@ -142,11 +144,14 @@ int get_type(ASTree *node, ASTree* scope) {
 	ASTree *n2 = node->offspring[1];
 	int tn1, tn2;
 	if(node == NULL) { 
-		fprintf(stderr, "[SEMANTIC] INTERNAL ERROR: get_type with NULL node");
+		fprintf(stderr, "[SEMANTIC] INTERNAL ERROR: get_type with NULL node\n");
 		return type;
 	} 
-	hash_node_type = get_from_scope(node->id, scope);
-
+	if (node->id != NULL)	
+		hash_node_type = get_from_scope(node->id, scope);
+	if (hash_node_type == SYMBOL_IDENTIFIER) {
+		fprintf(stderr, "[SEMANTIC PROBLEM] line %d, %s wasn't declared previously\n", node->line, node->id->id);
+	}
 	switch(node->type) {
 	case AST_CHAR:
 		type = SYMBOL_LIT_CHAR;
