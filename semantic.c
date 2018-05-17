@@ -133,14 +133,14 @@ int assert_type(ASTree *node, int type, ASTree* scope) {
 					&& assert_type(n1, type, scope);
 		break;
 	case AST_ID_POINTER:
-		assert = (node_type == SYMBOL_PTR
-		assert = (type == ptr2scalar(node->id->type, node->line));
+		assert = test_ptr_type(node_type);
+		assert = assert &&(type == ptr2scalar(node_type, node->line));
 		break;
 	case AST_ID:
 		assert = (node_type == type);
 		break;
 	case AST_ID_ADDRESS:
-		assert = test_ptr_type(node_type);
+		assert = test_arit_type(node_type);
 		assert = assert && (scalar2ptr(node_type, node->line) == type);
 		break;
 	case AST_VECTOR:
