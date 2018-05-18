@@ -409,6 +409,19 @@ void check_commands(ASTree *node, ASTree *scope) {
 	int assignment;
 	ASTree *n1, *n2, *n3;
 	switch(node->type) {
+		case AST_BLOCK:
+			n1 = node->offspring[0];
+			if (n1 != NULL)
+				check_commands(node->offspring[0], scope);
+			break;
+		case AST_COMMANDS_L:
+			n1 = node->offspring[0];
+			n2 = node->offspring[1];
+			if (n2 != NULL)
+				check_commands(n2, scope);
+			if (n1 != NULL)
+				check_commands(n1, scope);
+			break;
 		case AST_VECTOR_AS:  //{$$=astree_create(AST_VECTOR_AS,$1,$3,$6,0,0);}
 			if(node->id == NULL){
 				fprintf(stderr, "RIP OUR HASH\n");
@@ -571,10 +584,10 @@ void check_commands(ASTree *node, ASTree *scope) {
 		default: break;
 	}
     //recursion
-    for(int i =MAX_OFFSPRING-1; i >= 0; i--){
+    /*for(int i =MAX_OFFSPRING-1; i >= 0; i--){
         if(node->offspring[i] != NULL)
             check_commands(node->offspring[i], scope);
-    }
+    }*/
 }
 //1: check assignments
 //2: check if int var = X x = int type
