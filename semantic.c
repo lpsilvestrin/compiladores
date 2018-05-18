@@ -190,8 +190,11 @@ int get_type(ASTree *node, ASTree* scope) {
 			type = vec2scalar(hash_node_type, node->line);
 		break; 
 	case AST_FUNCTION:
-		if (assert_param_list_type(n1, node->id->list_head, scope))
+		if (assert_param_list_type(n1, node->id->list_head, scope)) {
 			type = fun2type(hash_node_type, node->line);
+		} else {
+			fprintf(stderr, "[SEMANTIC PROBLEM] line %d: fuction %s called with incorrect parameters\n", node->line, node->id->id);
+		}		
 		break; 
 	case AST_NOT_EXP:
 		if (get_type(n1, scope) == SYMBOL_LIT_BOOL)
