@@ -446,7 +446,7 @@ void check_commands(ASTree *node, ASTree *scope) {
 				break;
 			}
 			//type = kw2type(node->type);
-			type = get_type(node, scope);
+			type = get_from_scope(node->id, scope);
 			assignment = get_type(node->offspring[0], scope);
 			if(type != assignment) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect assignment value for variable %s\n", node->line, node->id->id);
