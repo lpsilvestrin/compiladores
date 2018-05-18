@@ -186,24 +186,29 @@ int get_type(ASTree *node, ASTree* scope) {
 		break;
 	case AST_VECTOR:
 		// test index type
-		if (get_type(n1, scope) == SYMBOL_LIT_INT)
-			type = vec2scalar(hash_node_type, node->line);
+		if (get_type(n1, scope) != SYMBOL_LIT_INT)
+			fprintf(stderr, "[SEMANTIC PROBLEM] line %d: invalid vector index\n", node->line);
+		type = vec2scalar(hash_node_type, node->line);
 		break; 
 	case AST_FUNCTION:
-		if (assert_param_list_type(n1, node->id->list_head, scope)) {
-			type = fun2type(hash_node_type, node->line);
-		} else {
+		if (!assert_param_list_type(n1, node->id->list_head, scope)) {
 			fprintf(stderr, "[SEMANTIC PROBLEM] line %d: fuction %s called with incorrect parameters\n", node->line, node->id->id);
 		}		
+		type = fun2type(hash_node_type, node->line);
 		break; 
 	case AST_NOT_EXP:
-		if (get_type(n1, scope) == SYMBOL_LIT_BOOL)
-			type = SYMBOL_LIT_BOOL;	
+		tn1 = get_type(n1, scope);
+		if (tn1 == SYMBOL_LIT_BOOL)
+			fprintf(stderr, "[SEMANTIC PROBLEM] line %d: ! operator expects BOOL expression\n", node->line);
+				
+		type = SYMBOL_LIT_BOOL;
 		break;
 	case AST_NEG_EXP:
 		tn1 = get_type(n1, scope);
 		if (test_arit_type(tn1))
 			type = tn1;
+		if (tn1 == -1)
+			type = SYMBOL_LIT_FLOAT;
 		break;
 	case AST_MUL_EXP:
 	case AST_DIV_EXP:
@@ -211,6 +216,8 @@ int get_type(ASTree *node, ASTree* scope) {
 		tn2 = get_type(n2, scope);
 		if (test_arit_type(tn1) && test_arit_type(tn2))
 			type = tn1;
+		if (tn1 == -1 || tn2 == -1)
+			type = SYMBOL_LIT_FLOAT;
 		break;
 	case AST_PAR_EXP: // ()
 		type = get_type(n1, scope);
@@ -227,6 +234,8 @@ int get_type(ASTree *node, ASTree* scope) {
 		if (test_ptr_type(tn1) && test_arit_type(tn2))
 			type = tn1;
 		} 
+		if (tn1 == -1 || tn2 == -1)
+			type = SYMBOL_LIT_FLOAT;
 		break;
 	case AST_LESS_EXP:
 	case AST_GREAT_EXP:
@@ -239,6 +248,8 @@ int get_type(ASTree *node, ASTree* scope) {
 		if (test_arit_type(tn1) &&
 			test_arit_type(tn2))
 			type = SYMBOL_LIT_BOOL;
+		if (tn1 == -1 || tn2 == -1)
+			type = SYMBOL_LIT_BOOL;
 		break;
 	case AST_AND_EXP:
 	case AST_OR_EXP:
@@ -246,6 +257,8 @@ int get_type(ASTree *node, ASTree* scope) {
 		tn2 = get_type(n2, scope);
 		if (tn1 == SYMBOL_LIT_BOOL &&
 			tn2 == SYMBOL_LIT_BOOL)
+			type = SYMBOL_LIT_BOOL;
+		if (tn1 == -1 || tn2 == -1)
 			type = SYMBOL_LIT_BOOL;
 		break;
 	default:
