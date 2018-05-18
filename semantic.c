@@ -559,17 +559,17 @@ void check_commands(ASTree *node, ASTree *scope) {
 			type = get_from_scope(node->id, scope);
 			if(!test_arit_type(type)) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d for loop: Identifier must be char, int or float type.\n", node->line);
-				break;
+				//break;
 			}
 			type = get_type(n1, scope);
 			if(!test_arit_type(type)) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d for loop: First expression should be arithmetic.\n", node->line);
-				break;
+				//break;
 			}
 			type = get_type(n2, scope);
 			if(!test_arit_type(type)) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d for loop: Second expression should be arithmetic.\n", node->line);
-				break;
+				//break;
 			}
 			check_commands(n3, scope);
 			//KW_FOR '(' TK_IDENTIFIER '=' expression KW_TO expression ')' simple_command {$$=astree_create(AST_FOR,$3,$5,$7,$9,0);}
