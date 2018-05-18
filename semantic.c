@@ -531,7 +531,7 @@ void check_commands(ASTree *node, ASTree *scope) {
 			type = get_type(n1, scope);
 			if(type != SYMBOL_LIT_BOOL) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: if condition is not a boolean expression.\n", node->line);
-				break;
+				//break;
 			}
 			check_commands(n2, scope);
 			if(n3 != NULL) {
@@ -588,7 +588,7 @@ void check_commands(ASTree *node, ASTree *scope) {
 			type = get_type(n1, scope);
 			if(type != SYMBOL_LIT_BOOL) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d while loop: Control expression must be boolean type.\n", node->line);
-				break;
+				//break;
 			}
 			check_commands(n2,scope);
 			//KW_WHILE '(' expression ')' simple_command  {$$=astree_create(AST_WHILE,0,$3,$5,0,0);}
