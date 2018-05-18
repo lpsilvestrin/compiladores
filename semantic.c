@@ -469,24 +469,32 @@ void check_commands(ASTree *node, ASTree *scope) {
 				fprintf(stderr, "[SEMANTIC] INTERNAL PROBLEM: AST_PRINT null node\n");
 				break;
 			}
-			if(node->id == NULL){ //
-				n1 = node->offspring[0];
-				n2 = node->offspring[1];
-				if(n1 == NULL) { // end of recursion
-					if(n2 == NULL) {
-						fprintf(stderr, "[SEMANTIC] INTERNAL PROBLEM: AST_PRINT null node\n");
-						break;
-					}
-					type = get_type(n2, scope);
-					if(!test_arit_type(type)){
-						fprintf(stderr, "[SEMANTIC PROBLEM] line %d: print function accepts string and arihtmetic value.\n", node->line);
-						break;
-					}
-				} else {
-					check_commands(n1, scope);
-				}
-
+			n1 = node->offspring[0];
+			n2 = node->offspring[1];
+			
+			// print can't have both id and n2 null	
+			if (node->id == NULL && n2 == NULL) {
+				fprintf(stderr, "[SEMANTIC] INTERNAL PROBLEM: AST_PRINT null node\n");
+				break;
 			}
+			if(node->id != NULL){ //
+				if (node->id->type != SYMBOL_LIT_STRING) {
+						fprintf(stderr, "[SEMANTIC] line %d: invalid parameter to print\n", node->line);
+						break;
+				}
+			}
+			if (n2 != NULL) {
+				type = get_type(n2, scope);
+				if(!test_arit_type(type)){
+					fprintf(stderr, "[SEMANTIC PROBLEM] line %d: print function accepts string and arihtmetic value.\n", node->line);
+					break;
+				}
+			}
+			if(n1 != NULL) { // end of recursion
+				check_commands(n1, scope);
+			}
+
+			
 			/*print_c: 
     		KW_PRINT                {$$=0;} //it does not save tokens and intermediate productions 
     		| print_c LIT_STRING    {$$=astree_create(AST_PRINT,$2,$1,0,0,0);}
