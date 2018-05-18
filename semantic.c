@@ -427,8 +427,8 @@ void check_commands(ASTree *node, ASTree *scope) {
 				fprintf(stderr, "RIP OUR HASH\n");
 				break;
 			}
-			//check the index type
-			type = get_from_scope(node->id, scope);
+			// get the scalar type of the vector
+			type = vec2scalar(get_from_scope(node->id, scope), node->line);
 			if(type == -1) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: %s undeclared \n", node->line, node->id->id);
 			}
