@@ -27,7 +27,7 @@ int check = 'i';
 float if_ = 34545.344356;
 
 float works(int five, int four, int three, int two, int one){
-
+print works(check, check, check,check,check);
 
 //hheheheh
 }
