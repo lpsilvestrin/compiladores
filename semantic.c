@@ -545,7 +545,7 @@ void check_commands(ASTree *node, ASTree *scope) {
 				break;
 			}
 			//check identifier scalar type
-			type = get_type(node, scope);
+			type = get_from_scope(node->id, scope);
 			if(!test_arit_type(type)) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d for loop: Identifier must be char, int or float type.\n", node->line);
 				break;
