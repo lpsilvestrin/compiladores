@@ -457,7 +457,7 @@ void check_commands(ASTree *node, ASTree *scope) {
 				fprintf(stderr, "[SEMANTIC] INTERNAL PROBLEM: AST_READ null node\n");
 				break;
 			}
-			type = get_type(node, scope); //must be an scalar
+			type = get_type(node->id, scope); //must be an scalar
 			if(!test_arit_type(type)){
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: read function variable type must be scalar.\n", node->line);
 				break;
