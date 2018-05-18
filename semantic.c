@@ -217,7 +217,7 @@ int get_type(ASTree *node, ASTree* scope) {
 		tn1 = get_type(n1, scope);
 		tn2 = get_type(n2, scope);
 		if (test_arit_type(tn1)) {
-			if (test_ptr_type(tn2) || test_ptr_type(tn2))
+			if (test_arit_type(tn2) || test_ptr_type(tn2))
 				type = tn2;
 		}
 		else {
@@ -428,17 +428,18 @@ void check_commands(ASTree *node, ASTree *scope) {
 				break;
 			}
 			//check the index type
-			type = get_type(node, scope);
+			type = get_from_scope(node->id, scope);
 			if(type == -1) {
-				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect index type for vector %s\n", node->line, node->id->id);
+				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: %s undeclared \n", node->line, node->id->id);
 			}
-			else{
-				//check the assignment
-				assignment = get_type(node->offspring[1], scope);
-				if(type != assignment) {
-					fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect assignment value for vector %s\n", node->line, node->id->id);
-				}
+			// check index type
+			if (get_type(node->offspring[0], scope) != SYMBOL_LIT_INT)					fprintf(stderr, "[SEMANTIC PROBLEM] line %d: incorrect index type", node->line);
+			//check the assignment
+			assignment = get_type(node->offspring[1], scope);
+			if(type != assignment) {
+				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect assignment value for vector %s\n", node->line, node->id->id);
 			}
+			
 			break;
 		case AST_VAR_AS: //{$$=astree_create(AST_VAR_AS,$1,$3,0,0,0);}
 			if(node->id == NULL){
