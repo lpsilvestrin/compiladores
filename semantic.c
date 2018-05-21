@@ -3,6 +3,7 @@
 #include "semantic.h"
 #include "hashtable.h"
 
+int _SEMANTIC_ERROR = 0;
 
 int fun2type(int fun_type, int line) {
 	switch(fun_type) {
@@ -11,6 +12,7 @@ int fun2type(int fun_type, int line) {
 			case SYMBOL_FUN_FLOAT: return SYMBOL_LIT_FLOAT;
 	}
 	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid function type\n", line-1);
+	_SEMANTIC_ERROR = 1;
 	return -1;
 }
 
@@ -21,6 +23,7 @@ int vec2scalar(int vec_type, int line) {
 			case SYMBOL_VEC_FLOAT: return SYMBOL_LIT_FLOAT;
 	}
 	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid vector type\n", line-1);
+	_SEMANTIC_ERROR = 1;
 	return -1;
 
 }
@@ -32,6 +35,7 @@ int ptr2scalar(int ptr_type, int line) {
 			case SYMBOL_PTR_FLOAT: return SYMBOL_LIT_FLOAT;
 	}
 	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid pointer type\n", line-1);
+	_SEMANTIC_ERROR = 1;
 	return -1;
 }
 
@@ -42,6 +46,7 @@ int scalar2ptr(int scalar_type, int line) {
 			case SYMBOL_LIT_FLOAT: return SYMBOL_PTR_FLOAT;
 	}
 	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid scalar type on line\n", line-1);
+	_SEMANTIC_ERROR = 1;
 	return -1;
 }
 // convert type keywords to the respective type
@@ -151,6 +156,7 @@ int get_type(ASTree *node, ASTree* scope) {
 		hash_node_type = get_from_scope(node->id, scope);
 	if (hash_node_type == SYMBOL_IDENTIFIER) {
 		fprintf(stderr, "[SEMANTIC PROBLEM] line %d, %s wasn't declared previously\n", node->line, node->id->id);
+		_SEMANTIC_ERROR = 1;
 	}
 	switch(node->type) {
 	case AST_CHAR:
@@ -194,6 +200,7 @@ int get_type(ASTree *node, ASTree* scope) {
 			type = fun2type(hash_node_type, node->line);
 		} else {
 			fprintf(stderr, "[SEMANTIC PROBLEM] line %d: fuction %s called with incorrect parameters\n", node->line, node->id->id);
+			_SEMANTIC_ERROR = 1;
 		}		
 		break; 
 	case AST_NOT_EXP:
@@ -279,6 +286,7 @@ void assign_fun_type(ASTree *node){
 		print_type(node->id);
 	} else{
 		fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Function %s already declared with type: ", node->line, node->id->id);
+		_SEMANTIC_ERROR = 1;
 		print_type(node->id);
 	}
 
@@ -296,6 +304,7 @@ void assign_fun_type(ASTree *node){
 			if (res != n) {
 				free(n);
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d on function %s: parameter %s was declared twice.\n", node->line, old->id->id, node->id->id);
+				_SEMANTIC_ERROR = 1;
 				break;
 			}
 			node = node->offspring[1];
@@ -329,12 +338,14 @@ void assign_var_type(ASTree *node) {
 	print_type(node->id);
 	} else{
 		fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Variable %s already declared with type: ", node->line, node->id->id);
+		_SEMANTIC_ERROR = 1;
 		print_type(node->id);
 	}
 	type = kw2type(type);
 	int assignment = get_type(node->offspring[1], NULL);
 	if(type != assignment) {
 		fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect initialization value for variable %s\n", node->line, node->id->id);
+		_SEMANTIC_ERROR = 1;
 		}
 }
 
@@ -360,12 +371,14 @@ void assign_pointer_type(ASTree *node) {
 		print_type(node->id);
 	} else{
 		fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Pointer %s already declared with type: ", node->line, node->id->id);
+		_SEMANTIC_ERROR = 1;
 		print_type(node->id);
 	}
 	type = kw2type(type);
 	int assignment = get_type(node->offspring[1], NULL);
 	if(type != assignment) {
 		fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect initialization value for pointer %s\n", node->line, node->id->id);
+		_SEMANTIC_ERROR = 1;
 		}
 }
 
@@ -391,10 +404,12 @@ void assign_vector_type(ASTree *node) {
 		print_type(node->id);
 	} else{
 		fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Vector %s already declared with type: ", node->line, node->id->id);
+		_SEMANTIC_ERROR = 1;
 	}
 	int size_type = node->offspring[1]->type;
 	if(size_type != AST_INT) {
 		fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Vector must have an integer as size. Given type ", node->line);
+		_SEMANTIC_ERROR = 1;
 		print_type(node->offspring[1]->id);
 	}
 	if(node->offspring[2] != NULL) { //there are init values 
@@ -402,6 +417,7 @@ void assign_vector_type(ASTree *node) {
 		int init_values_type = get_type(node->offspring[2], NULL);
 		if(type != init_values_type) {
 			fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect initialization value to vector %s\n", node->line, node->id->id);
+			_SEMANTIC_ERROR = 1;
 		}
 	}
 }
@@ -434,13 +450,18 @@ void check_commands(ASTree *node, ASTree *scope) {
 			type = vec2scalar(get_from_scope(node->id, scope), node->line);
 			if(type == -1) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: %s undeclared \n", node->line, node->id->id);
+				_SEMANTIC_ERROR = 1;
 			}
 			// check index type
-			if (get_type(node->offspring[0], scope) != SYMBOL_LIT_INT)					fprintf(stderr, "[SEMANTIC PROBLEM] line %d: incorrect index type", node->line);
+			if (get_type(node->offspring[0], scope) != SYMBOL_LIT_INT) {
+				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: incorrect index type", node->line);
+				_SEMANTIC_ERROR = 1;
+			}
 			//check the assignment
 			assignment = get_type(node->offspring[1], scope);
 			if(type != assignment) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect assignment value for vector %s\n", node->line, node->id->id);
+				_SEMANTIC_ERROR = 1;
 			}
 			
 			break;
@@ -454,6 +475,7 @@ void check_commands(ASTree *node, ASTree *scope) {
 			assignment = get_type(node->offspring[0], scope);
 			if(type != assignment) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect assignment value for variable %s\n", node->line, node->id->id);
+				_SEMANTIC_ERROR = 1;
 			}
 			break;
 		case AST_READ:  //scalar value
@@ -464,6 +486,7 @@ void check_commands(ASTree *node, ASTree *scope) {
 			type = get_from_scope(node->id, scope); //must be an scalar
 			if(!test_arit_type(type)){
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: read function variable type must be scalar.\n", node->line);
+				_SEMANTIC_ERROR = 1;
 				break;
 			}
 			break;
@@ -490,6 +513,7 @@ void check_commands(ASTree *node, ASTree *scope) {
 				type = get_type(n2, scope);
 				if(!test_arit_type(type)){
 					fprintf(stderr, "[SEMANTIC PROBLEM] line %d: print function accepts string and arihtmetic value.\n", node->line);
+					_SEMANTIC_ERROR = 1;
 					break;
 				}
 			}
@@ -513,6 +537,7 @@ void check_commands(ASTree *node, ASTree *scope) {
 			type = get_type(node->offspring[0], scope);
 			if(!test_arit_type(type)){
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: return function accepts only scalar value.\n", node->line);
+				_SEMANTIC_ERROR = 1;
 				break;
 			}
 			break; 
@@ -531,6 +556,7 @@ void check_commands(ASTree *node, ASTree *scope) {
 			type = get_type(n1, scope);
 			if(type != SYMBOL_LIT_BOOL) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: if condition is not a boolean expression.\n", node->line);
+				_SEMANTIC_ERROR = 1;
 				//break;
 			}
 			check_commands(n2, scope);
@@ -559,16 +585,19 @@ void check_commands(ASTree *node, ASTree *scope) {
 			type = get_from_scope(node->id, scope);
 			if(!test_arit_type(type)) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d for loop: Identifier must be char, int or float type.\n", node->line);
+				_SEMANTIC_ERROR = 1;
 				//break;
 			}
 			type = get_type(n1, scope);
 			if(!test_arit_type(type)) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d for loop: First expression should be arithmetic.\n", node->line);
+				_SEMANTIC_ERROR = 1;
 				//break;
 			}
 			type = get_type(n2, scope);
 			if(!test_arit_type(type)) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d for loop: Second expression should be arithmetic.\n", node->line);
+				_SEMANTIC_ERROR = 1;
 				//break;
 			}
 			check_commands(n3, scope);
@@ -588,6 +617,7 @@ void check_commands(ASTree *node, ASTree *scope) {
 			type = get_type(n1, scope);
 			if(type != SYMBOL_LIT_BOOL) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d while loop: Control expression must be boolean type.\n", node->line);
+				_SEMANTIC_ERROR = 1;
 				//break;
 			}
 			check_commands(n2,scope);
