@@ -142,6 +142,12 @@ int test_ptr_type(int type) {
 			(type == SYMBOL_PTR_FLOAT);
 }
 
+void check_undeclared(int line, hashNode* var) {
+	fprintf(stderr, "[SEMANTIC PROBLEM] line %d, %s wasn't declared previously\n", line, var->id);
+	_SEMANTIC_ERROR = 1;
+
+}
+
 int get_type(ASTree *node, ASTree* scope) {
 	int hash_node_type = -1;
 	int type = -1; // invalid type
@@ -152,12 +158,10 @@ int get_type(ASTree *node, ASTree* scope) {
 		fprintf(stderr, "[SEMANTIC] INTERNAL ERROR: get_type with NULL node\n");
 		return type;
 	} 
-	if (node->id != NULL)	
+	if (node->id != NULL) {
 		hash_node_type = get_from_scope(node->id, scope);
-	if (hash_node_type == SYMBOL_IDENTIFIER) {
-		fprintf(stderr, "[SEMANTIC PROBLEM] line %d, %s wasn't declared previously\n", node->line, node->id->id);
-		_SEMANTIC_ERROR = 1;
 	}
+
 	switch(node->type) {
 	case AST_CHAR:
 		type = SYMBOL_LIT_CHAR;
@@ -184,13 +188,22 @@ int get_type(ASTree *node, ASTree* scope) {
 			type = ptr2scalar(hash_node_type, node->line);
 		break;
 	case AST_ID:
+		if (hash_node_type == SYMBOL_IDENTIFIER) {
+			check_undeclared(node->line, node->id);
+		}
 		type = hash_node_type;
 		break;
 	case AST_ID_ADDRESS:
+		if (hash_node_type == SYMBOL_IDENTIFIER) {
+			check_undeclared(node->line, node->id);
+		}
 		if(test_arit_type(hash_node_type))
 			type = scalar2ptr(hash_node_type, node->line);
 		break;
 	case AST_VECTOR:
+		if (hash_node_type == SYMBOL_IDENTIFIER) {
+			check_undeclared(node->line, node->id);
+		}
 		// test index type
 		if (get_type(n1, scope) == SYMBOL_LIT_INT)
 			type = vec2scalar(hash_node_type, node->line);
