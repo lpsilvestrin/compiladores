@@ -30,8 +30,10 @@ int main(int argc, char** argv) {
 	if(yyin){
 		yyparse();
 		//printf("Last line: %d\n", getLineNumber());
+		/*
 		printf("printing the hash table contents:\n");
 		printHash(SymbolsTable);
+		*/
 	}
 	exit(0);
 }
