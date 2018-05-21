@@ -326,7 +326,7 @@ void assign_fun_type(ASTree *node){
 		free(params);
 	}
 	//check what's inside
-	check_commands(block, old->id->list_head);
+	//check_commands(block, old->id->list_head);
 }
 
 void assign_var_type(ASTree *node) { 
@@ -647,7 +647,8 @@ void check_commands(ASTree *node, ASTree *scope) {
 //1: check assignments
 //2: check if int var = X x = int type
 //3: check if var[] -> var = array type; var(la,la,la) -> var = function type
-void semantic_analysis(ASTree *node) {
+
+void assign_types(ASTree *node) {
     print_astnode(node); //for debug sake
 	switch(node->type) {
 	case AST_FUNCTION_DEF: //function
@@ -668,8 +669,27 @@ void semantic_analysis(ASTree *node) {
     //recursion
     for(int i =MAX_OFFSPRING-1; i >= 0; i--){
         if(node->offspring[i] != NULL)
-            semantic_analysis(node->offspring[i]);
+            assign_types(node->offspring[i]);
     }
+	
+}
+
+void check_types(ASTree *node) {
+	switch(node->type) {
+	case AST_FUNCTION_DEF:
+		check_commands(node->offspring[1], node->offspring[0]->id->list_head);
+		break;
+	}
+    //recursion
+    for(int i =MAX_OFFSPRING-1; i >= 0; i--){
+        if(node->offspring[i] != NULL)
+            check_types(node->offspring[i]);
+    }
+}
+
+void semantic_analysis(ASTree *node) {
+	assign_types(node);
+	check_types(node);
 }
 
 
