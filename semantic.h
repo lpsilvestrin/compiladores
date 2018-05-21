@@ -1,4 +1,5 @@
-
+#ifndef _SEMANTIC_H
+#define _SEMANTIC_H
 #include "astree.h"
 
 #define MAX_PARAM_SIZE 30
@@ -21,3 +22,6 @@ void assign_pointer_type(ASTree *node);
 void assign_vector_type(ASTree *node);
 void check_commands(ASTree *node, ASTree *scope);
 void semantic_analysis(ASTree *node);
+
+
+#endif
