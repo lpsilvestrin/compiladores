@@ -9,6 +9,7 @@ extern void initMe();
 extern void setOutput(FILE* pointer);
 extern int getLineNumber();
 extern hashTable *SymbolsTable; 
+extern int _SEMANTIC_ERROR;
 
 int main(int argc, char** argv) {
 	if (argc < 3) {
@@ -29,6 +30,10 @@ int main(int argc, char** argv) {
 	setOutput(f); //send the pointer to ther parser
 	if(yyin){
 		yyparse();
+		if (_SEMANTIC_ERROR == 1) {
+			printf("Found a semantic error\n");
+			exit(4);
+		}
 		//printf("Last line: %d\n", getLineNumber());
 		/*
 		printf("printing the hash table contents:\n");
