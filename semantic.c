@@ -11,7 +11,7 @@ int fun2type(int fun_type, int line) {
 		case SYMBOL_FUN_INT: return SYMBOL_LIT_INT;
 			case SYMBOL_FUN_FLOAT: return SYMBOL_LIT_FLOAT;
 	}
-	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid function type\n", line-1);
+	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid function type\n", line);
 	_SEMANTIC_ERROR = 1;
 	return -1;
 }
@@ -22,7 +22,7 @@ int vec2scalar(int vec_type, int line) {
 		case SYMBOL_VEC_INT: return SYMBOL_LIT_INT;
 			case SYMBOL_VEC_FLOAT: return SYMBOL_LIT_FLOAT;
 	}
-	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid vector type\n", line-1);
+	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid vector type\n", line);
 	_SEMANTIC_ERROR = 1;
 	return -1;
 
@@ -34,7 +34,7 @@ int ptr2scalar(int ptr_type, int line) {
 		case SYMBOL_PTR_INT: return SYMBOL_LIT_INT;
 			case SYMBOL_PTR_FLOAT: return SYMBOL_LIT_FLOAT;
 	}
-	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid pointer type\n", line-1);
+	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid pointer type\n", line);
 	_SEMANTIC_ERROR = 1;
 	return -1;
 }
@@ -45,7 +45,7 @@ int scalar2ptr(int scalar_type, int line) {
 		case SYMBOL_LIT_INT: return SYMBOL_PTR_INT;
 			case SYMBOL_LIT_FLOAT: return SYMBOL_PTR_FLOAT;
 	}
-	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid scalar type on line\n", line-1);
+	fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Invalid scalar type on line\n", line);
 	_SEMANTIC_ERROR = 1;
 	return -1;
 }
@@ -87,7 +87,6 @@ int compat_types(int t1, int t2) { //returns (0,1) (false, true)
 	return type;
 }
 
-///TO VERIFY
 int assert_param_list_type(ASTree *node, ASTree *param_types, ASTree* scope) {
 	if (node == NULL) {
 		// if both have empty parameters, return true
@@ -295,8 +294,8 @@ void assign_fun_type(ASTree *node){
 			fprintf(stderr, "[SEMANTIC] INTERNAL ERROR \n");
 			break;
 		}
-		fprintf(stderr, "[SEMANTIC] line %d: Changing variable %s type: ", node->line, node->id->id);
-		print_type(node->id);
+		//fprintf(stderr, "[SEMANTIC] line %d: Changing variable %s type: ", node->line, node->id->id);
+		//print_type(node->id);
 	} else{
 		fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Function %s already declared with type: ", node->line, node->id->id);
 		_SEMANTIC_ERROR = 1;
@@ -322,7 +321,7 @@ void assign_fun_type(ASTree *node){
 			}
 			node = node->offspring[1];
 		}while(node != NULL);
-		printHash(params);
+		//printHash(params);
 		free(params);
 	}
 	//check what's inside
@@ -347,8 +346,8 @@ void assign_var_type(ASTree *node) {
 			fprintf(stderr, "[SEMANTIC] INTERNAL ERROR \n");
 			break;
 		}
-	fprintf(stderr, "[SEMANTIC] line %d: Changing variable %s type: ", node->line, node->id->id);
-	print_type(node->id);
+	//fprintf(stderr, "[SEMANTIC] line %d: Changing variable %s type: ", node->line, node->id->id);
+	//print_type(node->id);
 	} else{
 		fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Variable %s already declared with type: ", node->line, node->id->id);
 		_SEMANTIC_ERROR = 1;
@@ -380,8 +379,8 @@ void assign_pointer_type(ASTree *node) {
 				fprintf(stderr, "[SEMANTIC] INTERNAL ERROR \n");
 				break;
 		}
-		fprintf(stderr, "[SEMANTIC] line %d: Changing pointer %s type: ", node->line, node->id->id);
-		print_type(node->id);
+		//fprintf(stderr, "[SEMANTIC] line %d: Changing pointer %s type: ", node->line, node->id->id);
+		//print_type(node->id);
 	} else{
 		fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Pointer %s already declared with type: ", node->line, node->id->id);
 		_SEMANTIC_ERROR = 1;
@@ -413,8 +412,8 @@ void assign_vector_type(ASTree *node) {
 				fprintf(stderr, "[SEMANTIC] INTERNAL ERROR \n");
 				break;
 		}
-		fprintf(stderr, "[SEMANTIC] line %d: Changing vector %s type: ", node->line, node->id->id);
-		print_type(node->id);
+		//fprintf(stderr, "[SEMANTIC] line %d: Changing vector %s type: ", node->line, node->id->id);
+		//print_type(node->id);
 	} else{
 		fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Vector %s already declared with type: ", node->line, node->id->id);
 		_SEMANTIC_ERROR = 1;
@@ -436,7 +435,7 @@ void assign_vector_type(ASTree *node) {
 }
 
 void check_commands(ASTree *node, ASTree *scope) {
-    print_astnode(node); //for debug sake
+    //print_astnode(node); //for debug sake
 	int type;
 	int assignment;
 	ASTree *n1, *n2, *n3;
@@ -649,7 +648,7 @@ void check_commands(ASTree *node, ASTree *scope) {
 //3: check if var[] -> var = array type; var(la,la,la) -> var = function type
 
 void assign_types(ASTree *node) {
-    print_astnode(node); //for debug sake
+    //print_astnode(node); //for debug sake
 	switch(node->type) {
 	case AST_FUNCTION_DEF: //function
 		assign_fun_type(node);
