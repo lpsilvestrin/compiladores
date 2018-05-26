@@ -1,11 +1,14 @@
 #include "tac.h"
-#include "astree.h"
+
 
 int next_label = 0;
 
 void print_tac(TAC *tac);
 
 
+hashNode* new_label() {
+	return make_label(next_label++, SymbolsTable);
+}
 
 TAC* tac_create(int type, hashNode *result, hashNode *op1, hashNode *op2) { //, TAC *prev, TAC *next) {
     TAC *t = (TAC*)malloc(sizeof(TAC));
@@ -19,6 +22,7 @@ TAC* tac_create(int type, hashNode *result, hashNode *op1, hashNode *op2) { //, 
     //t->next = next;
     return t;
 }
+
 
 TAC* tac_join(TAC* tac1, TAC* tac2) {
     TAC* temp;
@@ -48,6 +52,11 @@ void tac_print_code(TAC *tac){
     }
     print_tac(tac);
     tac_print_code(tac->next);
+}
+
+TAC* binary_op(int op, TAC* t1, TAC* t2) {
+	TAC* btac = tac_create(op, new_label(), t1->result, t2->result);
+	return tac_join(t1, tac_join(t2, btac));
 }
 
 TAC* tac_generate_code(ASTree *node) {
@@ -105,7 +114,9 @@ TAC* tac_generate_code(ASTree *node) {
         //case AST_NOT_EXP: break;
         //case AST_NEG_EXP: break;
         //case AST_PAR_EXP: break;
-        //case AST_PLUS_EXP: break;
+        case AST_PLUS_EXP: 
+			return binary_op(TAC_ADD, new_code[0], new_code[1]);
+			break;
         //case AST_MINUS_EXP: break;
         //case AST_MUL_EXP: break;
         //case AST_DIV_EXP: break;

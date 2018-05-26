@@ -1,6 +1,8 @@
 #ifndef _TAC_H
 #define _TAC_H
 
+
+#include "astree.h"
 #include "hashtable.h"
 
 #define TAC_FUN_BEGIN 1
@@ -30,6 +32,7 @@
 #define TAC_ASSIGNMENT 25
 
 
+
 typedef struct Tac {
 	int type;
 	hashNode *result;
@@ -38,6 +41,8 @@ typedef struct Tac {
 	struct Tac *prev;
 	struct Tac *next;
 } TAC;
+
+extern hashTable* SymbolsTable;
 
 TAC* tac_create(int type, hashNode *result, hashNode *op1, hashNode *op2);
 TAC* tac_join(TAC* tac1, TAC* tac2);
