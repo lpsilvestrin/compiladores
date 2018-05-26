@@ -40,7 +40,6 @@ TAC* create_code(ASTree *node) {
             new_code[i] = create_code(node->offspring[i]);
         }
     }
-
     switch(node->type) {
         case AST_GLOBAL: break;
         case AST_GLOBAL_VAR_DEF: //$$=astree_create(AST_GLOBAL_VAR_DEF,$2,$1,$4,0,0);}
@@ -99,4 +98,38 @@ TAC* create_code(ASTree *node) {
             fprintf(stderr, "[TAC] SOMETHING IS WRONG!!\n");
     }
     return NULL;
+}
+
+void print_tac(TAC *tac) {
+    if(tac == NULL)
+        return;
+    switch(tac->type) {
+        case TAC_FUN_BEGIN: fprintf(stderr, "TAC_FUN_BEGIN"); break;
+        case TAC_FUN_END: fprintf(stderr, "TAC_FUN_END"); break;
+        case TAC_FUN_ARG: fprintf(stderr, "TAC_FUN_ARG"); break;
+        case TAC_FUN_CALL: fprintf(stderr, "TAC_FUN_CALL"); break;
+        case TAC_VAR_DEF: fprintf(stderr, "TAC_VAR_DEF"); break;
+        case TAC_VEC_DEF: fprintf(stderr, "TAC_VEC_DEF"); break;
+        case TAC_POINTER_ASSIGN: fprintf(stderr, "TAC_POINTER_ASSIGN"); break;
+        case TAC_PRINT: fprintf(stderr, "TAC_PRINT"); break;
+        case TAC_READ: fprintf(stderr, "TAC_READ"); break;
+        case TAC_ADD: fprintf(stderr, "TAC_ADD"); break;
+        case TAC_SUB: fprintf(stderr, "TAC_SUB"); break;
+        case TAC_MUL: fprintf(stderr, "TAC_MUL"); break;
+        case TAC_DIV: fprintf(stderr, "TAC_DIV"); break;
+        case TAC_NEG: fprintf(stderr, "TAC_NEG"); break;
+        case TAC_AND: fprintf(stderr, "TAC_AND"); break;
+        case TAC_OR: fprintf(stderr, "TAC_OR"); break;
+        case TAC_NOT: fprintf(stderr, "TAC_NOT"); break;
+        case TAC_EQ: fprintf(stderr, "TAC_EQ"); break;
+        case TAC_NEQ: fprintf(stderr, "TAC_NEQ"); break;
+        case TAC_LEQ: fprintf(stderr, "TAC_LEQ"); break;
+        case TAC_GEQ: fprintf(stderr, "TAC_GEQ"); break;
+        case TAC_JUMP: fprintf(stderr, "TAC_JUMP"); break;
+        case TAC_RETURN: fprintf(stderr, "TAC_RETURN"); break;
+        case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL"); break;
+        case TAC_ASSIGNMENT: fprintf(stderr, "TAC_ASSIGNMENT"); break;
+        default: fprintf(stderr, "WEIRD TAC TYPE ON FUNCTION print_tac\n"); break;
+    }
+
 }
