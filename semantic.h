@@ -4,6 +4,7 @@
 
 #define MAX_PARAM_SIZE 30
 
+typedef struct astree ASTree; 
 
 int fun2type(int fun_type, int line);
 int vec2scalar(int vec_type, int line);

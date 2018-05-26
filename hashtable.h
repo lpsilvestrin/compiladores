@@ -20,12 +20,12 @@
 #define SYMBOL_FUN_INT 15
 #define SYMBOL_FUN_FLOAT 16
 #define SYMBOL_FUN_CHAR 17
+#define SYMBOL_LABEL 18
 
 #define _KEYSIZE 256
 #define _VALSIZE 256
 
 typedef struct astree ASTree; //prototype
-
 
 typedef struct HashNode {
 	char* id; //the id string
@@ -48,5 +48,5 @@ int getHash(char* key, hashTable *table, hashNode **entry);
 hashNode* insertHash(hashNode *entry, hashTable *table);
 void print_type(hashNode *entry);
 void set_param_list(hashNode *entry, ASTree *pointer);
-
+hashNode* make_label(int next_label, hashTable *table);
 #endif //_HASHTABLE_H

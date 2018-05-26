@@ -191,3 +191,16 @@ void print_type(hashNode *entry) {
 void set_param_list(hashNode *entry, ASTree *pointer) {
 	entry->list_head = pointer;
 }
+
+hashNode* make_label(int next_label, hashTable *table) {
+	char buffer[512];
+	sprintf(buffer, "_label%d", next_label);
+	hashNode *n;
+	initNode(&n); 		// inicializando área de memória e atribuindo pro ponteiro
+	strcpy(n->id, buffer); // atribuindo identificador como key
+	n->type = SYMBOL_LABEL;
+	hashNode* res = insertHash(n, table); // inserindo na tabela
+	if (res != n) 
+		free(n);
+	return res;
+}

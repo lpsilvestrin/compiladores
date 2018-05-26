@@ -96,7 +96,8 @@ program_root:
     program {$$=$1; semantic_analysis($$); 
     TAC *tac = tac_reverse(tac_generate_code($1));
     tac_print_code(tac);
-    decompile_tree($$, file_pointer);}
+    //decompile_tree($$, file_pointer);
+    }
     ;
 
 //---------------------- MAIN FLOW

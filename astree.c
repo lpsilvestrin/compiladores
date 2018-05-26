@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "astree.h"
+//#include "hashtable.h"
 
 extern int getLineNumber();
 
@@ -288,7 +289,7 @@ int decompile_tree(ASTree* tree, FILE *prog) {
 			fprintf(prog, " ");
 			decompile_tree(n2, prog);
 			break;
-		//default: break;
+		//default: fprintf(stderr, "oh fuck\n");break;
 	}
 	return 0;
 }

@@ -9,7 +9,7 @@
 #define TAC_FUN_CALL 4
 #define TAC_VAR_DEF 5
 #define TAC_VEC_DEF 6
-#define TAC_POINTER_ASSIGN 7
+#define TAC_POINTER_DEF 7
 #define TAC_PRINT 8
 #define TAC_READ 9
 #define TAC_ADD 10
@@ -28,6 +28,7 @@
 #define TAC_RETURN 23
 #define TAC_SYMBOL 24
 #define TAC_ASSIGNMENT 25
+
 
 typedef struct Tac {
 	int type;
