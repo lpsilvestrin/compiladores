@@ -92,7 +92,14 @@ TAC* tac_generate_code(ASTree *node) {
         case AST_GLOBAL_POINTER_DEF: 
             return tac_create(TAC_POINTER_DEF, node->id, new_code[1]->result, NULL); 
             break;
-        //case AST_GLOBAL_VECTOR_DEF: break;
+        case AST_GLOBAL_VECTOR_DEF: 
+			t1 = tac_create(TAC_VEC_DEF, node->id, new_code[1]->result, NULL);
+			// join vec def with init values
+			return tac_join(t1, new_code[2]); 
+			break;
+		case AST_INIT_VALUES:
+			t1 = tac_create(TAC_SYMBOL, new_code[1]->result, NULL, NULL);
+			return tac_join(new_code[0], t1);
         //case AST_FUNCTION_DEF: break;
         //case AST_HEADER: break;
         //case AST_DEF_PARAM: break;
@@ -139,9 +146,9 @@ TAC* tac_generate_code(ASTree *node) {
         case AST_INT_SYMBOL: 
         case AST_FLOAT_SYMBOL: 
         case AST_CHAR_SYMBOL:
-            print_astnode(node);
+			// n precisa fazer nada com os keywords de tipo
             //print_tac(tac_create(TAC_SYMBOL, node->id, NULL, NULL));
-            return tac_create(TAC_SYMBOL, node->id, NULL, NULL);
+            //return tac_create(TAC_SYMBOL, node->id, NULL, NULL);
             break;
         case AST_INT: 
         case AST_REAL: 
