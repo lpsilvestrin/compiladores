@@ -55,7 +55,7 @@ void tac_print_code(TAC *tac){
 }
 
 TAC* binary_op(int op, TAC* t1, TAC* t2) {
-	TAC* btac = tac_create(op, new_label(), t1->result, t2->result);
+	TAC* btac = tac_create(op, new_label(), t1?t1->result:NULL, t2?t2->result:NULL);
 	return tac_join(t1, tac_join(t2, btac));
 }
 
@@ -83,21 +83,14 @@ TAC* tac_generate_code(ASTree *node) {
     //}
     //printf(stderr, "depois da recursao\n");
     switch(node->type) {
-        case AST_GLOBAL: break;
+        case AST_GLOBAL: 
+			return tac_join(new_code[0], new_code[1]);
+			break;
         case AST_GLOBAL_VAR_DEF:
-            print_astnode(node);
-            t1 = tac_create(TAC_VAR_DEF, node->offspring[0]->id, NULL, NULL); //$$=astree_create(AST_GLOBAL_VAR_DEF,$2,$1,$4,0,0);}
-            t2 = tac_create(TAC_ASSIGNMENT, node->offspring[0]->id, node->offspring[1]->id, NULL); //{$$=astree_create(AST_CHAR,$1,0,0,0,0);} 
-            //print_tac(t2);
-            //if(tac_join(t1, t2) == NULL) 
-            //    print_tac(t1);
-            return tac_join(t1, t2);
+			return tac_create(TAC_VAR_DEF, node->id, new_code[1]->result, NULL);
             break;
         case AST_GLOBAL_POINTER_DEF: 
-            print_astnode(node);
-            t1 = tac_create(TAC_POINTER_DEF, node->offspring[0]->id, NULL, NULL); 
-            t2 = tac_create(TAC_ASSIGNMENT, node->offspring[0]->id, node->offspring[1]->id, NULL); 
-            return tac_join(t1, t2);
+            return tac_create(TAC_POINTER_DEF, node->id, new_code[1]->result, NULL); 
             break;
         //case AST_GLOBAL_VECTOR_DEF: break;
         //case AST_FUNCTION_DEF: break;
@@ -117,8 +110,12 @@ TAC* tac_generate_code(ASTree *node) {
         case AST_PLUS_EXP: 
 			return binary_op(TAC_ADD, new_code[0], new_code[1]);
 			break;
-        //case AST_MINUS_EXP: break;
-        //case AST_MUL_EXP: break;
+        case AST_MINUS_EXP:
+			return binary_op(TAC_SUB, new_code[0], new_code[1]);
+			break;
+        case AST_MUL_EXP: 
+			return binary_op(TAC_MUL, new_code[0], new_code[1]);
+			break;
         //case AST_DIV_EXP: break;
         //case AST_LESS_EXP: break;
         //case AST_GREAT_EXP: break;
@@ -146,11 +143,10 @@ TAC* tac_generate_code(ASTree *node) {
             //print_tac(tac_create(TAC_SYMBOL, node->id, NULL, NULL));
             return tac_create(TAC_SYMBOL, node->id, NULL, NULL);
             break;
-        case AST_INT: // ?????????
+        case AST_INT: 
         case AST_REAL: 
         case AST_CHAR: 
-            fprintf(stderr, "nao sei oq fazer com o tipo\n");
-            return NULL;
+            return tac_create(TAC_SYMBOL, node->id, NULL, NULL);
             break;
         default:
             fprintf(stderr, "[TAC] SOMETHING IS WRONG!!\n");
