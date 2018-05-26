@@ -76,8 +76,8 @@ TAC* create_code(ASTree *node) {
         case AST_CHAR_SYMBOL: 
             return tac_create(TAC_SYMBOL, node->id, NULL, NULL, NULL, NULL);
             break;
-        case AST_INT: break;
-        case AST_REAL: break;
+        case AST_INT: // ?????????
+        case AST_REAL: 
         case AST_CHAR: break;
         default:
             fprintf(stderr, "[TAC] SOMETHING IS WRONG!!\n");
