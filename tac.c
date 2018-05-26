@@ -1,8 +1,8 @@
 #include "tac.h"
 #include "astree.h"
 
-TAC* create(int type, hashNode result, hashNode op1, hashNode op2, TAC *prev, TAC *next) {
-    TAC t = (TAC*)malloc(sizeof(TAC));
+TAC* tac_create(int type, hashNode *result, hashNode *op1, hashNode *op2, TAC *prev, TAC *next) {
+    TAC *t = (TAC*)malloc(sizeof(TAC));
     t->type = type;
     t->result = result;
     t->op1 = op1;
@@ -13,19 +13,19 @@ TAC* create(int type, hashNode result, hashNode op1, hashNode op2, TAC *prev, TA
 }
 
 
-TAC*create_code(ASTree node) {
+TAC* create_code(ASTree *node) {
     if(node == NULL) {
         return NULL;
     }
 
-    TAC new_code[MAX_OFFSPRING];
+    TAC *new_code[MAX_OFFSPRING];
 
     //starts from the end
     for(int i =0; i < MAX_OFFSPRING; i++) {
         if(node->offspring[i] == NULL) {
             new_code[i] = NULL;
         } else {
-            code[i] = create_code(node->offspring[i]);
+            new_code[i] = create_code(node->offspring[i]);
         }
     }
 
@@ -71,17 +71,16 @@ TAC*create_code(ASTree node) {
         case AST_FOR: break;
         case AST_WHILE: break;
         case AST_INIT_VALUES: break;
-        case AST_INT_SYMBOL: break;
-        case AST_FLOAT_SYMBOL: break;
-        case AST_CHAR_SYMBOL: break;
+        case AST_INT_SYMBOL: 
+        case AST_FLOAT_SYMBOL: 
+        case AST_CHAR_SYMBOL: 
+            return tac_create(TAC_SYMBOL, node->id, NULL, NULL, NULL, NULL);
+            break;
         case AST_INT: break;
         case AST_REAL: break;
         case AST_CHAR: break;
         default:
             fprintf(stderr, "[TAC] SOMETHING IS WRONG!!\n");
     }
-
-
-
-
+    return NULL;
 }
