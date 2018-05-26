@@ -2,8 +2,8 @@
 # Marcely e Luis Pedro, 2018/1
 #
 
-etapa2: semantic.o y.tab.o lex.yy.o hashtable.o astree.o main.c
-	gcc -g -Wall -o etapa4 semantic.o y.tab.o lex.yy.o hashtable.o astree.o main.c 
+etapa2: semantic.o y.tab.o lex.yy.o hashtable.o astree.o tac.o main.c 
+	gcc -g -Wall -o etapa4 semantic.o y.tab.o lex.yy.o hashtable.o astree.o tac.o main.c 
 
 y.tab.o: parser.y
 	yacc -d -v parser.y
@@ -22,6 +22,9 @@ hashtable.o: hashtable.c hashtable.h
 
 astree.o: astree.c astree.h 
 	gcc -g -Wall -c astree.c
+
+tac.o: tac.c tac.h 
+	gcc -g -Wall -c tac.c
 
 
 test_hash: hash_tester.c hashtable.o
