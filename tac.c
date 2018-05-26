@@ -84,7 +84,7 @@ TAC* tac_generate_code(ASTree *node) {
     //printf(stderr, "depois da recursao\n");
     switch(node->type) {
         case AST_GLOBAL: 
-			return tac_join(new_code[0], new_code[1]);
+			return tac_join(new_code[1], new_code[0]);
 			break;
         case AST_GLOBAL_VAR_DEF:
 			return tac_create(TAC_VAR_DEF, node->id, new_code[1]->result, NULL);
@@ -189,7 +189,7 @@ void print_tac(TAC *tac) {
         case TAC_GEQ: fprintf(stderr, "TAC_GEQ\n"); break;
         case TAC_JUMP: fprintf(stderr, "TAC_JUMP\n"); break;
         case TAC_RETURN: fprintf(stderr, "TAC_RETURN\n"); break;
-        case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL\n"); break;
+        case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL %s\n", tac->result->id); break;
         case TAC_ASSIGNMENT: fprintf(stderr, "TAC_ASSIGNMENT\n"); break;
         default: fprintf(stderr, "WEIRD TAC TYPE ON FUNCTION print_tac\n"); break;
     }
