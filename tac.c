@@ -1,17 +1,27 @@
 #include "tac.h"
 #include "astree.h"
 
-TAC* tac_create(int type, hashNode *result, hashNode *op1, hashNode *op2, TAC *prev, TAC *next) {
+TAC* tac_create(int type, hashNode *result, hashNode *op1, hashNode *op2) { //, TAC *prev, TAC *next) {
     TAC *t = (TAC*)malloc(sizeof(TAC));
     t->type = type;
     t->result = result;
     t->op1 = op1;
     t->op2 = op2;
-    t->prev = prev;
-    t->next = next;
+    //t->prev = prev;
+    //t->next = next;
     return t;
 }
 
+TAC* tac_join(TAC* tac1, TAC* tac2) {
+    TAC* temp;
+    if(tac1 == NULL)
+        return tac2;
+    if(tac2 == NULL)
+        return tac1;
+    for(temp = tac2; temp->prev; temp = temp->prev); 
+    temp->prev = tac1;
+    return tac2;
+}
 
 TAC* create_code(ASTree *node) {
     if(node == NULL) {
@@ -19,6 +29,8 @@ TAC* create_code(ASTree *node) {
     }
 
     TAC *new_code[MAX_OFFSPRING];
+    TAC *t1;
+    TAC *t2;
 
     //starts from the end
     for(int i =0; i < MAX_OFFSPRING; i++) {
@@ -31,7 +43,11 @@ TAC* create_code(ASTree *node) {
 
     switch(node->type) {
         case AST_GLOBAL: break;
-        case AST_GLOBAL_VAR_DEF: break;
+        case AST_GLOBAL_VAR_DEF: //$$=astree_create(AST_GLOBAL_VAR_DEF,$2,$1,$4,0,0);}
+            t1 = tac_create(TAC_VAR_DEF, node->offspring[0]->id, NULL, NULL);
+            t2 = tac_create(TAC_ASSIGNMENT, node->offspring[1]->id, NULL, NULL); //{$$=astree_create(AST_CHAR,$1,0,0,0,0);} 
+            return tac_join(t1, t2);
+            break;
         case AST_GLOBAL_POINTER_DEF: break;
         case AST_GLOBAL_VECTOR_DEF: break;
         case AST_FUNCTION_DEF: break;
@@ -74,7 +90,7 @@ TAC* create_code(ASTree *node) {
         case AST_INT_SYMBOL: 
         case AST_FLOAT_SYMBOL: 
         case AST_CHAR_SYMBOL: 
-            return tac_create(TAC_SYMBOL, node->id, NULL, NULL, NULL, NULL);
+            return tac_create(TAC_SYMBOL, node->id, NULL, NULL);
             break;
         case AST_INT: // ?????????
         case AST_REAL: 
