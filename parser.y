@@ -4,6 +4,7 @@
 #include "astree.h"
 #include "hashtable.h"
 #include "semantic.h"
+#include "tac.h"
 
 extern int getLineNumber();
 FILE* file_pointer; //to print our output tree :)
@@ -92,7 +93,10 @@ int semantic_error = 0; // flag indicating semantic error
 //---------------------- ROOT FOR SETTING OUR FILE 
 //(cannot have recursion, that's why we need a different production)
 program_root: 
-    program {$$=$1; semantic_analysis($$); }
+    program {$$=$1; semantic_analysis($$); 
+    TAC *tac = tac_reverse(tac_generate_code($1));
+    print_code(tac);
+    decompile_tree($$, file_pointer);}
     ;
 
 //---------------------- MAIN FLOW

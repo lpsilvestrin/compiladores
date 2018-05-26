@@ -7,6 +7,8 @@ TAC* tac_create(int type, hashNode *result, hashNode *op1, hashNode *op2) { //, 
     t->result = result;
     t->op1 = op1;
     t->op2 = op2;
+    t->prev = NULL;
+    t->next = NULL;
     //t->prev = prev;
     //t->next = next;
     return t;
@@ -23,7 +25,21 @@ TAC* tac_join(TAC* tac1, TAC* tac2) {
     return tac2;
 }
 
-TAC* create_code(ASTree *node) {
+TAC* tac_reverse(TAC *tac) {
+    if(tac == NULL) {
+        return NULL;
+    } 
+    TAC *aux;
+    for(aux = tac; aux->prev; aux = aux->prev)
+        aux->prev->next = aux;
+    return aux;
+}
+
+void print_code(TAC *tac){
+    
+}
+
+TAC* tac_generate_code(ASTree *node) {
     if(node == NULL) {
         return NULL;
     }
