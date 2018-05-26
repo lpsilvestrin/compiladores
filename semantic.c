@@ -1,4 +1,3 @@
-
 #include "astree.h"
 #include "semantic.h"
 #include "hashtable.h"
@@ -171,12 +170,12 @@ int get_type(ASTree *node, ASTree* scope) {
 	case AST_REAL:
 		type = SYMBOL_LIT_FLOAT;
 		break;
-	case AST_INIT_VALUES: //TO DO CHECK THIS
+	case AST_INIT_VALUES: 
 		// check the type of the list of init values
 		tn1 = get_type(n1, scope); 
 		if (n2 != NULL) {
 			tn2 = get_type(n2, scope);
-			if (tn1 == tn2)
+			if (test_arit_type(tn1)&&(test_arit_type(tn2)))//(tn1 == tn2)
 				type = tn1;
 		} else {
 			type = tn1;
@@ -273,10 +272,8 @@ int get_type(ASTree *node, ASTree* scope) {
 	return type;
 }
 
-/*Assignment functions*/
-
 void assign_fun_type(ASTree *node){  
-	ASTree *block = node->offspring[1]; //saves the block
+	//ASTree *block = node->offspring[1]; //saves the block
 	node = node->offspring[0]; //goes to the header
 	if(node->id->type == SYMBOL_IDENTIFIER){ //not assigned
 		int type = node->offspring[0]->type;
@@ -353,9 +350,10 @@ void assign_var_type(ASTree *node) {
 		_SEMANTIC_ERROR = 1;
 		print_type(node->id);
 	}
-	type = kw2type(type);
+	//type = kw2type(type);
 	int assignment = get_type(node->offspring[1], NULL);
-	if(type != assignment) {
+	if(!test_arit_type(assignment)) {
+	//if(type != assignment) {
 		fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect initialization value for variable %s\n", node->line, node->id->id);
 		_SEMANTIC_ERROR = 1;
 		}
@@ -425,9 +423,9 @@ void assign_vector_type(ASTree *node) {
 		print_type(node->offspring[1]->id);
 	}
 	if(node->offspring[2] != NULL) { //there are init values 
-		type = kw2type(type);
+		//type = kw2type(type);
 		int init_values_type = get_type(node->offspring[2], NULL);
-		if(type != init_values_type) {
+		if(!test_arit_type(init_values_type)) {
 			fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect initialization value to vector %s\n", node->line, node->id->id);
 			_SEMANTIC_ERROR = 1;
 		}
@@ -471,7 +469,7 @@ void check_commands(ASTree *node, ASTree *scope) {
 			}
 			//check the assignment
 			assignment = get_type(node->offspring[1], scope);
-			if(type != assignment) {
+			if(!test_arit_type(assignment)) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect assignment value for vector %s\n", node->line, node->id->id);
 				_SEMANTIC_ERROR = 1;
 			}
@@ -483,9 +481,10 @@ void check_commands(ASTree *node, ASTree *scope) {
 				break;
 			}
 			//type = kw2type(node->type);
-			type = get_from_scope(node->id, scope);
+			//type = get_from_scope(node->id, scope);
 			assignment = get_type(node->offspring[0], scope);
-			if(type != assignment) {
+			if(!test_arit_type(assignment)) {
+			//if(type != assignment) {
 				fprintf(stderr, "[SEMANTIC PROBLEM] line %d: Incorrect assignment value for variable %s\n", node->line, node->id->id);
 				_SEMANTIC_ERROR = 1;
 			}
@@ -637,15 +636,7 @@ void check_commands(ASTree *node, ASTree *scope) {
 			break;
 		default: break;
 	}
-    //recursion
-    /*for(int i =MAX_OFFSPRING-1; i >= 0; i--){
-        if(node->offspring[i] != NULL)
-            check_commands(node->offspring[i], scope);
-    }*/
 }
-//1: check assignments
-//2: check if int var = X x = int type
-//3: check if var[] -> var = array type; var(la,la,la) -> var = function type
 
 void assign_types(ASTree *node) {
     //print_astnode(node); //for debug sake
