@@ -38,7 +38,11 @@ typedef struct Tac {
 	struct Tac *next;
 } TAC;
 
+TAC* tac_create(int type, hashNode *result, hashNode *op1, hashNode *op2);
 TAC* tac_join(TAC* tac1, TAC* tac2);
-TAC* create_code(ASTree *node);
+TAC* tac_generate_code(ASTree *node);
+TAC* tac_reverse(TAC *tac);
+void tac_print_code(TAC *tac);
+
 
 #endif

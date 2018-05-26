@@ -95,7 +95,7 @@ int semantic_error = 0; // flag indicating semantic error
 program_root: 
     program {$$=$1; semantic_analysis($$); 
     TAC *tac = tac_reverse(tac_generate_code($1));
-    print_code(tac);
+    tac_print_code(tac);
     decompile_tree($$, file_pointer);}
     ;
 

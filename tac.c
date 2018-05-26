@@ -1,6 +1,8 @@
 #include "tac.h"
 #include "astree.h"
 
+void print_tac(TAC *tac);
+
 TAC* tac_create(int type, hashNode *result, hashNode *op1, hashNode *op2) { //, TAC *prev, TAC *next) {
     TAC *t = (TAC*)malloc(sizeof(TAC));
     t->type = type;
@@ -35,8 +37,12 @@ TAC* tac_reverse(TAC *tac) {
     return aux;
 }
 
-void print_code(TAC *tac){
-    
+void tac_print_code(TAC *tac){
+    if(tac == NULL){
+        return;
+    }
+    print_tac(tac);
+    tac_print_code(tac->next);
 }
 
 TAC* tac_generate_code(ASTree *node) {
@@ -53,7 +59,7 @@ TAC* tac_generate_code(ASTree *node) {
         if(node->offspring[i] == NULL) {
             new_code[i] = NULL;
         } else {
-            new_code[i] = create_code(node->offspring[i]);
+            new_code[i] = tac_generate_code(node->offspring[i]);
         }
     }
     switch(node->type) {
