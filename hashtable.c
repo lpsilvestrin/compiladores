@@ -193,14 +193,16 @@ void set_param_list(hashNode *entry, ASTree *pointer) {
 }
 
 hashNode* make_label(int next_label, hashTable *table) {
-	char buffer[512];
+	char buffer[_KEYSIZE];
 	sprintf(buffer, "_label%d", next_label);
 	hashNode *n;
 	initNode(&n); 		// inicializando área de memória e atribuindo pro ponteiro
 	strcpy(n->id, buffer); // atribuindo identificador como key
 	n->type = SYMBOL_LABEL;
 	hashNode* res = insertHash(n, table); // inserindo na tabela
-	if (res != n) 
+	if (res != n) {
+		fprintf(stderr, "[HASH] ERRO: label já utilizado");
 		free(n);
+	}
 	return res;
 }
