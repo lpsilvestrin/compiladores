@@ -7,6 +7,7 @@
 
 extern int getLineNumber();
 FILE* file_pointer; //to print our output tree :)
+int semantic_error = 0; // flag indicating semantic error
 %}
 
 %union
@@ -91,7 +92,7 @@ FILE* file_pointer; //to print our output tree :)
 //---------------------- ROOT FOR SETTING OUR FILE 
 //(cannot have recursion, that's why we need a different production)
 program_root: 
-    program {$$=$1; semantic_analysis($$); decompile_tree($$, stderr); decompile_tree($$, file_pointer);}
+    program {$$=$1; semantic_analysis($$); }
     ;
 
 //---------------------- MAIN FLOW

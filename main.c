@@ -9,10 +9,11 @@ extern void initMe();
 extern void setOutput(FILE* pointer);
 extern int getLineNumber();
 extern hashTable *SymbolsTable; 
+extern int _SEMANTIC_ERROR;
 
 int main(int argc, char** argv) {
-	if (argc < 3) {
-		printf("Usage: etapa4 <input_file> <output_file>\n");
+	if (argc < 2) {
+		printf("Usage: etapa4 <input_file> [output_file]\n");
 		exit(1);
 	}
 	if((yyin = fopen(argv[1], "r"))==NULL) {
@@ -21,17 +22,26 @@ int main(int argc, char** argv) {
 	}
 
 	FILE* f;
-	if((f = fopen(argv[2],"w"))==NULL) {
-		printf("Problem reading the file %s\n", argv[2]);
-		exit(1);
+	if(argc > 2) { 
+		if ((f = fopen(argv[2],"w"))==NULL) {
+			printf("Problem reading the file %s\n", argv[2]);
+			exit(1);
+			setOutput(f); //send the pointer to ther parser
+		}
 	}
 	initMe();
-	setOutput(f); //send the pointer to ther parser
+
 	if(yyin){
 		yyparse();
+		if (_SEMANTIC_ERROR == 1) {
+			printf("Found a semantic error\n");
+			exit(4);
+		}
 		//printf("Last line: %d\n", getLineNumber());
+		/*
 		printf("printing the hash table contents:\n");
 		printHash(SymbolsTable);
+		*/
 	}
 	exit(0);
 }
