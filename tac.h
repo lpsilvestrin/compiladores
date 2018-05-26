@@ -30,12 +30,12 @@
 
 typedef struct Tac {
 	int type;
-	hashNode *c0;
-	hashNode *c1;
-	hashNode *c2;
+	hashNode *result;
+	hashNode *op1;
+	hashNode *op2;
 	struct Tac *prev;
 	struct Tac *next;
-} tac;
+} TAC;
 
 
 #endif
