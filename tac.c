@@ -42,9 +42,9 @@ TAC* create_code(ASTree *node) {
     }
     switch(node->type) {
         case AST_GLOBAL: break;
-        case AST_GLOBAL_VAR_DEF: //$$=astree_create(AST_GLOBAL_VAR_DEF,$2,$1,$4,0,0);}
-            t1 = tac_create(TAC_VAR_DEF, node->offspring[0]->id, NULL, NULL);
-            t2 = tac_create(TAC_ASSIGNMENT, node->offspring[1]->id, NULL, NULL); //{$$=astree_create(AST_CHAR,$1,0,0,0,0);} 
+        case AST_GLOBAL_VAR_DEF: 
+            t1 = tac_create(TAC_VAR_DEF, node->offspring[0]->id, NULL, NULL); //$$=astree_create(AST_GLOBAL_VAR_DEF,$2,$1,$4,0,0);}
+            t2 = tac_create(TAC_ASSIGNMENT, node->offspring[2]->id, NULL, NULL); //{$$=astree_create(AST_CHAR,$1,0,0,0,0);} 
             return tac_join(t1, t2);
             break;
         case AST_GLOBAL_POINTER_DEF: break;
