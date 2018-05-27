@@ -100,11 +100,21 @@ TAC* tac_generate_code(ASTree *node) {
 		case AST_INIT_VALUES:
 			t1 = tac_create(TAC_SYMBOL, new_code[1]->result, NULL, NULL);
 			return tac_join(new_code[0], t1);
-        //case AST_FUNCTION_DEF: break;
-        //case AST_HEADER: break;
+        case AST_FUNCTION_DEF: 
+			return tac_join(new_code[1], new_code[0]);
+			break;
+        case AST_HEADER: 
+			t1 = tac_create(TAC_FUN_BEGIN, node->id, NULL, NULL);
+			return tac_join(new_code[1], t1);
+			break;
         //case AST_DEF_PARAM: break;
-        //case AST_DEF_PARAM_T: break;
-        //case AST_BLOCK: break;
+        case AST_DEF_PARAM_T: 
+			t1 = tac_create(TAC_SYMBOL, node->id, NULL, NULL);
+			return tac_join(t1, new_code[1]);
+			break;
+        case AST_BLOCK: 
+			return new_code[0];
+			break;
         //case AST_COMMANDS_L: break;
         //case AST_VAR_AS: break;
         //case AST_VECTOR_AS: break;
