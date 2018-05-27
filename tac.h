@@ -35,6 +35,9 @@
 #define TAC_LABEL 28
 #define TAC_LESS 29
 #define TAC_GREAT 30
+#define TAC_ID_POINTER 31
+#define TAC_ID_ADDRESS 32
+#define TAC_VECTOR 33
 
 
 
