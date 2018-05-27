@@ -67,6 +67,7 @@ TAC* tac_generate_code(ASTree *node) {
     TAC *new_code[MAX_OFFSPRING];
     TAC *t1;
     TAC *t2;
+	hashNode *label;
     
 
     //fprintf(stderr, "antes da recursao\n");
@@ -150,15 +151,24 @@ TAC* tac_generate_code(ASTree *node) {
         case AST_MUL_EXP: 
 			return binary_op(TAC_MUL, new_code[0], new_code[1]);
 			break;
-        //case AST_DIV_EXP: break;
-        //case AST_LESS_EXP: break;
-        //case AST_GREAT_EXP: break;
-        //case AST_LE_EXP: break;
-        //case AST_GE_EXP: break;
-        //case AST_EQ_EXP: break;
-        //case AST_NE_EXP: break;
-        //case AST_AND_EXP: break;
-        //case AST_OR_EXP: break;
+        case AST_DIV_EXP:
+			return binary_op(TAC_DIV, new_code[0], new_code[1]);
+        case AST_LESS_EXP:
+			return binary_op(TAC_LESS, new_code[0], new_code[1]);
+        case AST_GREAT_EXP:
+			return binary_op(TAC_GREAT, new_code[0], new_code[1]);
+        case AST_LE_EXP:
+			return binary_op(TAC_LEQ, new_code[0], new_code[1]);
+        case AST_GE_EXP:
+			return binary_op(TAC_GEQ, new_code[0], new_code[1]);
+        case AST_EQ_EXP:
+			return binary_op(TAC_EQ, new_code[0], new_code[1]);
+        case AST_NE_EXP:
+			return binary_op(TAC_NEQ, new_code[0], new_code[1]);
+        case AST_AND_EXP:
+			return binary_op(TAC_AND, new_code[0], new_code[1]);
+        case AST_OR_EXP:
+			return binary_op(TAC_OR, new_code[0], new_code[1]);
         //case AST_ID: break;
         //case AST_ID_POINTER: break;
         //case AST_ID_ADDRESS: break;
@@ -166,7 +176,13 @@ TAC* tac_generate_code(ASTree *node) {
         //case AST_VECTOR: break;
         //case AST_FUNCTION: break;
         //case AST_PARAM: break;
-        //case AST_IF: break;
+        case AST_IF: 
+			// if result is zero, jump to new_label
+			label = new_label();
+			t1 = tac_create(TAC_IFZ, new_code[0]->result, label, NULL);
+			t2 = tac_create(TAC_LABEL, label, NULL, NULL);
+			return tac_join(new_code[0], tac_join(t1, tac_join(t2, tac_join(new_code[1], new_code[2]))));
+			break;
         //case AST_FOR: break;
         //case AST_WHILE: break;
         //case AST_INIT_VALUES: break;
@@ -219,6 +235,10 @@ void print_tac(TAC *tac) {
         case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL %s\n", tac->result->id); break;
         case TAC_VAR_AS: fprintf(stderr, "TAC_VAR_AS\n"); break;
         case TAC_VECTOR_AS: fprintf(stderr, "TAC_VECTOR_AS\n"); break;
+        case TAC_IFZ: fprintf(stderr, "TAC_IFZ\n"); break;
+        case TAC_LABEL: fprintf(stderr, "TAC_LABEL\n"); break;
+        case TAC_LESS: fprintf(stderr, "TAC_LESS\n"); break;
+        case TAC_GREAT: fprintf(stderr, "TAC_GREAT\n"); break;
         default: fprintf(stderr, "WEIRD TAC TYPE ON FUNCTION print_tac\n"); break;
     }
 
