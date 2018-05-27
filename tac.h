@@ -31,6 +31,10 @@
 #define TAC_SYMBOL 24
 #define TAC_VAR_AS 25
 #define TAC_VECTOR_AS 26
+#define TAC_IFZ 27
+#define TAC_LABEL 28
+#define TAC_LESS 29
+#define TAC_GREAT 30
 
 
 
