@@ -192,7 +192,7 @@ TAC* tac_generate_code(ASTree *node) {
 			label = new_label();
 			t1 = tac_create(TAC_IFZ, new_code[0]->result, label, NULL);
 			t2 = tac_create(TAC_LABEL, label, NULL, NULL);
-			return tac_join(new_code[0], tac_join(t1, tac_join(t2, tac_join(new_code[1], new_code[2]))));
+			return tac_join(new_code[0], tac_join(t1, tac_join(new_code[1], tac_join(t2, new_code[2]))));
 			break;
         //case AST_FOR: break;
         //case AST_WHILE: break;
