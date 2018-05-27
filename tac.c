@@ -130,7 +130,7 @@ TAC* tac_generate_code(ASTree *node) {
         //case AST_READ: break;
         //case AST_PRINT: break;
         //case AST_RETURN: break;
-        case AST_NOT_EXP: 
+        case AST_NOT_EXP:
 			t1 = tac_create(TAC_NOT, new_label(), new_code[0]->result, NULL);
 			return tac_join(new_code[0], t1);
 			break;
