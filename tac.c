@@ -182,7 +182,10 @@ TAC* tac_generate_code(ASTree *node) {
 			t1 = tac_create(TAC_VECTOR, node->id, new_code[0]->result, NULL);
 			return tac_join(new_code[0], t1);
 			break;
-        //case AST_FUNCTION: break;
+        case AST_FUNCTION: 
+			// TODO
+			return tac_create(TAC_FUN_CALL, node->id, NULL, NULL);
+			break;
         //case AST_PARAM: break;
         case AST_IF: 
 			// if result is zero, jump to new_label
