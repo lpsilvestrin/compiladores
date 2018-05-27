@@ -66,12 +66,12 @@ TAC* tac_generate_code(ASTree *node) {
 
     TAC *new_code[MAX_OFFSPRING];
     TAC *t1;
-    TAC *t2;
-	hashNode *label;
+    TAC *t2, *t3, *t4;
+	hashNode *label, *label2;
     
 
     //fprintf(stderr, "antes da recursao\n");
-    //print_astnode(node);
+    //print_astnode(node);i
     //starts from the end
     //if(node->type != AST_GLOBAL_VAR_DEF && node->type != AST_GLOBAL_POINTER_DEF && node->type != AST_GLOBAL_VECTOR_DEF) {
         for(int i=0; i < MAX_OFFSPRING; i++) {
@@ -195,7 +195,16 @@ TAC* tac_generate_code(ASTree *node) {
 			return tac_join(new_code[0], tac_join(t1, tac_join(new_code[1], tac_join(t2, new_code[2]))));
 			break;
         //case AST_FOR: break;
-        //case AST_WHILE: break;
+        case AST_WHILE: 
+			label = new_label();
+			label2 = new_label();
+			t1 = tac_create(TAC_IFZ, new_code[0]->result, label2, NULL);
+			t2 = tac_create(TAC_LABEL, label, NULL, NULL);
+			t3 = tac_create(TAC_LABEL, label2, NULL, NULL);
+			t4 = tac_create(TAC_JUMP, label, NULL, NULL);
+			// order: label1, new_code[0], IFZ, new_code[1], JUMP(label1), label2, continue...
+			return tac_join(t2, tac_join(new_code[0], tac_join(t1, tac_join(new_code[1], tac_join(t4, t3)))));	
+			break;
         //case AST_INIT_VALUES: break;
         case AST_INT_SYMBOL: 
         case AST_FLOAT_SYMBOL: 
