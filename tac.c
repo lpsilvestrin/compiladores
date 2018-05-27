@@ -250,6 +250,9 @@ void print_tac(TAC *tac) {
         case TAC_LABEL: fprintf(stderr, "TAC_LABEL\n"); break;
         case TAC_LESS: fprintf(stderr, "TAC_LESS\n"); break;
         case TAC_GREAT: fprintf(stderr, "TAC_GREAT\n"); break;
+        case TAC_ID_POINTER: fprintf(stderr, "TAC_ID_POINTER\n"); break;
+        case TAC_ID_ADDRESS: fprintf(stderr, "TAC_ID_ADDRESS\n"); break;
+        case TAC_VECTOR: fprintf(stderr, "TAC_VECTOR\n"); break;
         default: fprintf(stderr, "WEIRD TAC TYPE ON FUNCTION print_tac\n"); break;
     }
 
