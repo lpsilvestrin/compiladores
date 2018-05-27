@@ -169,11 +169,19 @@ TAC* tac_generate_code(ASTree *node) {
 			return binary_op(TAC_AND, new_code[0], new_code[1]);
         case AST_OR_EXP:
 			return binary_op(TAC_OR, new_code[0], new_code[1]);
-        //case AST_ID: break;
-        //case AST_ID_POINTER: break;
-        //case AST_ID_ADDRESS: break;
-        //case AST_VECTOR_DEF: break;
-        //case AST_VECTOR: break;
+        case AST_ID: 
+			return tac_create(TAC_SYMBOL, node->id, NULL, NULL);
+			break;
+        case AST_ID_POINTER: 
+			return tac_create(TAC_ID_POINTER, node->id, NULL, NULL);
+			break;
+        case AST_ID_ADDRESS: 
+			return tac_create(TAC_ID_ADDRESS, node->id, NULL, NULL);
+			break;
+        case AST_VECTOR: 
+			t1 = tac_create(TAC_VECTOR, node->id, new_code[0]->result, NULL);
+			return tac_join(new_code[0], t1);
+			break;
         //case AST_FUNCTION: break;
         //case AST_PARAM: break;
         case AST_IF: 
