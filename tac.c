@@ -113,9 +113,12 @@ TAC* tac_generate_code(ASTree *node) {
 			return tac_join(t1, new_code[1]);
 			break;
         case AST_BLOCK: 
-			return new_code[0];
+			t1 = tac_create(TAC_FUN_END, new_label(), NULL, NULL);
+			return tac_join(new_code[0], t1);
 			break;
-        //case AST_COMMANDS_L: break;
+        case AST_COMMANDS_L:
+			return tac_join(new_code[0], new_code[1]) ;
+			break;
         //case AST_VAR_AS: break;
         //case AST_VECTOR_AS: break;
         //case AST_READ: break;
