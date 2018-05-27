@@ -29,7 +29,8 @@
 #define TAC_JUMP 22
 #define TAC_RETURN 23
 #define TAC_SYMBOL 24
-#define TAC_ASSIGNMENT 25
+#define TAC_VAR_AS 25
+#define TAC_VECTOR_AS 26
 
 
 

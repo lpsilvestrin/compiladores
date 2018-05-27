@@ -119,8 +119,14 @@ TAC* tac_generate_code(ASTree *node) {
         case AST_COMMANDS_L:
 			return tac_join(new_code[0], new_code[1]) ;
 			break;
-        //case AST_VAR_AS: break;
-        //case AST_VECTOR_AS: break;
+        case AST_VAR_AS: 
+			t1 = tac_create(TAC_VAR_AS, node->id, new_code[0]->result, NULL);
+			return tac_join(new_code[0], t1);
+			break;
+        case AST_VECTOR_AS: 
+			t1 = tac_create(TAC_VECTOR_AS, node->id, new_code[0]->result, new_code[1]->result);
+			return tac_join(new_code[0], tac_join(new_code[1], t1));
+			break;
         //case AST_READ: break;
         //case AST_PRINT: break;
         //case AST_RETURN: break;
@@ -203,7 +209,8 @@ void print_tac(TAC *tac) {
         case TAC_JUMP: fprintf(stderr, "TAC_JUMP\n"); break;
         case TAC_RETURN: fprintf(stderr, "TAC_RETURN\n"); break;
         case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL %s\n", tac->result->id); break;
-        case TAC_ASSIGNMENT: fprintf(stderr, "TAC_ASSIGNMENT\n"); break;
+        case TAC_VAR_AS: fprintf(stderr, "TAC_VAR_AS\n"); break;
+        case TAC_VECTOR_AS: fprintf(stderr, "TAC_VECTOR_AS\n"); break;
         default: fprintf(stderr, "WEIRD TAC TYPE ON FUNCTION print_tac\n"); break;
     }
 
