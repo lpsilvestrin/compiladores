@@ -183,6 +183,12 @@ void print_type(hashNode *entry) {
 		case SYMBOL_FUN_CHAR:
 			fprintf(stderr, "[HASH] SYMBOL_FUN_CHAR\n");
 			break;
+		case SYMBOL_LABEL:
+			fprintf(stderr, "[HASH] SYMBOL_LABEL\n");
+			break;
+		case SYMBOL_TEMP:
+			fprintf(stderr, "[HASH] SYMBOL_TEMP\n");
+			break;
 		default:
 			fprintf(stderr, "[HASH] ERROR!!\n");
 	}
@@ -202,6 +208,21 @@ hashNode* make_label(int next_label, hashTable *table) {
 	hashNode* res = insertHash(n, table); // inserindo na tabela
 	if (res != n) {
 		fprintf(stderr, "[HASH] ERRO: label já utilizado");
+		free(n);
+	}
+	return res;
+}
+
+hashNode* make_temp(int next_temp, hashTable *table) {
+	char buffer[_KEYSIZE];
+	sprintf(buffer, "_temp%d", next_temp);
+	hashNode *n;
+	initNode(&n); 		// inicializando área de memória e atribuindo pro ponteiro
+	strcpy(n->id, buffer); // atribuindo identificador como key
+	n->type = SYMBOL_TEMP;
+	hashNode* res = insertHash(n, table); // inserindo na tabela
+	if (res != n) {
+		fprintf(stderr, "[HASH] ERRO: temp já utilizado");
 		free(n);
 	}
 	return res;

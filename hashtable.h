@@ -21,6 +21,7 @@
 #define SYMBOL_FUN_FLOAT 16
 #define SYMBOL_FUN_CHAR 17
 #define SYMBOL_LABEL 18
+#define SYMBOL_TEMP 19
 
 #define _KEYSIZE 256
 #define _VALSIZE 256
@@ -49,4 +50,5 @@ hashNode* insertHash(hashNode *entry, hashTable *table);
 void print_type(hashNode *entry);
 void set_param_list(hashNode *entry, ASTree *pointer);
 hashNode* make_label(int next_label, hashTable *table);
+hashNode* make_temp(int next_temp, hashTable *table);
 #endif //_HASHTABLE_H

@@ -2,6 +2,7 @@
 
 
 int next_label = 0;
+int next_temp = 0;
 
 void print_tac(TAC *tac);
 
@@ -10,7 +11,11 @@ hashNode* new_label() {
 	return make_label(next_label++, SymbolsTable);
 }
 
-TAC* tac_create(int type, hashNode *result, hashNode *op1, hashNode *op2) { //, TAC *prev, TAC *next) {
+hashNode* new_temp() {
+	return make_temp(next_temp++, SymbolsTable);
+}
+
+TAC* tac_create(int type, hashNode *result, hashNode *op1, hashNode *op2) { 
     TAC *t = (TAC*)malloc(sizeof(TAC));
     t->type = type;
     t->result = result;
@@ -18,11 +23,8 @@ TAC* tac_create(int type, hashNode *result, hashNode *op1, hashNode *op2) { //, 
     t->op2 = op2;
     t->prev = NULL;
     t->next = NULL;
-    //t->prev = prev;
-    //t->next = next;
     return t;
 }
-
 
 TAC* tac_join(TAC* tac1, TAC* tac2) {
     TAC* temp;
@@ -32,7 +34,6 @@ TAC* tac_join(TAC* tac1, TAC* tac2) {
         return tac1;
     for(temp = tac2; temp->prev; temp = temp->prev); 
     temp->prev = tac1;
-    //fprintf(stderr, "tac_join\n");
     return tac2;
 }
 
@@ -55,7 +56,7 @@ void tac_print_code(TAC *tac){
 }
 
 TAC* binary_op(int op, TAC* t1, TAC* t2) {
-	TAC* btac = tac_create(op, new_label(), t1?t1->result:NULL, t2?t2->result:NULL);
+	TAC* btac = tac_create(op, new_temp(), t1?t1->result:NULL, t2?t2->result:NULL);
 	return tac_join(t1, tac_join(t2, btac));
 }
 
@@ -136,7 +137,7 @@ TAC* tac_generate_code(ASTree *node) {
             return tac_join(new_code[0], t1);
             break;
         case AST_RETURN: 
-            t1 = tac_create(TAC_RETURN, new_code[0]->result,NULL, NULL);
+            t1 = tac_create(TAC_RETURN, new_code[0]->result, NULL, NULL);
             t2 = tac_create(TAC_JUMP, new_label(), NULL, NULL);
             return tac_join(t1,t2);
             break;
@@ -211,6 +212,10 @@ TAC* tac_generate_code(ASTree *node) {
 			return tac_join(new_code[0], tac_join(t1, tac_join(new_code[1], tac_join(t2, new_code[2]))));
 			break;
         case AST_FOR: 
+            //KW_FOR '(' TK_IDENTIFIER '=' expression KW_TO expression ')' simple_command
+            //{$$=astree_create(AST_FOR,$3,$5,$7,$9,0);}
+
+            //label, (assignment, op), command jump
             //TO DO
             break;
         case AST_WHILE: 
