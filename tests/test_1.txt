@@ -11,6 +11,7 @@ char vector[100] : 1 3 5;//= {0, 0, 0, 0};
 
 float function2(int a1, float a2, float a3, char a5){
 	global3 = 'd';
+a = function2(5,2,3,4);
 //;;;ddfsdf4545497456/9*******************
 
 }
