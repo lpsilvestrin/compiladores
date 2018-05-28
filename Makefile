@@ -3,7 +3,7 @@
 #
 
 etapa2: semantic.o y.tab.o lex.yy.o hashtable.o astree.o tac.o main.c 
-	gcc -g -Wall -o etapa4 semantic.o y.tab.o lex.yy.o hashtable.o astree.o tac.o main.c 
+	gcc -g -Wall -o etapa5 semantic.o y.tab.o lex.yy.o hashtable.o astree.o tac.o main.c 
 
 y.tab.o: parser.y
 	yacc -d -v parser.y
@@ -31,4 +31,4 @@ test_hash: hash_tester.c hashtable.o
 	gcc -g -Wall -o main hash_tester.c hashtable.o
 
 clean:
-	rm etapa4 lex.yy.* y.output y.tab.* *.o 
+	rm etapa5 lex.yy.* y.output y.tab.* *.o 

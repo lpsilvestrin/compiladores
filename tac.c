@@ -65,11 +65,9 @@ TAC* tac_generate_code(ASTree *node) {
     }
 
     TAC *new_code[MAX_OFFSPRING];
-    TAC *t1;
-    TAC *t2, *t3, *t4;
+    TAC *t1, *t2, *t3, *t4;
 	hashNode *label, *label2;
     
-
     //fprintf(stderr, "antes da recursao\n");
     //print_astnode(node);i
     //starts from the end
@@ -95,8 +93,7 @@ TAC* tac_generate_code(ASTree *node) {
             break;
         case AST_GLOBAL_VECTOR_DEF: 
 			t1 = tac_create(TAC_VEC_DEF, node->id, new_code[1]->result, NULL);
-			// join vec def with init values
-			return tac_join(t1, new_code[2]); 
+			return tac_join(t1, new_code[2]); // join vec def with init values
 			break;
 		case AST_INIT_VALUES:
 			t1 = tac_create(TAC_SYMBOL, new_code[1]->result, NULL, NULL);
@@ -108,17 +105,16 @@ TAC* tac_generate_code(ASTree *node) {
 			t1 = tac_create(TAC_FUN_BEGIN, node->id, NULL, NULL);
 			return tac_join(new_code[1], t1);
 			break;
-        //case AST_DEF_PARAM: break;
         case AST_DEF_PARAM_T: 
 			t1 = tac_create(TAC_SYMBOL, node->id, NULL, NULL);
 			return tac_join(t1, new_code[1]);
 			break;
         case AST_BLOCK: 
 			t1 = tac_create(TAC_FUN_END, new_label(), NULL, NULL);
-			return tac_join(new_code[0], t1);
+			return tac_join(new_code[0], t1); //lindo
 			break;
         case AST_COMMANDS_L:
-			return tac_join(new_code[0], new_code[1]) ;
+			return tac_join(new_code[0], new_code[1]);
 			break;
         case AST_VAR_AS: 
 			t1 = tac_create(TAC_VAR_AS, node->id, new_code[0]->result, NULL);
@@ -128,7 +124,9 @@ TAC* tac_generate_code(ASTree *node) {
 			t1 = tac_create(TAC_VECTOR_AS, node->id, new_code[0]->result, new_code[1]->result);
 			return tac_join(new_code[0], tac_join(new_code[1], t1));
 			break;
-        //case AST_READ: break;
+        case AST_READ: 
+            return tac_create(TAC_READ, node->id, NULL, NULL);
+            break;
         //case AST_PRINT: break;
         //case AST_RETURN: break;
         case AST_NOT_EXP:
@@ -183,10 +181,14 @@ TAC* tac_generate_code(ASTree *node) {
 			return tac_join(new_code[0], t1);
 			break;
         case AST_FUNCTION: 
-			// TODO
-			return tac_create(TAC_FUN_CALL, node->id, NULL, NULL);
+			t1 =  tac_join(new_code[0],tac_create(TAC_FUN_CALL, node->id, NULL, NULL)); //params + call
+            t2 = tac_create(TAC_LABEL, new_label(), NULL, NULL); //jump label
+            return tac_join(t1,t2);
 			break;
-        //case AST_PARAM: break;
+        case AST_PARAM: 
+            t1 = tac_create(TAC_PARAM, new_code[1]->result, NULL ,NULL); //parameters_list_tail ',' expression
+            return tac_join(t1,new_code[1]); //{$$=astree_create(AST_PARAM,0,$1,$3,0,0);}
+            break;
         case AST_IF: 
 			// if result is zero, jump to new_label
 			label = new_label();
@@ -194,7 +196,9 @@ TAC* tac_generate_code(ASTree *node) {
 			t2 = tac_create(TAC_LABEL, label, NULL, NULL);
 			return tac_join(new_code[0], tac_join(t1, tac_join(new_code[1], tac_join(t2, new_code[2]))));
 			break;
-        //case AST_FOR: break;
+        case AST_FOR: 
+            //TO DO
+            break;
         case AST_WHILE: 
 			label = new_label();
 			label2 = new_label();
@@ -205,13 +209,11 @@ TAC* tac_generate_code(ASTree *node) {
 			// order: label1, new_code[0], IFZ, new_code[1], JUMP(label1), label2, continue...
 			return tac_join(t2, tac_join(new_code[0], tac_join(t1, tac_join(new_code[1], tac_join(t4, t3)))));	
 			break;
-        //case AST_INIT_VALUES: break;
+        case AST_DEF_PARAM: 
         case AST_INT_SYMBOL: 
         case AST_FLOAT_SYMBOL: 
         case AST_CHAR_SYMBOL:
-			// n precisa fazer nada com os keywords de tipo
-            //print_tac(tac_create(TAC_SYMBOL, node->id, NULL, NULL));
-            //return tac_create(TAC_SYMBOL, node->id, NULL, NULL);
+			// do nothing
             break;
         case AST_INT: 
         case AST_REAL: 
