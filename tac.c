@@ -127,7 +127,14 @@ TAC* tac_generate_code(ASTree *node) {
         case AST_READ: 
             return tac_create(TAC_READ, node->id, NULL, NULL);
             break;
-        //case AST_PRINT: break;
+        case AST_PRINT: 
+            /*
+                    | print_c LIT_STRING    {$$=astree_create(AST_PRINT,$2,$1,0,0,0);}
+                    | print_c expression    {$$=astree_create(AST_PRINT,0,$1,$2,0,0);}
+            */
+            t1 =  tac_create(TAC_PRINT, node?node->id:new_code[1]->result, NULL, NULL);
+            return tac_join(new_code[0], t1);
+            break;
         case AST_RETURN: 
             t1 = tac_create(TAC_RETURN, new_code[0]->result,NULL, NULL);
             t2 = tac_create(TAC_JUMP, new_label(), NULL, NULL);
