@@ -64,24 +64,18 @@ TAC* tac_generate_code(ASTree *node) {
     if(node == NULL) {
         return NULL;
     }
-
     TAC *new_code[MAX_OFFSPRING];
-    TAC *t1, *t2, *t3, *t4;
+    TAC *t1, *t2, *t3, *t4, *t5, *t6;
 	hashNode *label, *label2;
     
-    //fprintf(stderr, "antes da recursao\n");
-    //print_astnode(node);i
-    //starts from the end
-    //if(node->type != AST_GLOBAL_VAR_DEF && node->type != AST_GLOBAL_POINTER_DEF && node->type != AST_GLOBAL_VECTOR_DEF) {
-        for(int i=0; i < MAX_OFFSPRING; i++) {
+    for(int i=0; i < MAX_OFFSPRING; i++) {
         if(node->offspring[i] == NULL) {
             new_code[i] = NULL;
         } else {
             new_code[i] = tac_generate_code(node->offspring[i]);
             }
-        }
-    //}
-    //printf(stderr, "depois da recursao\n");
+    }
+
     switch(node->type) {
         case AST_GLOBAL: 
 			return tac_join(new_code[1], new_code[0]);
@@ -142,11 +136,11 @@ TAC* tac_generate_code(ASTree *node) {
             return tac_join(t1,t2);
             break;
         case AST_NOT_EXP:
-			t1 = tac_create(TAC_NOT, new_label(), new_code[0]->result, NULL);
+			t1 = tac_create(TAC_NOT, new_temp(), new_code[0]->result, NULL);
 			return tac_join(new_code[0], t1);
 			break;
         case AST_NEG_EXP: 
-			t1 = tac_create(TAC_NEG, new_label(), new_code[0]->result, NULL);
+			t1 = tac_create(TAC_NEG, new_temp(), new_code[0]->result, NULL);
 			return tac_join(new_code[0], t1);
 			break;
         case AST_PAR_EXP: 
@@ -212,11 +206,26 @@ TAC* tac_generate_code(ASTree *node) {
 			return tac_join(new_code[0], tac_join(t1, tac_join(new_code[1], tac_join(t2, new_code[2]))));
 			break;
         case AST_FOR: 
+            //print_astnode(node);
             //KW_FOR '(' TK_IDENTIFIER '=' expression KW_TO expression ')' simple_command
             //{$$=astree_create(AST_FOR,$3,$5,$7,$9,0);}
+            label = new_label();
+			label2 = new_label();
+            //assignment
+            t1 = tac_create(TAC_VAR_AS, node->id, new_code[0]->result, NULL);
+            //beginning label
+            t2 = tac_create(TAC_LABEL, label, NULL, NULL);
+            //comparison with jump to ending label
+            //<<<<<<<<<<<missing t1->result++
+            t3 = binary_op(TAC_SUB, t1, new_code[1]); 
+            t4 = tac_create(TAC_IFZ, t3->result, label2, NULL);
+            //here goes the code
+            //jump 
+            t5 = tac_create(TAC_JUMP, label, NULL, NULL);
+            //ending label
+			t6 = tac_create(TAC_LABEL, label2, NULL, NULL);
 
-            //label, (assignment, op), command jump
-            //TO DO
+            return NULL; //everything breaks if I try to join t3 :(
             break;
         case AST_WHILE: 
 			label = new_label();
