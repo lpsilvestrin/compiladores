@@ -199,11 +199,23 @@ TAC* tac_generate_code(ASTree *node) {
             return tac_join(new_code[1], t1); //{$$=astree_create(AST_PARAM,0,$1,$3,0,0);}
             break;
         case AST_IF: 
+			// order: condition, ifz(label), new_code1, JUMP(label2), label, new_code2, label2
+			// order without else: condition, ifz(label), new_code1, label
 			// if result is zero, jump to new_label
 			label = new_label();
-			t1 = tac_create(TAC_IFZ, new_code[0]->result, label, NULL);
-			t2 = tac_create(TAC_LABEL, label, NULL, NULL);
-			return tac_join(new_code[0], tac_join(t1, tac_join(new_code[1], tac_join(t2, new_code[2]))));
+
+			// calculate condition and test the result in the if
+			t1 = tac_join(new_code[0], tac_create(TAC_IFZ, new_code[0]->result, label, NULL));
+			t2 = tac_join(t1, new_code[1]);
+			// else case
+			if (new_code[2] != NULL) {
+				label2 = new_label();
+				t3 = tac_join(tac_create(TAC_JUMP, label2, NULL, NULL), tac_create(TAC_LABEL, label, NULL, NULL));
+				t4 = tac_join(t3, tac_join(new_code[2], tac_create(TAC_LABEL, label2, NULL, NULL)));
+			} else {
+				t4 = tac_create(TAC_LABEL, label, NULL, NULL);	
+			}
+			return tac_join(t2, t4);
 			break;
         case AST_FOR: 
             //print_astnode(node);
