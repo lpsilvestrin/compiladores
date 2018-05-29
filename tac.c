@@ -221,6 +221,8 @@ TAC* tac_generate_code(ASTree *node) {
             //print_astnode(node);
             //KW_FOR '(' TK_IDENTIFIER '=' expression KW_TO expression ')' simple_command
             //{$$=astree_create(AST_FOR,$3,$5,$7,$9,0);}
+			// order: label, new_code0, VAR_AS(id, res0), new_code1, SUB(id, res1), 
+			// 						IFZ(label2), new_code2, JUMP(label), label2
             label = new_label();
 			label2 = new_label();
             //assignment
@@ -228,7 +230,7 @@ TAC* tac_generate_code(ASTree *node) {
             //beginning label
             t2 = tac_create(TAC_LABEL, label, NULL, NULL);
             //comparison with jump to ending label
-            //<<<<<<<<<<<missing t1->result++
+            // binary_op joins both operands
             t3 = binary_op(TAC_SUB, t1, new_code[1]); 
             t4 = tac_create(TAC_IFZ, t3->result, label2, NULL);
             //here goes the code
@@ -237,7 +239,7 @@ TAC* tac_generate_code(ASTree *node) {
             //ending label
 			t6 = tac_create(TAC_LABEL, label2, NULL, NULL);
 
-            return NULL; //everything breaks if I try to join t3 :(
+            return tac_join(t2, tac_join(new_code[0], tac_join(t3, tac_join(t4, tac_join(new_code[2], tac_join(t5, t6)))))); 
             break;
         case AST_WHILE: 
 			label = new_label();
