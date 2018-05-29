@@ -94,7 +94,8 @@ TAC* tac_generate_code(ASTree *node) {
 			t1 = tac_create(TAC_SYMBOL, new_code[1]->result, NULL, NULL);
 			return tac_join(new_code[0], t1);
         case AST_FUNCTION_DEF: 
-			return tac_join(new_code[0], new_code[1]); //tac_join(new_code[1], new_code[0]); 
+			t1 = tac_create(TAC_FUN_END, new_label(), NULL, NULL);
+			return tac_join(new_code[0], tac_join(new_code[1], t1)); //tac_join(new_code[1], new_code[0]); 
 			break;
         case AST_HEADER: 
 			t1 = tac_create(TAC_FUN_BEGIN, node->id, NULL, NULL);
@@ -105,8 +106,7 @@ TAC* tac_generate_code(ASTree *node) {
 			return tac_join(t1, new_code[1]);
 			break;
         case AST_BLOCK: 
-			t1 = tac_create(TAC_FUN_END, new_label(), NULL, NULL);
-			return tac_join(new_code[0], t1); 
+			return new_code[0]; 
 			break;
         case AST_COMMANDS_L:
 			return tac_join(new_code[0], new_code[1]);
