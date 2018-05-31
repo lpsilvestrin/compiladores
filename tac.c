@@ -296,12 +296,12 @@ void print_tac(TAC *tac) {
         case TAC_GEQ: fprintf(stderr, "TAC_GEQ\n"); break;
         case TAC_JUMP: fprintf(stderr, "TAC_JUMP\n"); break;
         case TAC_RETURN: fprintf(stderr, "TAC_RETURN\n"); break;
-        case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL %s\n", tac->result->id); break;
-        case TAC_PARAM: fprintf(stderr, "TAC_PARAM %s\n", tac->result->id); break;
+        case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL(%s,_,_)\n", tac->result->id); break;
+        case TAC_PARAM: fprintf(stderr, "TAC_PARAM(%s,_,_)\n", tac->result->id); break;
         case TAC_VAR_AS: fprintf(stderr, "TAC_VAR_AS\n"); break;
         case TAC_VECTOR_AS: fprintf(stderr, "TAC_VECTOR_AS\n"); break;
         case TAC_IFZ: fprintf(stderr, "TAC_IFZ\n"); break;
-        case TAC_LABEL: fprintf(stderr, "TAC_LABEL\n"); break;
+        case TAC_LABEL: fprintf(stderr, "TAC_LABEL(%s,_,_)\n", tac->result->id); break;
         case TAC_LESS: fprintf(stderr, "TAC_LESS\n"); break;
         case TAC_GREAT: fprintf(stderr, "TAC_GREAT\n"); break;
         case TAC_ID_POINTER: fprintf(stderr, "TAC_ID_POINTER\n"); break;

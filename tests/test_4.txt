@@ -1,8 +1,8 @@
 /*This one will create a looooooooot of blocks */
 
-
+int v = 5;
 int main(){
-
+	read v;
 	if (algo != algo ) then {
 				{while(n> 50) {}
 

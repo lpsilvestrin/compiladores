@@ -31,4 +31,5 @@ test_hash: hash_tester.c hashtable.o
 	gcc -g -Wall -o main hash_tester.c hashtable.o
 
 clean:
-	rm etapa5 lex.yy.* y.output y.tab.* *.o 
+	rm etapa5 *.o y.output
+	rm y.tab.* lex.yy.*
