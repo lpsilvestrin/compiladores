@@ -197,8 +197,12 @@ TAC* tac_generate_code(ASTree *node) {
 			break;
         case AST_PARAM: 
             //print_astnode(node);
-            t1 = tac_create(TAC_PARAM, new_code[0]->result, NULL ,NULL); //parameters_list_tail ',' expression
-            return tac_join(new_code[1], t1); //{$$=astree_create(AST_PARAM,0,$1,$3,0,0);}
+			if (new_code[1]) {
+	            t1 = tac_create(TAC_PARAM, new_code[1]->result, NULL ,NULL); //parameters_list_tail ',' expression
+	            return tac_join(new_code[0], t1); //{$$=astree_create(AST_PARAM,0,$1,$3,0,0);}
+			} else {
+				return tac_create(TAC_PARAM, new_code[0]->result, NULL, NULL);
+			}
             break;
         case AST_IF: 
 			// order: condition, ifz(label), new_code1, JUMP(label2), label, new_code2, label2
