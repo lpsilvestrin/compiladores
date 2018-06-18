@@ -113,7 +113,7 @@ TAC* tac_generate_code(ASTree *node) {
 			break;
         case AST_VAR_AS: 
 			t1 = tac_create(TAC_VAR_AS, node->id, new_code[0]->result, NULL);
-			return tac_join(t1, new_code[0]);//tac_join(new_code[0], t1);
+			return tac_join(new_code[0], t1);//tac_join(new_code[0], t1);
 			break;
         case AST_VECTOR_AS: 
 			t1 = tac_create(TAC_VECTOR_AS, node->id, new_code[0]->result, new_code[1]->result);
