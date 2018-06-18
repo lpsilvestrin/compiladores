@@ -134,9 +134,8 @@ TAC* tac_generate_code(ASTree *node) {
             return tac_join(new_code[0], t1);
             break;
         case AST_RETURN: 
-            t1 = tac_create(TAC_RETURN, new_code[0]->result, NULL, NULL);
-            t2 = tac_create(TAC_JUMP, new_label(), NULL, NULL);
-            return tac_join(t1,t2);
+            t1 = tac_create(TAC_RETURN, new_label(), new_code[0]->result, NULL);
+            return tac_join(new_code[0], t1);
             break;
         case AST_NOT_EXP:
 			t1 = tac_create(TAC_NOT, new_temp(), new_code[0]->result, NULL);
@@ -285,9 +284,9 @@ void print_tac(TAC *tac) {
         case TAC_POINTER_DEF: fprintf(stderr, "TAC_POINTER_DEF\n"); break;
         case TAC_PRINT: fprintf(stderr, "TAC_PRINT %s\n", tac->result->id); break;
         case TAC_READ: fprintf(stderr, "TAC_READ\n"); break;
-        case TAC_ADD: fprintf(stderr, "TAC_ADD\n"); break;
-        case TAC_SUB: fprintf(stderr, "TAC_SUB\n"); break;
-        case TAC_MUL: fprintf(stderr, "TAC_MUL\n"); break;
+        case TAC_ADD: fprintf(stderr, "TAC_ADD %s %s\n", tac->op1->id, tac->op2->id); break;
+        case TAC_SUB: fprintf(stderr, "TAC_SUB %s %s\n", tac->op1->id, tac->op2->id); break;
+        case TAC_MUL: fprintf(stderr, "TAC_MUL %s %s\n", tac->op1->id, tac->op2->id); break;
         case TAC_DIV: fprintf(stderr, "TAC_DIV\n"); break;
         case TAC_NEG: fprintf(stderr, "TAC_NEG\n"); break;
         case TAC_AND: fprintf(stderr, "TAC_AND\n"); break;
@@ -298,7 +297,7 @@ void print_tac(TAC *tac) {
         case TAC_LEQ: fprintf(stderr, "TAC_LEQ\n"); break;
         case TAC_GEQ: fprintf(stderr, "TAC_GEQ\n"); break;
         case TAC_JUMP: fprintf(stderr, "TAC_JUMP\n"); break;
-        case TAC_RETURN: fprintf(stderr, "TAC_RETURN\n"); break;
+        case TAC_RETURN: fprintf(stderr, "TAC_RETURN %s %s\n", tac->result->id, tac->op1->id); break;
         case TAC_SYMBOL: break; //fprintf(stderr, "TAC_SYMBOL(%s,_,_)\n", tac->result->id); break;
         case TAC_PARAM: fprintf(stderr, "TAC_PARAM(%s,_,_)\n", tac->result->id); break;
         case TAC_VAR_AS: fprintf(stderr, "TAC_VAR_AS\n"); break;
