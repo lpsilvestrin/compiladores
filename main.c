@@ -3,6 +3,7 @@
 #include "lex.yy.h"
 #include "hashtable.h"
 #include "tac.h"
+#include "assembly_gen.h"
 
 extern FILE* yyin; //CAREFUL WITH IT
 extern int yyparse();
@@ -42,6 +43,7 @@ int main(int argc, char** argv) {
 		ASTree* parsed_tree = get_parsed_tree();
 		TAC *tac = tac_reverse(tac_generate_code(parsed_tree));
 		tac_print_code(tac);
+		gen_assembly(tac, stdout);
 		
 		//printf("Last line: %d\n", getLineNumber());
 		/*
