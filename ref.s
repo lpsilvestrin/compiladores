@@ -40,6 +40,6 @@ main:
 	movq	_z(%rip), %rsi
 	movl	$.LC2, %edi
 	call	printf
-	
+	popq	%rbp	
 	ret
 	.cfi_endproc
