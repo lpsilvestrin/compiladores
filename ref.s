@@ -25,7 +25,6 @@ foo:
 	.string	"%d"
 	.globl	main
 main:
-.LFB1:
 	.cfi_startproc
 	pushq	%rbp
 	movq	%rsp, %rbp
