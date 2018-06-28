@@ -8,7 +8,6 @@ _z:
 	.long	0
 // function declaration
 foo:
-.LFB0:
 	.cfi_startproc
 	pushq	%rbp
 	movq	%rsp, %rbp
@@ -42,6 +41,5 @@ main:
 	movl	$.LC2, %edi
 	call	printf
 	
-	leave
 	ret
 	.cfi_endproc
