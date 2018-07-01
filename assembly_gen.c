@@ -9,15 +9,15 @@ void tac_translate_binop(char* op) {
 }
 
 void tac_translate(TAC* tac, FILE* fout) {
-	int vec_size;
+	int temp1;
 	switch(tac->type) {
 	case TAC_VAR_DEF:
 		fprintf(fout, "%s:\n", tac->result->id);
-		fprintf(fout, "\t.long\t%s\n",tac->op1->id);
+		fprintf(fout, "\t.long\t%s\n",tac->op1->value?tac->op1->value:0);
 		break;
 	case TAC_VEC_DEF: 
-		vec_size = atoi(tac->op1->id) * SIZE;
-		fprintf(fout, "\t.comm\t%s,%d,%d\n",tac->result->id, vec_size, vec_size); //.comm	vetor,8,8
+		temp1 = atoi(tac->op1->id) * SIZE; //vector size
+		fprintf(fout, "\t.comm\t%s,%d,%d\n",tac->result->id, temp1, temp1); //.comm	vetor,8,8
 		break;
 	case TAC_FUN_BEGIN:
 		fprintf(fout, "\t.globl %s\n", tac->result->id);
@@ -53,9 +53,15 @@ void tac_translate(TAC* tac, FILE* fout) {
 	case TAC_JUMP: break;
 	case TAC_RETURN: break;
 	case TAC_SYMBOL: break;
-	case TAC_VAR_AS: break;
+	case TAC_VAR_AS: 
+		fprintf(fout, "\tmovl	$%s, %s(%%rip)\n", tac->op1->value, tac->result->value);
+		break;
 	case TAC_VECTOR_AS: 
-		//movl	$2, vetor(%rip) o que vai no rip???
+		temp1 = atoi(tac->op1->value) * SIZE;
+		//tac->result->id, tac->op1->id, tac->op2->id (name, index, value)
+		fprintf(fout, "\tmovl	$%s, %s+%d(%%rip)\n", tac->op2->value, tac->result->value, temp1);
+		//movl	$2, vetor(%rip) [0]
+		//movl	$0, a+4(%rip)[1]
 		break;
 	case TAC_IFZ: break;
 	case TAC_LABEL: break;

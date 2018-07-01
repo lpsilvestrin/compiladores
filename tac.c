@@ -306,8 +306,8 @@ void print_tac(TAC *tac) {
         case TAC_RETURN: fprintf(stderr, "TAC_RETURN(%s,%s,_)\n", tac->result->id, tac->op1->id); break;
         case TAC_SYMBOL: break; //fprintf(stderr, "TAC_SYMBOL(%s,_,_)\n", tac->result->id); break;
         case TAC_PARAM: fprintf(stderr, "TAC_PARAM(%s,_,_)\n", tac->result->id); break;
-        case TAC_VAR_AS: fprintf(stderr, "TAC_VAR_AS\n"); break;
-        case TAC_VECTOR_AS: fprintf(stderr, "TAC_VECTOR_AS\n"); break;
+        case TAC_VAR_AS: fprintf(stderr, "TAC_VAR_AS(%s,%s,_)\n", tac->result->id, tac->op1->id); break;
+        case TAC_VECTOR_AS: fprintf(stderr, "TAC_VECTOR_AS(%s,%s,%s)\n", tac->result->id, tac->op1->id, tac->op2->id); break;
         case TAC_IFZ: fprintf(stderr, "TAC_IFZ(%s,%s,_)\n", tac->result->id, tac->op1->id); break;
         case TAC_LABEL: fprintf(stderr, "TAC_LABEL(%s,_,_)\n", tac->result->id); break;
         case TAC_ID_POINTER: fprintf(stderr, "TAC_ID_POINTER\n"); break;

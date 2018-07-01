@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
 		tac_print_code(tac);
 		//printHash(SymbolsTable);
 		create_lit_ids(SymbolsTable);
-		//printHash(SymbolsTable);
+		printHash(SymbolsTable);
 		gen_assembly(tac, SymbolsTable, f); 
 		//gen_assembly(tac, stdout); // for debug sake 
 

@@ -236,7 +236,6 @@ hashNode* make_temp(int next_temp, hashTable *table) {
 void create_lit_ids(hashTable *table) {
 	int id_number = 0;
 	char id[200];
-	//char *value;
 	hashNode* currNode = NULL;
 	int size = table->size;
 	for (int i = 0; i < size; i++) {
