@@ -43,7 +43,6 @@ int main(int argc, char** argv) {
 		tac_print_code(tac);
 		gen_assembly(tac, f); 
 		gen_assembly(tac, stdout); // for debug sake 
-
 	}
 	exit(0);
 }
