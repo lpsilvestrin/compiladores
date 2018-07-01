@@ -283,8 +283,8 @@ void print_tac(TAC *tac) {
         case TAC_FUN_END: fprintf(stderr, "TAC_FUN_END\n"); break;
         case TAC_FUN_ARG: fprintf(stderr, "TAC_FUN_ARG\n"); break;
         case TAC_FUN_CALL: fprintf(stderr, "TAC_FUN_CALL(%s,_,_)\n", tac->result->id); break;
-        case TAC_VAR_DEF: fprintf(stderr, "TAC_VAR_DEF\n"); break;
-        case TAC_VEC_DEF: fprintf(stderr, "TAC_VEC_DEF\n"); break;
+        case TAC_VAR_DEF: fprintf(stderr, "TAC_VAR_DEF(%s,_,_)\n", tac->result->id); break;
+        case TAC_VEC_DEF: fprintf(stderr, "TAC_VEC_DEF(%s,%s,_)\n", tac->result->id, tac->op1->id); break;
         case TAC_POINTER_DEF: fprintf(stderr, "TAC_POINTER_DEF\n"); break;
         case TAC_PRINT: fprintf(stderr, "TAC_PRINT(%s,_,_)\n", tac->result->id); break;
         case TAC_READ: fprintf(stderr, "TAC_READ(%s,_,_)\n", tac->result->id); break;
