@@ -4,8 +4,16 @@
 int SIZE = 4; 
 
 
-void tac_translate_binop(char* op) {
-
+void tac_translate_binop(FILE* fout, TAC* tac, char* op) {
+	fprintf(fout, "\tmovl\t%s(%%rip), %%edx\n", tac->op1->id);
+	fprintf(fout, "\tmovl\t%s(%%rip), %%eax\n", tac->op2->id);
+	
+	if(strcmp(op,"idivl") == 0) {
+		fprintf(fout, "\t	cltd\n");
+		fprintf(fout, "\t%s\t%%eax\n", op);
+	} else {
+		fprintf(fout, "\t%s\t%%edx, %%eax\n", op);
+	}
 }
 
 void tac_translate(TAC* tac, FILE* fout) {
@@ -38,10 +46,18 @@ void tac_translate(TAC* tac, FILE* fout) {
 		fprintf(fout, "\tcall\tprintf\n");
 		break;
 	case TAC_READ: break;
-	case TAC_ADD: break;
+	case TAC_ADD: 
+		tac_translate_binop(fout, tac, "addl");
+		break;
 	case TAC_SUB: break;
-	case TAC_MUL: break;
-	case TAC_DIV: break;
+		tac_translate_binop(fout, tac, "subl");
+		break;
+	case TAC_MUL: 
+		tac_translate_binop(fout, tac, "imull");
+		break;
+	case TAC_DIV:
+		tac_translate_binop(fout, tac, "idivl"); 
+		break;
 	case TAC_NEG: break;
 	case TAC_AND: break;
 	case TAC_OR: break;
