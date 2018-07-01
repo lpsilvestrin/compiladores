@@ -691,8 +691,10 @@ void check_types(ASTree *node) {
 }
 
 void semantic_analysis(ASTree *node) {
-	assign_types(node);
-	check_types(node);
+	if(node != NULL) { //empty program case
+		assign_types(node);
+		check_types(node);
+	}
 }
 
 
