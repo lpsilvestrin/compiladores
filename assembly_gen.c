@@ -69,10 +69,23 @@ void tac_translate(TAC* tac, FILE* fout) {
 	}	
 }
 
+void gen_empty_program(FILE *fout) {
+	fprintf(fout, "\t.globl main\n");
+	fprintf(fout, "main:\n");
+	fprintf(fout, "\t.cfi_startproc\n\tpushq\t%%rbp\n");
+	fprintf(fout, "\tmovq\t%%rsp, %%rbp\n");
+	fprintf(fout, "\tpopq\t%%rbp\n");
+	fprintf(fout, "\tret\n");
+	fprintf(fout, "\t.cfi_endproc\n");
+}
 
 int gen_assembly(TAC* tac_list, FILE *fout) {
 	TAC* tmp = tac_list;
 	//fprintf(fout, ".data");
+	if(tac_list == NULL) {
+		gen_empty_program(fout);
+		return 0;
+	} 
 	for(; tmp != NULL; tmp = tmp->next) {
 		tac_translate(tmp, fout);
 	}
