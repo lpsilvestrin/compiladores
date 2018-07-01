@@ -2,18 +2,34 @@
 
 
 int SIZE = 4; 
+/*	movl	k(%rip), %eax
+	testl	%eax, %eax*/
 
-
-void tac_translate_binop(FILE* fout, TAC* tac, char* op) {
+void tac_translate_arithmetic(FILE* fout, TAC* tac, char* op) { 
 	fprintf(fout, "\tmovl\t%s(%%rip), %%edx\n", tac->op1->id);
+	if(strcmp(op,"neg") == 0){
+		fprintf(fout, "\tmovl\t$-1, %%eax\n");
+		fprintf(fout, "\timull\t%%edx, %%eax\n");
+		return;
+	}
 	fprintf(fout, "\tmovl\t%s(%%rip), %%eax\n", tac->op2->id);
-	
 	if(strcmp(op,"idivl") == 0) {
 		fprintf(fout, "\t	cltd\n");
 		fprintf(fout, "\t%s\t%%eax\n", op);
-	} else {
-		fprintf(fout, "\t%s\t%%edx, %%eax\n", op);
+		return;
 	}
+	fprintf(fout, "\t%s\t%%edx, %%eax\n", op);
+}
+
+void tac_translate_bool_op(FILE* fout, TAC* tac, char* op) {
+	
+	fprintf(fout,"\tmovl %s(%%rip), %%eax\n", tac->op1->id);
+	if(strcmp(op,"notl") == 1) {
+		fprintf(fout,"\tmovl %s(%%rip), %%edx\n", tac->op2->id);
+		fprintf(fout,"\t%s %%eax, %%edx\n", op); //RESULT ON edx <---
+ 	} else {
+		 fprintf(fout,"\t%s %%eax\n", op);
+	 }
 }
 
 void tac_translate(TAC* tac, FILE* fout) {
@@ -47,42 +63,59 @@ void tac_translate(TAC* tac, FILE* fout) {
 		break;
 	case TAC_READ: break;
 	case TAC_ADD: 
-		tac_translate_binop(fout, tac, "addl");
+		tac_translate_arithmetic(fout, tac, "addl");
 		break;
 	case TAC_SUB: break;
-		tac_translate_binop(fout, tac, "subl");
+		tac_translate_arithmetic(fout, tac, "subl");
 		break;
 	case TAC_MUL: 
-		tac_translate_binop(fout, tac, "imull");
+		tac_translate_arithmetic(fout, tac, "imull");
 		break;
 	case TAC_DIV:
-		tac_translate_binop(fout, tac, "idivl"); 
+		tac_translate_arithmetic(fout, tac, "idivl"); 
 		break;
-	case TAC_NEG: break;
-	case TAC_AND: break;
-	case TAC_OR: break;
-	case TAC_NOT: break;
+	case TAC_NEG: 
+		tac_translate_arithmetic(fout, tac, "neg"); 
+		break;
+	case TAC_AND: 
+		tac_translate_bool_op(fout, tac, "andl");
+		break;
+	case TAC_OR: 
+		tac_translate_bool_op(fout, tac, "orl");
+		break;
+	case TAC_NOT: 
+		tac_translate_bool_op(fout, tac, "notl");
+		break;
 	case TAC_EQ: break;
 	case TAC_NEQ: break;
 	case TAC_LEQ: break;
 	case TAC_GEQ: break;
+	case TAC_LESS: break;
+	case TAC_GREAT: break;
 	case TAC_JUMP: break;
 	case TAC_RETURN: break;
 	case TAC_SYMBOL: break;
 	case TAC_VAR_AS: 
-		fprintf(fout, "\tmovl	$%s, %s(%%rip)\n", tac->op1->value, tac->result->value);
+		fprintf(fout, "\tmovl\t$%s, %s(%%rip)\n", tac->op1->value, tac->result->value);
 		break;
 	case TAC_VECTOR_AS: 
 		temp1 = atoi(tac->op1->value) * SIZE;
-		fprintf(fout, "\tmovl	$%s, %s+%d(%%rip)\n", tac->op2->value, tac->result->value, temp1);
+		fprintf(fout, "\tmovl\t$%s, %s+%d(%%rip)\n", tac->op2->value, tac->result->value, temp1);
 		break;
-	case TAC_IFZ: break;
-	case TAC_LABEL: break;
-	case TAC_LESS: break;
-	case TAC_GREAT: break;
+	case TAC_IFZ:  //FIX: temp0 should be replaced by a register :)
+		fprintf(fout, "\tmovl\t %s(%%rip) %%ebx\n", tac->result->id);
+		fprintf(fout, "\tcmpl\t %%ebx %%ebx\n");
+		fprintf(fout, "\tje\t .%s\n", tac->op1->id);
+		break;
+	case TAC_LABEL: 
+		fprintf(fout, ".%s:\n", tac->result->id);
+		break;
 	case TAC_ID_POINTER: break;
 	case TAC_ID_ADDRESS: break;
-	case TAC_VECTOR: break;
+	case TAC_VECTOR: // case TAC_VECTOR:(temp,vetor,index) 
+		temp1 = atoi(tac->op2->value) * SIZE;
+		fprintf(fout, "\tmovl\t$%%edi, %s+%d(%%rip)\n", tac->op1->id, temp1);
+		break;
 	case TAC_PARAM: break;
 	default: 
 		break;

@@ -261,20 +261,18 @@ int get_type(ASTree *node, ASTree* scope) {
 	case AST_EQ_EXP:
 	case AST_NE_EXP:
 	case AST_LE_EXP:
-		tn1 = get_type(n1, scope);
+	/*	tn1 = get_type(n1, scope);
 		tn2 = get_type(n2, scope);
-		if (test_arit_type(tn1) &&
-			test_arit_type(tn2))
+		if (test_arit_type(tn1) && test_arit_type(tn2))
 			type = SYMBOL_LIT_BOOL;
 		if (tn1 == -1 || tn2 == -1)
 			type = SYMBOL_LIT_BOOL;
-		break;
+		break;*/
 	case AST_AND_EXP:
 	case AST_OR_EXP:
 		tn1 = get_type(n1, scope);
 		tn2 = get_type(n2, scope);
-		if (tn1 == SYMBOL_LIT_BOOL &&
-			tn2 == SYMBOL_LIT_BOOL)
+		if (test_arit_type(tn1) && test_arit_type(tn2))//(tn1 == SYMBOL_LIT_BOOL && tn2 == SYMBOL_LIT_BOOL)
 			type = SYMBOL_LIT_BOOL;
 		if (tn1 == -1 || tn2 == -1)
 			type = SYMBOL_LIT_BOOL;
