@@ -74,10 +74,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 		break;
 	case TAC_VECTOR_AS: 
 		temp1 = atoi(tac->op1->value) * SIZE;
-		//tac->result->id, tac->op1->id, tac->op2->id (name, index, value)
 		fprintf(fout, "\tmovl	$%s, %s+%d(%%rip)\n", tac->op2->value, tac->result->value, temp1);
-		//movl	$2, vetor(%rip) [0]
-		//movl	$0, a+4(%rip)[1]
 		break;
 	case TAC_IFZ: break;
 	case TAC_LABEL: break;
