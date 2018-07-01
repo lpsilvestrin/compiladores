@@ -1,9 +1,9 @@
-int fun(int x, int x){}
+int fun(int x, int y){}
 
-int fun2(int x, char x) {}
+int fun2(int x, char m) {}
 
 int fun3(int x, int m) {
-	print "a" b c d;
+	//print "a" b c d;
 }
 
 
