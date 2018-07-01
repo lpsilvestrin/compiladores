@@ -4,7 +4,7 @@
 int SIZE = 4; 
 
 
-void trac_translate_binop(char* op) {
+void tac_translate_binop(char* op) {
 
 }
 
@@ -16,7 +16,6 @@ void tac_translate(TAC* tac, FILE* fout) {
 		fprintf(fout, "\t.long\t%s\n",tac->op1->id);
 		break;
 	case TAC_VEC_DEF: 
-		//fprintf(fout, "%s:\n", tac->result->id);
 		vec_size = atoi(tac->op1->id) * SIZE;
 		fprintf(fout, "\t.comm\t%s,%d,%d\n",tac->result->id, vec_size, vec_size); //.comm	vetor,8,8
 		break;
@@ -32,10 +31,12 @@ void tac_translate(TAC* tac, FILE* fout) {
 		fprintf(fout, "\t.cfi_endproc\n");
 		break;	
 	case TAC_FUN_ARG: break;
-	case TAC_FUN_CALL: break;
-	
+	case TAC_FUN_CALL: break;	
 	case TAC_POINTER_DEF: break;
-	case TAC_PRINT: break;
+	case TAC_PRINT: 
+		fprintf(fout, "\tmovl\t$.%s, %%edi\n", tac->result->id);
+		fprintf(fout, "\tcall\tprintf\n");
+		break;
 	case TAC_READ: break;
 	case TAC_ADD: break;
 	case TAC_SUB: break;
@@ -79,13 +80,42 @@ void gen_empty_program(FILE *fout) {
 	fprintf(fout, "\t.cfi_endproc\n");
 }
 
-int gen_assembly(TAC* tac_list, FILE *fout) {
+void gen_hash(hashTable *table, FILE *fout) { //all the constants must be declared before the functions
+	hashNode* currNode = NULL;
+	int size = table->size;
+	for (int i = 0; i < size; i++) {
+		currNode = table->data[i];
+		if(currNode != NULL){
+			switch(currNode->type){
+				case SYMBOL_LIT_INT:
+					fprintf(fout, ".%s:\n", currNode->id); //.long
+					fprintf(fout, "\t.long %s\n", currNode->value);
+					break;
+				case SYMBOL_LIT_FLOAT:
+					fprintf(fout, ".%s:\n", currNode->id); //.long
+					fprintf(fout, "\t.long %s\n", currNode->value); 
+					break;
+				case SYMBOL_LIT_CHAR:
+					fprintf(fout, ".%s:\n", currNode->id); //.byte
+					break;
+				case SYMBOL_LIT_STRING:
+					fprintf(fout, ".%s:\n", currNode->id);
+					fprintf(fout, "\t.string %s\n", currNode->value);
+					break;
+				default:
+					break;
+				}}
+			}
+} 
+
+int gen_assembly(TAC* tac_list, hashTable *table, FILE *fout) {
 	TAC* tmp = tac_list;
 	//fprintf(fout, ".data");
 	if(tac_list == NULL) {
 		gen_empty_program(fout);
 		return 0;
 	} 
+	gen_hash(table, fout);
 	for(; tmp != NULL; tmp = tmp->next) {
 		tac_translate(tmp, fout);
 	}

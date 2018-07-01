@@ -4,6 +4,6 @@
 #include "tac.h"
 #include "hashtable.h"
 
-int gen_assembly(TAC* tac_list, FILE* fout);
+int gen_assembly(TAC* tac_list, hashTable *table, FILE* fout);
 
 #endif

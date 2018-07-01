@@ -80,7 +80,6 @@ void initNode(hashNode **node) {
 void printHash(hashTable *table) {
 	hashNode* currNode = NULL;
 	int size = table->size;
-
 	for (int i = 0; i < size; i++) {
 		currNode = table->data[i];
 		while (currNode != NULL) {
@@ -129,6 +128,12 @@ void printHash(hashTable *table) {
 				case SYMBOL_FUN_CHAR: 
 					fprintf(stderr, "char function\n");
 				break;
+				case SYMBOL_LABEL:
+					fprintf(stderr, "label\n");
+					break;
+				case SYMBOL_TEMP:
+					fprintf(stderr, "temp\n");
+					break;
 				default: 
 					fprintf(stderr, "UNKNOWN %d\n", type);
 			}
@@ -226,4 +231,29 @@ hashNode* make_temp(int next_temp, hashTable *table) {
 		free(n);
 	}
 	return res;
+}
+
+void create_lit_ids(hashTable *table) {
+	int id_number = 0;
+	char id[200];
+	//char *value;
+	hashNode* currNode = NULL;
+	int size = table->size;
+	for (int i = 0; i < size; i++) {
+		currNode = table->data[i];
+		if(currNode != NULL){
+			switch(currNode->type) {
+				case SYMBOL_LIT_INT: 
+				case SYMBOL_LIT_FLOAT:
+				case SYMBOL_LIT_CHAR:
+				case SYMBOL_LIT_STRING:
+				case SYMBOL_LIT_BOOL:
+					strcpy(currNode->value,currNode->id);
+					sprintf(id, "_%d", id_number);
+					strcpy(currNode->id, id);
+					id_number++;
+					break;
+				default: break;
+			}
+		}}
 }

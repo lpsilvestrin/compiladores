@@ -10,6 +10,7 @@ extern int yyparse();
 extern void initMe();
 extern void setOutput(FILE* pointer);
 extern int getLineNumber();
+extern void create_lit_ids();
 extern ASTree* get_parsed_tree();
 extern hashTable *SymbolsTable; 
 extern int _SEMANTIC_ERROR;
@@ -41,8 +42,13 @@ int main(int argc, char** argv) {
 		ASTree* parsed_tree = get_parsed_tree();
 		TAC *tac = tac_reverse(tac_generate_code(parsed_tree));
 		tac_print_code(tac);
-		gen_assembly(tac, f); 
+		//printHash(SymbolsTable);
+		create_lit_ids(SymbolsTable);
+		//printHash(SymbolsTable);
+		gen_assembly(tac, SymbolsTable, f); 
 		//gen_assembly(tac, stdout); // for debug sake 
+
+
 	}
 	exit(0);
 }
