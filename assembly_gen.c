@@ -61,7 +61,7 @@ int gen_assembly(TAC* tac_list, FILE *fout) {
 	//empty program case here??
 
 	TAC* tmp = tac_list;
-	fprintf(fout, ".data");
+	fprintf(fout, ".data\n");
 	for(; tmp != NULL; tmp = tmp->next) {
 		tac_translate(tmp, fout);
 	}
