@@ -1,3 +1,9 @@
+.LC0:
+	.string	"test"
+.LC1:
+	.string	"%s"
+.LC2:
+	.string	"%d"
 // define variables
 	.data
 x:
@@ -15,13 +21,7 @@ foo:
 	popq	%rbp
 	ret
 	.cfi_endproc
-	.section	.rodata
-.LC0:
-	.string	"test"
-.LC1:
-	.string	"%s"
-.LC2:
-	.string	"%d"
+
 	.globl	main
 main:
 	.cfi_startproc
