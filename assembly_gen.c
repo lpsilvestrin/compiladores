@@ -148,16 +148,15 @@ void gen_hash(hashTable *table, FILE *fout) { //all the constants must be declar
 					fprintf(fout, "\t.long %s\n", currNode->value); 
 					break;
 				case SYMBOL_LIT_CHAR:
-					fprintf(fout, ".%s:\n", currNode->id); //.byte
-					break;
 				case SYMBOL_LIT_STRING:
 					fprintf(fout, ".%s:\n", currNode->id);
 					fprintf(fout, "\t.string %s\n", currNode->value);
 					break;
 				default:
 					break;
-				}}
 			}
+		}
+	}
 } 
 
 int gen_assembly(TAC* tac_list, hashTable *table, FILE *fout) {
