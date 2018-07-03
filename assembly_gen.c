@@ -40,13 +40,17 @@ void tac_translate_cmp(FILE* fout, TAC* tac) {
 	fprintf(fout, "\tcmpl\t%%eax, %%edx\n");
 	switch(tac->type) {
 	case TAC_EQ:
-		fprintf(fout, "\tsete %%al\n");
-		break;
-	case TAC_NEQ: break;
-	case TAC_LEQ: break;
-	case TAC_GEQ: break;
-	case TAC_LESS: break;
-	case TAC_GREAT: break;
+		fprintf(fout, "\tsete\t%%al\n");	break;
+	case TAC_NEQ: 
+		fprintf(fout, "\tsetne\t%%al\n");break;
+	case TAC_LEQ:
+		fprintf(fout, "\tsetle\t%%al\n");break;
+	case TAC_GEQ: 
+		fprintf(fout, "\tsetge\t%%al\n");break;
+	case TAC_LESS: 
+		fprintf(fout, "\tsetl\t%%al\n"); break;
+	case TAC_GREAT: 
+		fprintf(fout, "\tsetg\t%%al\n"); break;
 	}
 	fprintf(fout, "\tmovzx\t%%al, %%eax\n");
 	fprintf(fout, "\tmovl\t%%eax, %s(%%rip)\n", tac->result->id);
@@ -126,13 +130,13 @@ void tac_translate(TAC* tac, FILE* fout) {
 		tac_translate_bool_op(fout, tac, "notl");
 		break;
 	case TAC_EQ:
+	case TAC_NEQ: 
+	case TAC_LEQ: 
+	case TAC_GEQ: 
+	case TAC_LESS: 
+	case TAC_GREAT:
 		tac_translate_cmp(fout, tac);
 		break;
-	case TAC_NEQ: break;
-	case TAC_LEQ: break;
-	case TAC_GEQ: break;
-	case TAC_LESS: break;
-	case TAC_GREAT: break;
 	case TAC_JUMP: 
 		fprintf(fout, "\tjmp\t.%s\n", tac->result->id);
 		break;
