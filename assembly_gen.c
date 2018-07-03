@@ -135,6 +135,8 @@ void tac_translate(TAC* tac, FILE* fout) {
 	case TAC_FUN_CALL: 
 		fprintf(fout, "\tcall\t%s\n", tac->op1->id);
 		fprintf(fout, "\taddq\t$%d, %%rsp\n", (PAR_COUNT*8));
+		// get return value from edx
+		fprintf(fout, "\tmovl\t%%edx, %s(%%rip)\n", tac->result->id);
 		PAR_COUNT = 0; // reset param_count
 		break;	
 	case TAC_POINTER_DEF: break;
@@ -185,7 +187,10 @@ void tac_translate(TAC* tac, FILE* fout) {
 	case TAC_JUMP: 
 		fprintf(fout, "\tjmp\t.%s\n", tac->result->id);
 		break;
-	case TAC_RETURN: break;
+	case TAC_RETURN: 
+		// return through edx
+		load_operand(fout, tac->op1, "edx");
+		break;
 	case TAC_SYMBOL: break;
 	case TAC_VAR_AS: 
 		store_var(fout, tac->op1, tac->result);
