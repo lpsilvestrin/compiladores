@@ -34,15 +34,35 @@ void tac_translate_arithmetic(FILE* fout, TAC* tac, char* op) {
 	fprintf(fout, "\tmovl\t%%eax, %s(%%rip)\n", tac->result->id);
 }
 
-void tac_translate_bool_op(FILE* fout, TAC* tac, char* op) {
+void tac_translate_cmp(FILE* fout, TAC* tac) {
+	load_operand(fout, tac->op1, "eax");
+	load_operand(fout, tac->op2, "edx");
+	fprintf(fout, "\tcmpl\t%%eax, %%edx\n");
+	switch(tac->type) {
+	case TAC_EQ:
+		fprintf(fout, "\tsete %%al\n");
+		break;
+	case TAC_NEQ: break;
+	case TAC_LEQ: break;
+	case TAC_GEQ: break;
+	case TAC_LESS: break;
+	case TAC_GREAT: break;
+	}
+	fprintf(fout, "\tmovzx\t%%al, %%eax\n");
+	fprintf(fout, "\tmovl\t%%eax, %s(%%rip)\n", tac->result->id);
 	
-	fprintf(fout,"\tmovl %s(%%rip), %%eax\n", tac->op1->id);
+}
+
+void tac_translate_bool_op(FILE* fout, TAC* tac, char* op) {
+	load_operand(fout, tac->op1, "eax");	
 	if(strcmp(op,"notl") == 1) {
-		fprintf(fout,"\tmovl %s(%%rip), %%edx\n", tac->op2->id);
-		fprintf(fout,"\t%s %%eax, %%edx\n", op); //RESULT ON edx <---
+		load_operand(fout, tac->op2, "edx");	
+		fprintf(fout,"\t%s %%eax, %%edx\n", op); 
+		fprintf(fout, "\tmovl\t%%edx, %s(%%rip)\n", tac->result->id);
  	} else {
 		 fprintf(fout,"\t%s %%eax\n", op);
-	 }
+	}
+	fprintf(fout, "\tmovl\t%%eax, %s(%%rip)\n", tac->result->id);
 }
 
 void tac_translate(TAC* tac, FILE* fout) {
@@ -105,7 +125,9 @@ void tac_translate(TAC* tac, FILE* fout) {
 	case TAC_NOT: 
 		tac_translate_bool_op(fout, tac, "notl");
 		break;
-	case TAC_EQ: break;
+	case TAC_EQ:
+		tac_translate_cmp(fout, tac);
+		break;
 	case TAC_NEQ: break;
 	case TAC_LEQ: break;
 	case TAC_GEQ: break;
@@ -125,7 +147,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 		break;
 	case TAC_IFZ:  //FIX: temp0 should be replaced by a register :)
 		fprintf(fout, "\tmovl\t %s(%%rip), %%ebx\n", tac->result->id);
-		fprintf(fout, "\tcmpl\t %%ebx, %%ebx\n");
+		fprintf(fout, "\ttest\t %%ebx, %%ebx\n");
 		fprintf(fout, "\tje\t .%s\n", tac->op1->id);
 		break;
 	case TAC_LABEL: 
