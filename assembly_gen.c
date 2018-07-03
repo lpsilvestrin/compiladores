@@ -160,27 +160,27 @@ void tac_translate(TAC* tac, FILE* fout) {
 		fprintf(fout, "\tcall\tprintf\n");
 		break;
 	case TAC_READ: 
-		fprintf(fout, "\tmovl\t$.%s, %%esi\n",tac->result->id);
+		fprintf(fout, "\tmovl\t$.%s, %%esi\n",tac->result->id); //removed the $
 		switch(tac->result->type) {
 			case SYMBOL_LIT_CHAR: 
-				fprintf(fout, "\tmovl\t._print_char, %%edi\n");
+				fprintf(fout, "\tmovl\t$._print_char, %%edi\n");
 				break;
 			case SYMBOL_LIT_INT: 
-				fprintf(fout, "\tmovl\t._print_int, %%edi\n");
+				fprintf(fout, "\tmovl\t$._print_int, %%edi\n");
 				break;
 			case SYMBOL_LIT_FLOAT: 
-				fprintf(fout, "\tmovl\t._print_float, %%edi\n");
+				fprintf(fout, "\tmovl\t$._print_float, %%edi\n");
 				break;
 			default: 
 				fprintf(stderr, "ERROR ON assembly_gen, CASE TAC_READ\n");
 				break;
 		}
-		fprintf(fout, "\tmovl\t$0, %%eax\n");
-		fprintf(fout, "\tcall\tscanf\n");
 		/*	movl	$k, %esi
 		movl	$.LC0, %edi
 		movl	$0, %eax
 		call	scanf*/
+		fprintf(fout, "\tmovl\t$0, %%eax\n");
+		fprintf(fout, "\tcall\tscanf\n");
 		break;
 	case TAC_ADD: 
 		tac_translate_arithmetic(fout, tac, "addl");
