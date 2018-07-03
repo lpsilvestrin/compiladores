@@ -23,13 +23,18 @@ int find_param_pos(hashNode* var) {
 
 // load an operand (either variable or "imadiato") into a register
 void load_operand(FILE* fout, hashNode* op, char* reg) {
+	if (strcmp(reg, "rsi")==0) {
+		fprintf(fout, "\tmovq\t");
+	} else {
+		fprintf(fout, "\tmovl\t");
+	}
 	int pos = find_param_pos(op);
 	// test if is a global var
 	if (pos == 0) {
-		fprintf(fout, "\tmovl\t%s(%%rip), %%%s\n", op->id, reg);
+		fprintf(fout, "%s(%%rip), %%%s\n", op->id, reg);
 	} else {
 	// var is in the stack
-		fprintf(fout, "\tmovl\t-%d(%%rsp), %%%s\n", 4*pos, reg);
+		fprintf(fout, "-%d(%%rsp), %%%s\n", 4*pos, reg);
 
 	}
 }
@@ -130,8 +135,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 			fprintf(fout, "\tmovq\t$.%s, %%rsi\n", tac->result->id);
 			fprintf(fout, "\tmovl\t$._print_string, %%edi\n");
 		} else {
-			load_operand(fout, tac->result, "eax");
-			fprintf(fout, "\tmovq\t%%eax, %%rsi\n");
+			load_operand(fout, tac->result, "rsi");
 			fprintf(fout, "\tmovl\t$._print_int, %%edi\n");
 		}
 		fprintf(fout, "\tcall\tprintf\n");
