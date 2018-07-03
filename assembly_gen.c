@@ -34,7 +34,7 @@ void load_operand(FILE* fout, hashNode* op, char* reg) {
 		fprintf(fout, "%s(%%rip), %%%s\n", op->id, reg);
 	} else {
 	// var is in the stack
-		fprintf(fout, "-%d(%%rsp), %%%s\n", 4*pos, reg);
+		fprintf(fout, "%d(%%rbp), %%%s\n", (8+8*pos), reg);
 
 	}
 }
@@ -123,11 +123,13 @@ void tac_translate(TAC* tac, FILE* fout) {
 		fprintf(fout, "\tpopq\t%%rbp\n");
 		fprintf(fout, "\tret\n");
 		fprintf(fout, "\t.cfi_endproc\n");
-		PAR_COUNT = 0; // reset param_count
+
 		break;	
 	case TAC_FUN_ARG: break;
 	case TAC_FUN_CALL: 
 		fprintf(fout, "\tcall\t%s\n", tac->op1->id);
+		fprintf(fout, "\taddq\t$%d, %%rsp\n", (PAR_COUNT*8));
+		PAR_COUNT = 0; // reset param_count
 		break;	
 	case TAC_POINTER_DEF: break;
 	case TAC_PRINT:
@@ -136,6 +138,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 			fprintf(fout, "\tmovl\t$._print_string, %%edi\n");
 		} else {
 			load_operand(fout, tac->result, "rsi");
+//			fprintf(fout, "\tmovq\t%%eax, %%rsi\n");
 			fprintf(fout, "\tmovl\t$._print_int, %%edi\n");
 		}
 		fprintf(fout, "\tcall\tprintf\n");
@@ -200,8 +203,10 @@ void tac_translate(TAC* tac, FILE* fout) {
 		fprintf(fout, "\tmovl\t$%%edi, %s+%d(%%rip)\n", tac->op1->id, temp1);
 		break;
 	case TAC_PARAM: 
-		fprintf(fout, "\tmovl\t%s(%%rip), %%eax\n", tac->result->id);
-		fprintf(fout, "\tmovl\t%%eax, -%d(%%rsp)\n", (++PAR_COUNT)*4);
+		load_operand(fout, tac->result, "eax");
+		fprintf(fout, "\tpushq\t%%rax\n");
+		PAR_COUNT++;
+		//fprintf(fout, "\tmovl\t%%eax, -%d(%%rsp)\n", (++PAR_COUNT)*4);
 		break;
 	case TAC_PARAM_DEF:
 		
