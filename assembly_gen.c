@@ -57,8 +57,14 @@ void tac_translate(TAC* tac, FILE* fout) {
 	case TAC_FUN_ARG: break;
 	case TAC_FUN_CALL: break;	
 	case TAC_POINTER_DEF: break;
-	case TAC_PRINT: 
-		fprintf(fout, "\tmovl\t$.%s, %%edi\n", tac->result->id);
+	case TAC_PRINT:
+		if (tac->result->type == SYMBOL_TEMP || tac->result->scan_type == SYMBOL_IDENTIFIER) {
+			fprintf(fout, "\tmovq\t%s(%%rip), %%rsi\n", tac->result->id);
+			fprintf(fout, "\tmovl\t$._print_int, %%edi\n");
+		} else {
+			fprintf(fout, "\tmovq\t$.%s, %%rsi\n", tac->result->id);
+			fprintf(fout, "\tmovl\t$._print_string, %%edi\n");
+		}
 		fprintf(fout, "\tcall\tprintf\n");
 		break;
 	case TAC_READ: break;
