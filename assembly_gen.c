@@ -7,7 +7,7 @@ int SIZE = 4;
 
 // load an operand (either variable or "imadiato") into a register
 void load_operand(FILE* fout, hashNode* op, char* reg) {
-	if (op->type == SYMBOL_TEMP || op->scan_type == SYMBOL_IDENTIFIER) {
+	if (1 || op->type == SYMBOL_TEMP || op->scan_type == SYMBOL_IDENTIFIER) {
 		// dado de variável
 		fprintf(fout, "\tmovl\t%s(%%rip), %%%s\n", op->id, reg);
 	} else {
@@ -18,7 +18,7 @@ void load_operand(FILE* fout, hashNode* op, char* reg) {
 }
 
 void store_var(FILE* fout, hashNode* src, hashNode* dst) {
-	if (src->type == SYMBOL_TEMP || src->scan_type == SYMBOL_IDENTIFIER) {
+	if (1 || src->type == SYMBOL_TEMP || src->scan_type == SYMBOL_IDENTIFIER) {
 		// dado de variável
 		fprintf(fout, "\tmovl\t%s(%%rip), %%eax\n", src->id);
 		fprintf(fout, "\tmovl\t%%eax, %s(%%rip)\n", dst->id);
@@ -85,12 +85,12 @@ void tac_translate(TAC* tac, FILE* fout) {
 	case TAC_FUN_CALL: break;	
 	case TAC_POINTER_DEF: break;
 	case TAC_PRINT:
-		if (tac->result->type == SYMBOL_TEMP || tac->result->scan_type == SYMBOL_IDENTIFIER) {
-			fprintf(fout, "\tmovq\t%s(%%rip), %%rsi\n", tac->result->id);
-			fprintf(fout, "\tmovl\t$._print_int, %%edi\n");
-		} else {
+		if (tac->result->type == SYMBOL_LIT_STRING) {
 			fprintf(fout, "\tmovq\t$.%s, %%rsi\n", tac->result->id);
 			fprintf(fout, "\tmovl\t$._print_string, %%edi\n");
+		} else {
+			fprintf(fout, "\tmovq\t%s(%%rip), %%rsi\n", tac->result->id);
+			fprintf(fout, "\tmovl\t$._print_int, %%edi\n");
 		}
 		fprintf(fout, "\tcall\tprintf\n");
 		break;
@@ -178,11 +178,11 @@ void gen_hash(hashTable *table, FILE *fout) { //all the constants must be declar
 					fprintf(fout, "\t.long 0\n");
 					break;
 				case SYMBOL_LIT_INT:
-					fprintf(fout, ".%s:\n", currNode->id); //.long
+					fprintf(fout, "%s:\n", currNode->id); //.long
 					fprintf(fout, "\t.long %s\n", currNode->value);
 					break;
 				case SYMBOL_LIT_FLOAT:
-					fprintf(fout, ".%s:\n", currNode->id); //.long
+					fprintf(fout, "%s:\n", currNode->id); //.long
 					fprintf(fout, "\t.long %s\n", currNode->value); 
 					break;
 				case SYMBOL_LIT_CHAR:
@@ -209,12 +209,13 @@ void print_flags(FILE *fout) {
 
 int gen_assembly(TAC* tac_list, hashTable *table, FILE *fout) {
 	TAC* tmp = tac_list;
-	//fprintf(fout, ".data");
+
 	if(tac_list == NULL) {
 		gen_empty_program(fout);
 		return 0;
 	} 
 	print_flags(fout);
+	fprintf(fout, ".data\n");
 	gen_hash(table, fout);
 	for(; tmp != NULL; tmp = tmp->next) {
 		tac_translate(tmp, fout);
