@@ -40,8 +40,14 @@ void load_operand(FILE* fout, hashNode* op, char* reg) {
 }
 
 void store_var(FILE* fout, hashNode* src, hashNode* dst) {
-		fprintf(fout, "\tmovl\t%s(%%rip), %%eax\n", src->id);
+	int dst_pos = find_param_pos(dst);
+	load_operand(fout, src, "eax");
+	if (dst_pos == 0) {
 		fprintf(fout, "\tmovl\t%%eax, %s(%%rip)\n", dst->id);
+	} else {
+		fprintf(fout, "\tmovl\t%%eax, %d(%%rbp)\n", (8+8*dst_pos));
+	}
+
 }
 
 void tac_translate_arithmetic(FILE* fout, TAC* tac, char* op) { 
