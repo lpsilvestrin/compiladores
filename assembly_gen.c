@@ -4,13 +4,34 @@
 int SIZE = 4; 
 int TABLE_SIZE = 40;
 int PAR_COUNT = 0;
-hashTable* param_table;
+ASTree* _SCOPE = NULL;
 /*	movl	k(%rip), %eax
 	testl	%eax, %eax*/
 
+// return the position of a parameter in the current scope
+int find_param_pos(hashNode* var) {
+
+	int pos = 1;
+	for (ASTree *tmp = _SCOPE; tmp != NULL; tmp = tmp->offspring[1]) {
+		if (strcmp(tmp->id->id, var->id)==0) {
+			return pos;
+		}
+		pos++;
+	}
+	return 0;			
+}
+
 // load an operand (either variable or "imadiato") into a register
 void load_operand(FILE* fout, hashNode* op, char* reg) {
-	fprintf(fout, "\tmovl\t%s(%%rip), %%%s\n", op->id, reg);
+	int pos = find_param_pos(op);
+	// test if is a global var
+	if (pos == 0) {
+		fprintf(fout, "\tmovl\t%s(%%rip), %%%s\n", op->id, reg);
+	} else {
+	// var is in the stack
+		fprintf(fout, "\tmovl\t-%d(%%rsp), %%%s\n", 4*pos, reg);
+
+	}
 }
 
 void store_var(FILE* fout, hashNode* src, hashNode* dst) {
@@ -84,12 +105,16 @@ void tac_translate(TAC* tac, FILE* fout) {
 		fprintf(fout, "\t.comm\t%s,%d,%d\n",tac->result->id, temp1, temp1); //.comm	vetor,8,8
 		break;
 	case TAC_FUN_BEGIN:
+		// set scope for next instructions
+		_SCOPE = tac->result->list_head;
 		fprintf(fout, "\t.globl %s\n", tac->result->id);
 		fprintf(fout, "%s:\n", tac->result->id);
 		fprintf(fout, "\t.cfi_startproc\n\tpushq\t%%rbp\n");
 		fprintf(fout, "\tmovq\t%%rsp, %%rbp\n");
 		break;
 	case TAC_FUN_END:
+		// reset scope
+		_SCOPE = NULL;
 		fprintf(fout, "\tpopq\t%%rbp\n");
 		fprintf(fout, "\tret\n");
 		fprintf(fout, "\t.cfi_endproc\n");
@@ -105,7 +130,8 @@ void tac_translate(TAC* tac, FILE* fout) {
 			fprintf(fout, "\tmovq\t$.%s, %%rsi\n", tac->result->id);
 			fprintf(fout, "\tmovl\t$._print_string, %%edi\n");
 		} else {
-			fprintf(fout, "\tmovq\t%s(%%rip), %%rsi\n", tac->result->id);
+			load_operand(fout, tac->result, "eax");
+			fprintf(fout, "\tmovq\t%%eax, %%rsi\n");
 			fprintf(fout, "\tmovl\t$._print_int, %%edi\n");
 		}
 		fprintf(fout, "\tcall\tprintf\n");
@@ -173,6 +199,9 @@ void tac_translate(TAC* tac, FILE* fout) {
 		fprintf(fout, "\tmovl\t%s(%%rip), %%eax\n", tac->result->id);
 		fprintf(fout, "\tmovl\t%%eax, -%d(%%rsp)\n", (++PAR_COUNT)*4);
 		break;
+	case TAC_PARAM_DEF:
+		
+		break;
 	default: 
 		break;
 	}	
@@ -231,7 +260,6 @@ void print_flags(FILE *fout) {
 }
 
 int gen_assembly(TAC* tac_list, hashTable *table, FILE *fout) {
-	initHash(&param_table, TABLE_SIZE);
 	TAC* tmp = tac_list;
 
 	if(tac_list == NULL) {
