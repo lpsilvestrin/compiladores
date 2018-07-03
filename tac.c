@@ -189,7 +189,7 @@ TAC* tac_generate_code(ASTree *node) {
 			return tac_join(new_code[0], t1);
 			break;
         case AST_FUNCTION: 
-			t1 = tac_create(TAC_FUN_CALL, node->id, NULL, NULL); //call
+			t1 = tac_create(TAC_FUN_CALL, new_temp(), node->id, NULL); //call
             t2 = tac_join(new_code[0],t1); //args + call
             t3 = tac_create(TAC_LABEL, new_label(), NULL, NULL); //jump label
             //return tac_join(t1,t2);
