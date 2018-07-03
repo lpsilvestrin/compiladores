@@ -239,8 +239,7 @@ void create_lit_ids(hashTable *table) {
 	hashNode* currNode = NULL;
 	int size = table->size;
 	for (int i = 0; i < size; i++) {
-		currNode = table->data[i];
-		if(currNode != NULL){
+		for (currNode=table->data[i]; currNode != NULL; currNode = currNode->next) {
 			switch(currNode->type) {
 				case SYMBOL_LIT_INT: 
 				case SYMBOL_LIT_FLOAT:
@@ -254,5 +253,6 @@ void create_lit_ids(hashTable *table) {
 					break;
 				default: break;
 			}
-		}}
+		}
+	}
 }
