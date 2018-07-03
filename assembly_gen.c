@@ -111,7 +111,9 @@ void tac_translate(TAC* tac, FILE* fout) {
 	case TAC_GEQ: break;
 	case TAC_LESS: break;
 	case TAC_GREAT: break;
-	case TAC_JUMP: break;
+	case TAC_JUMP: 
+		fprintf(fout, "\tjmp\t.%s\n", tac->result->id);
+		break;
 	case TAC_RETURN: break;
 	case TAC_SYMBOL: break;
 	case TAC_VAR_AS: 
