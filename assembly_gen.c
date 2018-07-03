@@ -7,26 +7,12 @@ int SIZE = 4;
 
 // load an operand (either variable or "imadiato") into a register
 void load_operand(FILE* fout, hashNode* op, char* reg) {
-	if (1 || op->type == SYMBOL_TEMP || op->scan_type == SYMBOL_IDENTIFIER) {
-		// dado de variável
-		fprintf(fout, "\tmovl\t%s(%%rip), %%%s\n", op->id, reg);
-	} else {
-		// dado imediato
-		fprintf(fout, "\tmovl\t$.%s, %%%s\n", op->id, reg);
-		
-	}
+	fprintf(fout, "\tmovl\t%s(%%rip), %%%s\n", op->id, reg);
 }
 
 void store_var(FILE* fout, hashNode* src, hashNode* dst) {
-	if (1 || src->type == SYMBOL_TEMP || src->scan_type == SYMBOL_IDENTIFIER) {
-		// dado de variável
 		fprintf(fout, "\tmovl\t%s(%%rip), %%eax\n", src->id);
 		fprintf(fout, "\tmovl\t%%eax, %s(%%rip)\n", dst->id);
-	} else {
-		// dado imediato
-		fprintf(fout, "\tmovl\t$.%s, %s(%%rip)\n", src->id, dst->id);
-		
-	}
 }
 
 void tac_translate_arithmetic(FILE* fout, TAC* tac, char* op) { 
