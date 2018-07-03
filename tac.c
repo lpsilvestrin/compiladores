@@ -198,7 +198,7 @@ TAC* tac_generate_code(ASTree *node) {
             //print_astnode(node);
 			if (new_code[1]) {
 	            t1 = tac_create(TAC_PARAM, new_code[1]->result, NULL ,NULL); //parameters_list_tail ',' expression
-	            return tac_join(new_code[0], t1); //{$$=astree_create(AST_PARAM,0,$1,$3,0,0);}
+	            return tac_join(t1, new_code[0]); //{$$=astree_create(AST_PARAM,0,$1,$3,0,0);}
 			} else {
 				return tac_create(TAC_PARAM, new_code[0]->result, NULL, NULL);
 			}
