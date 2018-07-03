@@ -8,10 +8,11 @@ int c = 0;
 int a[2];
 
 int fun3(int x, int m) {
-	//print "a" b c d;
+	print "a" k c;
 }
 
 int main(){
+	print "a" k c;
 	if(k == c) then {
 		//printf("oi\n");
 	};
