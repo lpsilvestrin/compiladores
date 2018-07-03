@@ -5,20 +5,47 @@ int SIZE = 4;
 /*	movl	k(%rip), %eax
 	testl	%eax, %eax*/
 
+// load an operand (either variable or "imadiato") into a register
+void load_operand(FILE* fout, hashNode* op, char* reg) {
+	if (op->type == SYMBOL_TEMP || op->scan_type == SYMBOL_IDENTIFIER) {
+		// dado de variável
+		fprintf(fout, "\tmovl\t%s(%%rip), %%%s\n", op->id, reg);
+	} else {
+		// dado imediato
+		fprintf(fout, "\tmovl\t$.%s, %%%s\n", op->id, reg);
+		
+	}
+}
+
+void store_var(FILE* fout, hashNode* src, hashNode* dst) {
+	if (src->type == SYMBOL_TEMP || src->scan_type == SYMBOL_IDENTIFIER) {
+		// dado de variável
+		fprintf(fout, "\tmovl\t%s(%%rip), %%eax\n", src->id);
+		fprintf(fout, "\tmovl\t%%eax, %s(%%rip)\n", dst->id);
+	} else {
+		// dado imediato
+		fprintf(fout, "\tmovl\t$.%s, %s(%%rip)\n", src->id, dst->id);
+		
+	}
+}
+
 void tac_translate_arithmetic(FILE* fout, TAC* tac, char* op) { 
-	fprintf(fout, "\tmovl\t%s(%%rip), %%edx\n", tac->op1->id);
+	load_operand(fout, tac->op1, "edx");
 	if(strcmp(op,"neg") == 0){
 		fprintf(fout, "\tmovl\t$-1, %%eax\n");
 		fprintf(fout, "\timull\t%%edx, %%eax\n");
+		fprintf(fout, "\tmovl\t%%eax, %s(%%rip)\n", tac->result->id);
 		return;
 	}
-	fprintf(fout, "\tmovl\t%s(%%rip), %%eax\n", tac->op2->id);
+	load_operand(fout, tac->op2, "eax");
 	if(strcmp(op,"idivl") == 0) {
 		fprintf(fout, "\t	cltd\n");
 		fprintf(fout, "\t%s\t%%eax\n", op);
+		fprintf(fout, "\tmovl\t%%eax, %s(%%rip)\n", tac->result->id);
 		return;
 	}
 	fprintf(fout, "\t%s\t%%edx, %%eax\n", op);
+	fprintf(fout, "\tmovl\t%%eax, %s(%%rip)\n", tac->result->id);
 }
 
 void tac_translate_bool_op(FILE* fout, TAC* tac, char* op) {
@@ -102,7 +129,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 	case TAC_RETURN: break;
 	case TAC_SYMBOL: break;
 	case TAC_VAR_AS: 
-		fprintf(fout, "\tmovl\t$%s, %s(%%rip)\n", tac->op1->value, tac->result->value);
+		store_var(fout, tac->op1, tac->result);
 		break;
 	case TAC_VECTOR_AS: 
 		temp1 = atoi(tac->op1->value) * SIZE;
@@ -142,11 +169,11 @@ void gen_hash(hashTable *table, FILE *fout) { //all the constants must be declar
 	hashNode* currNode = NULL;
 	int size = table->size;
 	for (int i = 0; i < size; i++) {
-		currNode = table->data[i];
-		if(currNode != NULL && currNode->scan_type != SYMBOL_IDENTIFIER){
+		for (currNode = table->data[i]; currNode != NULL; currNode = currNode->next) {
+		if(currNode->scan_type != SYMBOL_IDENTIFIER){
 			switch(currNode->type){
 				case SYMBOL_TEMP:
-					// allocate space for temporary expressions
+					// allocate a position for temporary expressions
 					fprintf(fout, "%s:\n", currNode->id); //.long
 					fprintf(fout, "\t.long 0\n");
 					break;
@@ -166,6 +193,7 @@ void gen_hash(hashTable *table, FILE *fout) { //all the constants must be declar
 				default:
 					break;
 			}
+		}
 		}
 	}
 } 
