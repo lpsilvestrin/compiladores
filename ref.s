@@ -1,4 +1,4 @@
-assembly_gen.c.LC0:
+.LC0:
     .string "test"
 .LC1:
     .string "%s"
