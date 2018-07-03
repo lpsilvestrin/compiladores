@@ -103,8 +103,8 @@ void tac_translate(TAC* tac, FILE* fout) {
 		fprintf(fout, "\tmovl\t$%s, %s+%d(%%rip)\n", tac->op2->value, tac->result->value, temp1);
 		break;
 	case TAC_IFZ:  //FIX: temp0 should be replaced by a register :)
-		fprintf(fout, "\tmovl\t %s(%%rip) %%ebx\n", tac->result->id);
-		fprintf(fout, "\tcmpl\t %%ebx %%ebx\n");
+		fprintf(fout, "\tmovl\t %s(%%rip), %%ebx\n", tac->result->id);
+		fprintf(fout, "\tcmpl\t %%ebx, %%ebx\n");
 		fprintf(fout, "\tje\t .%s\n", tac->op1->id);
 		break;
 	case TAC_LABEL: 
