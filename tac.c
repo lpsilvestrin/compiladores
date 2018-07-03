@@ -191,9 +191,8 @@ TAC* tac_generate_code(ASTree *node) {
         case AST_FUNCTION: 
 			t1 = tac_create(TAC_FUN_CALL, new_temp(), node->id, NULL); //call
             t2 = tac_join(new_code[0],t1); //args + call
-            t3 = tac_create(TAC_LABEL, new_label(), NULL, NULL); //jump label
             //return tac_join(t1,t2);
-            return tac_join(t2,t3);
+            return t2;
 			break;
         case AST_PARAM: 
             //print_astnode(node);
@@ -282,7 +281,7 @@ void print_tac(TAC *tac) {
         case TAC_FUN_BEGIN: fprintf(stderr, "TAC_FUN_BEGIN(%s,_,_)\n", tac->result->id); break;
         case TAC_FUN_END: fprintf(stderr, "TAC_FUN_END\n"); break;
         case TAC_FUN_ARG: fprintf(stderr, "TAC_FUN_ARG\n"); break;
-        case TAC_FUN_CALL: fprintf(stderr, "TAC_FUN_CALL(%s,_,_)\n", tac->result->id); break;
+        case TAC_FUN_CALL: fprintf(stderr, "TAC_FUN_CALL(%s,%s,_)\n", tac->result->id, tac->op1->id); break;
         case TAC_VAR_DEF: fprintf(stderr, "TAC_VAR_DEF(%s,_,_)\n", tac->result->id); break;
         case TAC_VEC_DEF: fprintf(stderr, "TAC_VEC_DEF(%s,%s,_)\n", tac->result->id, tac->op1->id); break;
         case TAC_POINTER_DEF: fprintf(stderr, "TAC_POINTER_DEF\n"); break;
