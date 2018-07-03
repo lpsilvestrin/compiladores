@@ -96,7 +96,9 @@ void tac_translate(TAC* tac, FILE* fout) {
 		PAR_COUNT = 0; // reset param_count
 		break;	
 	case TAC_FUN_ARG: break;
-	case TAC_FUN_CALL: break;	
+	case TAC_FUN_CALL: 
+		fprintf(fout, "\tcall\t%s\n", tac->op1->id);
+		break;	
 	case TAC_POINTER_DEF: break;
 	case TAC_PRINT:
 		if (tac->result->type == SYMBOL_LIT_STRING) {
