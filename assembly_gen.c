@@ -37,7 +37,7 @@ void tac_translate_arithmetic(FILE* fout, TAC* tac, char* op) {
 void tac_translate_cmp(FILE* fout, TAC* tac) {
 	load_operand(fout, tac->op1, "eax");
 	load_operand(fout, tac->op2, "edx");
-	fprintf(fout, "\tcmpl\t%%eax, %%edx\n");
+	fprintf(fout, "\tcmpl\t%%edx, %%eax\n");
 	switch(tac->type) {
 	case TAC_EQ:
 		fprintf(fout, "\tsete\t%%al\n");	break;
