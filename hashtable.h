@@ -32,6 +32,7 @@ typedef struct HashNode {
 	char* id; //the id string
 	int type; //the type 
 	int scan_type; // type defined during lexial analysis
+	int param_order;
 	char* value; //some content
 	struct HashNode* next;
 	ASTree *list_head; //pointer for list
@@ -52,4 +53,5 @@ void print_type(hashNode *entry);
 void set_param_list(hashNode *entry, ASTree *pointer);
 hashNode* make_label(int next_label, hashTable *table);
 hashNode* make_temp(int next_temp, hashTable *table);
+void clearHash(hashTable*);
 #endif //_HASHTABLE_H

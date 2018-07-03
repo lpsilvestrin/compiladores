@@ -256,3 +256,11 @@ void create_lit_ids(hashTable *table) {
 		}
 	}
 }
+
+// clear table with mem leak
+void clearHash(hashTable *table) {
+	int size = table->size;
+	for (int i = 0; i < size; i++) {
+		table->data[i] = NULL;
+	}
+}
