@@ -31,6 +31,7 @@ typedef struct astree ASTree; //prototype
 typedef struct HashNode {
 	char* id; //the id string
 	int type; //the type 
+	int scan_type; // type defined during lexial analysis
 	char* value; //some content
 	struct HashNode* next;
 	ASTree *list_head; //pointer for list

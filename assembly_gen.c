@@ -137,8 +137,12 @@ void gen_hash(hashTable *table, FILE *fout) { //all the constants must be declar
 	int size = table->size;
 	for (int i = 0; i < size; i++) {
 		currNode = table->data[i];
-		if(currNode != NULL){
+		if(currNode != NULL && currNode->scan_type != SYMBOL_IDENTIFIER){
 			switch(currNode->type){
+				case SYMBOL_TEMP:
+					fprintf(fout, "%s:\n", currNode->id); //.long
+					fprintf(fout, "\t.long 0\n");
+					break;
 				case SYMBOL_LIT_INT:
 					fprintf(fout, ".%s:\n", currNode->id); //.long
 					fprintf(fout, "\t.long %s\n", currNode->value);
