@@ -146,6 +146,7 @@ void gen_hash(hashTable *table, FILE *fout) { //all the constants must be declar
 		if(currNode != NULL && currNode->scan_type != SYMBOL_IDENTIFIER){
 			switch(currNode->type){
 				case SYMBOL_TEMP:
+					// allocate space for temporary expressions
 					fprintf(fout, "%s:\n", currNode->id); //.long
 					fprintf(fout, "\t.long 0\n");
 					break;
