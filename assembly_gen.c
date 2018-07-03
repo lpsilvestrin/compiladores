@@ -1,16 +1,12 @@
 #include "assembly_gen.h"
 
-
 int SIZE = 4; 
 int TABLE_SIZE = 40;
 int PAR_COUNT = 0;
 ASTree* _SCOPE = NULL;
-/*	movl	k(%rip), %eax
-	testl	%eax, %eax*/
 
 // return the position of a parameter in the current scope
 int find_param_pos(hashNode* var) {
-
 	int pos = 1;
 	for (ASTree *tmp = _SCOPE; tmp != NULL; tmp = tmp->offspring[1]) {
 		if (strcmp(tmp->id->id, var->id)==0) {
@@ -146,7 +142,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 			fprintf(fout, "\tmovl\t$._print_string, %%edi\n");
 		} else {
 			load_operand(fout, tac->result, "rsi");
-//			fprintf(fout, "\tmovq\t%%eax, %%rsi\n");
+			//			fprintf(fout, "\tmovq\t%%eax, %%rsi\n");
 			fprintf(fout, "\tmovl\t$._print_int, %%edi\n");
 		}
 		fprintf(fout, "\tcall\tprintf\n");
@@ -155,7 +151,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 	case TAC_ADD: 
 		tac_translate_arithmetic(fout, tac, "addl");
 		break;
-	case TAC_SUB: break;
+	case TAC_SUB: 
 		tac_translate_arithmetic(fout, tac, "subl");
 		break;
 	case TAC_MUL: 
@@ -219,9 +215,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 		PAR_COUNT++;
 		//fprintf(fout, "\tmovl\t%%eax, -%d(%%rsp)\n", (++PAR_COUNT)*4);
 		break;
-	case TAC_PARAM_DEF:
-		
-		break;
+	case TAC_PARAM_DEF: break;
 	default: 
 		break;
 	}	
