@@ -102,7 +102,7 @@ TAC* tac_generate_code(ASTree *node) {
 			return tac_join(t1, new_code[1]);//, t1);
 			break;
         case AST_DEF_PARAM_T: 
-			t1 = tac_create(TAC_SYMBOL, node->id, NULL, NULL);
+			t1 = tac_create(TAC_PARAM_DEF, node->id, NULL, NULL);
 			return tac_join(t1, new_code[1]);
 			break;
         case AST_BLOCK: 
@@ -306,6 +306,7 @@ void print_tac(TAC *tac) {
         case TAC_RETURN: fprintf(stderr, "TAC_RETURN(%s,%s,_)\n", tac->result->id, tac->op1->id); break;
         case TAC_SYMBOL: break; //fprintf(stderr, "TAC_SYMBOL(%s,_,_)\n", tac->result->id); break;
         case TAC_PARAM: fprintf(stderr, "TAC_PARAM(%s,_,_)\n", tac->result->id); break;
+        case TAC_PARAM_DEF: fprintf(stderr, "TAC_PARAM_DEF(%s,_,_)\n", tac->result->id); break;
         case TAC_VAR_AS: fprintf(stderr, "TAC_VAR_AS(%s,%s,_)\n", tac->result->id, tac->op1->id); break;
         case TAC_VECTOR_AS: fprintf(stderr, "TAC_VECTOR_AS(%s,%s,%s)\n", tac->result->id, tac->op1->id, tac->op2->id); break;
         case TAC_IFZ: fprintf(stderr, "TAC_IFZ(%s,%s,_)\n", tac->result->id, tac->op1->id); break;

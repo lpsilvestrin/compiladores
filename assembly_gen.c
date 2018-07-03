@@ -2,6 +2,9 @@
 
 
 int SIZE = 4; 
+int TABLE_SIZE = 40;
+int PAR_COUNT = 0;
+hashTable* param_table;
 /*	movl	k(%rip), %eax
 	testl	%eax, %eax*/
 
@@ -90,6 +93,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 		fprintf(fout, "\tpopq\t%%rbp\n");
 		fprintf(fout, "\tret\n");
 		fprintf(fout, "\t.cfi_endproc\n");
+		PAR_COUNT = 0; // reset param_count
 		break;	
 	case TAC_FUN_ARG: break;
 	case TAC_FUN_CALL: break;	
@@ -163,7 +167,10 @@ void tac_translate(TAC* tac, FILE* fout) {
 		temp1 = atoi(tac->op2->value) * SIZE;
 		fprintf(fout, "\tmovl\t$%%edi, %s+%d(%%rip)\n", tac->op1->id, temp1);
 		break;
-	case TAC_PARAM: break;
+	case TAC_PARAM: 
+		fprintf(fout, "\tmovl\t%s(%%rip), %%eax\n", tac->result->id);
+		fprintf(fout, "\tmovl\t%%eax, -%d(%%rsp)\n", (++PAR_COUNT)*4);
+		break;
 	default: 
 		break;
 	}	
@@ -222,6 +229,7 @@ void print_flags(FILE *fout) {
 }
 
 int gen_assembly(TAC* tac_list, hashTable *table, FILE *fout) {
+	initHash(&param_table, TABLE_SIZE);
 	TAC* tmp = tac_list;
 
 	if(tac_list == NULL) {
