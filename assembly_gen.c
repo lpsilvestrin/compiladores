@@ -163,6 +163,15 @@ void gen_hash(hashTable *table, FILE *fout) { //all the constants must be declar
 	}
 } 
 
+void print_flags(FILE *fout) {
+	fprintf(fout, "._print_int:\n");
+	fprintf(fout, "\t.string \"%%d\"\n");
+	fprintf(fout, "._print_string:\n");
+	fprintf(fout, "\t.string \"%%s\"\n");
+	fprintf(fout, "._print_float:\n");
+	fprintf(fout, "\t.string \"%%f\"\n");
+}
+
 int gen_assembly(TAC* tac_list, hashTable *table, FILE *fout) {
 	TAC* tmp = tac_list;
 	//fprintf(fout, ".data");
@@ -170,6 +179,7 @@ int gen_assembly(TAC* tac_list, hashTable *table, FILE *fout) {
 		gen_empty_program(fout);
 		return 0;
 	} 
+	print_flags(fout);
 	gen_hash(table, fout);
 	for(; tmp != NULL; tmp = tmp->next) {
 		tac_translate(tmp, fout);
