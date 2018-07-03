@@ -27,7 +27,7 @@ void load_operand(FILE* fout, hashNode* op, char* reg) {
 	int pos = find_param_pos(op);
 	// test if is a global var
 	if (pos == 0) {
-		fprintf(fout, "%s(%%rip), %%%s\n", op->id, reg);
+		fprintf(fout, ".%s(%%rip), %%%s\n", op->id, reg);
 	} else {
 	// var is in the stack
 		fprintf(fout, "%d(%%rbp), %%%s\n", (8+8*pos), reg);
@@ -104,8 +104,20 @@ void tac_translate(TAC* tac, FILE* fout) {
 	int temp1;
 	switch(tac->type) {
 	case TAC_VAR_DEF:
-		fprintf(fout, "%s:\n", tac->result->id);
-		fprintf(fout, "\t.long\t%s\n",tac->op1->value?tac->op1->value:0);
+		fprintf(fout, ".%s:\n", tac->result->id);
+		switch(tac->result->type) {
+			case SYMBOL_LIT_CHAR: 
+				fprintf(fout, "\t.byte\t%d\n",tac->op1->value?tac->op1->value:0);	
+				break;
+			case SYMBOL_LIT_INT: 
+			case SYMBOL_LIT_FLOAT: 
+				fprintf(fout, "\t.long\t%s\n",tac->op1->value?tac->op1->value:0);
+				break;
+			default: 
+				fprintf(stderr, "ERROR ON assembly_gen, CASE TAC_VAR_DEF\n");
+				break;
+		}
+		//fprintf(fout, "\t.long\t%s\n",tac->op1->value?tac->op1->value:0);
 		break;
 	case TAC_VEC_DEF: 
 		temp1 = atoi(tac->op1->id) * SIZE; //vector size
@@ -147,7 +159,29 @@ void tac_translate(TAC* tac, FILE* fout) {
 		}
 		fprintf(fout, "\tcall\tprintf\n");
 		break;
-	case TAC_READ: break;
+	case TAC_READ: 
+		fprintf(fout, "\tmovl\t$.%s, %%esi\n",tac->result->id);
+		switch(tac->result->type) {
+			case SYMBOL_LIT_CHAR: 
+				fprintf(fout, "\tmovl\t._print_char, %%edi\n");
+				break;
+			case SYMBOL_LIT_INT: 
+				fprintf(fout, "\tmovl\t._print_int, %%edi\n");
+				break;
+			case SYMBOL_LIT_FLOAT: 
+				fprintf(fout, "\tmovl\t._print_float, %%edi\n");
+				break;
+			default: 
+				fprintf(stderr, "ERROR ON assembly_gen, CASE TAC_READ\n");
+				break;
+		}
+		fprintf(fout, "\tmovl\t$0, %%eax\n");
+		fprintf(fout, "\tcall\tscanf\n");
+		/*	movl	$k, %esi
+		movl	$.LC0, %edi
+		movl	$0, %eax
+		call	scanf*/
+		break;
 	case TAC_ADD: 
 		tac_translate_arithmetic(fout, tac, "addl");
 		break;
@@ -195,7 +229,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 		temp1 = atoi(tac->op1->value) * SIZE;
 		fprintf(fout, "\tmovl\t$%s, %s+%d(%%rip)\n", tac->op2->value, tac->result->value, temp1);
 		break;
-	case TAC_IFZ:  //FIX: temp0 should be replaced by a register :)
+	case TAC_IFZ: 
 		fprintf(fout, "\tmovl\t %s(%%rip), %%ebx\n", tac->result->id);
 		fprintf(fout, "\ttest\t %%ebx, %%ebx\n");
 		fprintf(fout, "\tje\t .%s\n", tac->op1->id);
@@ -240,18 +274,21 @@ void gen_hash(hashTable *table, FILE *fout) { //all the constants must be declar
 			switch(currNode->type){
 				case SYMBOL_TEMP:
 					// allocate a position for temporary expressions
-					fprintf(fout, "%s:\n", currNode->id); //.long
+					fprintf(fout, ".%s:\n", currNode->id); //.long
 					fprintf(fout, "\t.long 0\n");
 					break;
 				case SYMBOL_LIT_INT:
-					fprintf(fout, "%s:\n", currNode->id); //.long
+					fprintf(fout, ".%s:\n", currNode->id); //.long
 					fprintf(fout, "\t.long %s\n", currNode->value);
 					break;
 				case SYMBOL_LIT_FLOAT:
-					fprintf(fout, "%s:\n", currNode->id); //.long
+					fprintf(fout, ".%s:\n", currNode->id); //.long
 					fprintf(fout, "\t.long %s\n", currNode->value); 
 					break;
 				case SYMBOL_LIT_CHAR:
+					fprintf(fout, ".%s:\n", currNode->id);
+					fprintf(fout, "\t.byte %d\n", currNode->value);
+					break;
 				case SYMBOL_LIT_STRING:
 					fprintf(fout, ".%s:\n", currNode->id);
 					fprintf(fout, "\t.string %s\n", currNode->value);
@@ -280,8 +317,8 @@ int gen_assembly(TAC* tac_list, hashTable *table, FILE *fout) {
 		gen_empty_program(fout);
 		return 0;
 	} 
+	//fprintf(fout, ".data\n");
 	print_flags(fout);
-	fprintf(fout, ".data\n");
 	gen_hash(table, fout);
 	for(; tmp != NULL; tmp = tmp->next) {
 		tac_translate(tmp, fout);
