@@ -1,7 +1,15 @@
 
 int i = 0;
+
+int increment(int value) {
+	return value +1;
+}
+
 int main(){
 	
-	for(i = 9 to 0) print i;
-	while (i < 10) { print i; i = i+1;}
+	for(i = 0 to 9) print i;
+        i = 0;
+	print "\n";
+	while (i < 9) { print i; i = increment(i);};
+	print "\n";
 }

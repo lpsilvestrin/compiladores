@@ -55,3 +55,6 @@ tests/test_7.s
 lala.s
 fib.s
 ref.s
+flow.s
+read.s
+vector.s

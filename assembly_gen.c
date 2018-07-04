@@ -185,7 +185,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 		call	scanf*/
 		fprintf(fout, "\tmovl\t$0, %%eax\n");
 		fprintf(fout, "\tcall\tscanf\n");
-		fprintf(fout, "\tmovl\t%%eax, .%s(%%rip)\n", tac->result->id);
+		//fprintf(fout, "\tmovl\t%%eax, .%s(%%rip)\n", tac->result->id);
 
 		break;
 	case TAC_ADD: 
