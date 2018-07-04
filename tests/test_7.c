@@ -12,21 +12,21 @@ int fun3(int x, int m) {
 }
 
 int main(){
-	read a;
+	//read a;
 	print a;
 	print c;
 	print k;
 	print "\n";
 	read a;
-	print a;
+	//print a;
 	print "a" k c;
 	if(k == c) then {
 		//printf("oi\n");
-		a = a -1;
+		//a = a -1;
 	};
 	//scanf("%f",&k);
 	print "oi";
-	print a;
+	//print a;
 	//printf()
 	//print 1.5;
 	//printf("%d", 1);

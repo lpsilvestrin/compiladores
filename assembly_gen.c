@@ -39,7 +39,7 @@ void store_var(FILE* fout, hashNode* src, hashNode* dst) {
 	int dst_pos = find_param_pos(dst);
 	load_operand(fout, src, "eax");
 	if (dst_pos == 0) {
-		fprintf(fout, "\tmovl\t%%eax, %s(%%rip)\n", dst->id);
+		fprintf(fout, "\tmovl\t%%eax, .%s(%%rip)\n", dst->id);
 	} else {
 		fprintf(fout, "\tmovl\t%%eax, %d(%%rbp)\n", (8+8*dst_pos));
 	}
@@ -51,18 +51,18 @@ void tac_translate_arithmetic(FILE* fout, TAC* tac, char* op) {
 	if(strcmp(op,"neg") == 0){
 		fprintf(fout, "\tmovl\t$-1, %%eax\n");
 		fprintf(fout, "\timull\t%%edx, %%eax\n");
-		fprintf(fout, "\tmovl\t%%eax, %s(%%rip)\n", tac->result->id);
+		fprintf(fout, "\tmovl\t%%eax, .%s(%%rip)\n", tac->result->id);
 		return;
 	}
 	load_operand(fout, tac->op2, "eax");
 	if(strcmp(op,"idivl") == 0) {
 		fprintf(fout, "\t	cltd\n");
 		fprintf(fout, "\t%s\t%%eax\n", op);
-		fprintf(fout, "\tmovl\t%%eax, %s(%%rip)\n", tac->result->id);
+		fprintf(fout, "\tmovl\t%%eax, .%s(%%rip)\n", tac->result->id);
 		return;
 	}
 	fprintf(fout, "\t%s\t%%edx, %%eax\n", op);
-	fprintf(fout, "\tmovl\t%%eax, %s(%%rip)\n", tac->result->id);
+	fprintf(fout, "\tmovl\t%%eax, .%s(%%rip)\n", tac->result->id);
 }
 
 void tac_translate_cmp(FILE* fout, TAC* tac) {
@@ -71,7 +71,7 @@ void tac_translate_cmp(FILE* fout, TAC* tac) {
 	fprintf(fout, "\tcmpl\t%%edx, %%eax\n");
 	switch(tac->type) {
 	case TAC_EQ:
-		fprintf(fout, "\tsete\t%%al\n");	break;
+		fprintf(fout, "\tsete\t%%al\n");break;
 	case TAC_NEQ: 
 		fprintf(fout, "\tsetne\t%%al\n");break;
 	case TAC_LEQ:
@@ -84,7 +84,7 @@ void tac_translate_cmp(FILE* fout, TAC* tac) {
 		fprintf(fout, "\tsetg\t%%al\n"); break;
 	}
 	fprintf(fout, "\tmovzx\t%%al, %%eax\n");
-	fprintf(fout, "\tmovl\t%%eax, %s(%%rip)\n", tac->result->id);
+	fprintf(fout, "\tmovl\t%%eax, .%s(%%rip)\n", tac->result->id);
 	
 }
 
@@ -93,11 +93,11 @@ void tac_translate_bool_op(FILE* fout, TAC* tac, char* op) {
 	if(strcmp(op,"notl") == 1) {
 		load_operand(fout, tac->op2, "edx");	
 		fprintf(fout,"\t%s %%eax, %%edx\n", op); 
-		fprintf(fout, "\tmovl\t%%edx, %s(%%rip)\n", tac->result->id);
+		fprintf(fout, "\tmovl\t%%edx, .%s(%%rip)\n", tac->result->id);
  	} else {
 		 fprintf(fout,"\t%s %%eax\n", op);
 	}
-	fprintf(fout, "\tmovl\t%%eax, %s(%%rip)\n", tac->result->id);
+	fprintf(fout, "\tmovl\t%%eax, .%s(%%rip)\n", tac->result->id);
 }
 
 void tac_translate(TAC* tac, FILE* fout) {
@@ -141,10 +141,10 @@ void tac_translate(TAC* tac, FILE* fout) {
 		break;	
 	case TAC_FUN_ARG: break;
 	case TAC_FUN_CALL: 
-		fprintf(fout, "\tcall\t%s\n", tac->op1->id);
+		fprintf(fout, "\tcall\t.%s\n", tac->op1->id);
 		fprintf(fout, "\taddq\t$%d, %%rsp\n", (PAR_COUNT*8));
 		// get return value from edx
-		fprintf(fout, "\tmovl\t%%edx, %s(%%rip)\n", tac->result->id);
+		fprintf(fout, "\tmovl\t%%edx, .%s(%%rip)\n", tac->result->id);
 		PAR_COUNT = 0; // reset param_count
 		break;	
 	case TAC_POINTER_DEF: break;
@@ -181,6 +181,8 @@ void tac_translate(TAC* tac, FILE* fout) {
 		call	scanf*/
 		fprintf(fout, "\tmovl\t$0, %%eax\n");
 		fprintf(fout, "\tcall\tscanf\n");
+		fprintf(fout, "\tmovl\t%%eax, %%esi\n");
+
 		break;
 	case TAC_ADD: 
 		tac_translate_arithmetic(fout, tac, "addl");
@@ -227,10 +229,10 @@ void tac_translate(TAC* tac, FILE* fout) {
 		break;
 	case TAC_VECTOR_AS: 
 		temp1 = atoi(tac->op1->value) * SIZE;
-		fprintf(fout, "\tmovl\t$%s, %s+%d(%%rip)\n", tac->op2->value, tac->result->value, temp1);
+		fprintf(fout, "\tmovl\t$%s, .%s+%d(%%rip)\n", tac->op2->value, tac->result->value, temp1);
 		break;
 	case TAC_IFZ: 
-		fprintf(fout, "\tmovl\t %s(%%rip), %%ebx\n", tac->result->id);
+		fprintf(fout, "\tmovl\t .%s(%%rip), %%ebx\n", tac->result->id);
 		fprintf(fout, "\ttest\t %%ebx, %%ebx\n");
 		fprintf(fout, "\tje\t .%s\n", tac->op1->id);
 		break;
@@ -241,7 +243,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 	case TAC_ID_ADDRESS: break;
 	case TAC_VECTOR: // case TAC_VECTOR:(temp,vetor,index) 
 		temp1 = atoi(tac->op2->value) * SIZE;
-		fprintf(fout, "\tmovl\t$%%edi, %s+%d(%%rip)\n", tac->op1->id, temp1);
+		fprintf(fout, "\tmovl\t$%%edi, .%s+%d(%%rip)\n", tac->op1->id, temp1);
 		break;
 	case TAC_PARAM: 
 		load_operand(fout, tac->result, "eax");
