@@ -65,8 +65,9 @@ TAC* tac_generate_code(ASTree *node) {
         return NULL;
     }
     TAC *new_code[MAX_OFFSPRING];
-    TAC *t1, *t2, *t3, *t4, *t5, *t6;
-	hashNode *label, *label2;
+    TAC *t1, *t2, *t3, *t4, *t5, *t6, *t7, *t8;
+	TAC *tac_temp;
+	hashNode *label, *label2, *temp;
     
     for(int i=0; i < MAX_OFFSPRING; i++) {
         if(node->offspring[i] == NULL) {
@@ -236,15 +237,25 @@ TAC* tac_generate_code(ASTree *node) {
             t2 = tac_create(TAC_LABEL, label, NULL, NULL);
             //comparison with jump to ending label
             // binary_op joins both operands
-            t3 = binary_op(TAC_SUB, t1, new_code[1]); 
+            t3 = tac_create(TAC_SUB, new_temp(), new_code[1]->result, node->id); 
             t4 = tac_create(TAC_IFZ, t3->result, label2, NULL);
+			
+			t7 = tac_create(TAC_INC, node->id, NULL, NULL);
+			//t8 = tac_create(TAC_VAR_AS, node->id, t7->result, NULL);
             //here goes the code
             //jump 
             t5 = tac_create(TAC_JUMP, label, NULL, NULL);
             //ending label
 			t6 = tac_create(TAC_LABEL, label2, NULL, NULL);
 
-            return tac_join(t2, tac_join(new_code[0], tac_join(t3, tac_join(t4, tac_join(new_code[2], tac_join(t5, t6)))))); 
+            return tac_join(t2, 
+				tac_join(new_code[0], 
+				tac_join(t3, 
+				tac_join(t4,
+				tac_join(new_code[2], 
+				tac_join(t7, 
+				//tac_join(t8, 
+				tac_join(t5, t6))))))); 
             break;
         case AST_WHILE: 
 			label = new_label();
