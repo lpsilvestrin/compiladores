@@ -107,7 +107,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 		fprintf(fout, ".%s:\n", tac->result->id);
 		switch(tac->result->type) {
 			case SYMBOL_LIT_CHAR: 
-				fprintf(fout, "\t.byte\t%d\n",tac->op1->value?tac->op1->value:0);	
+				fprintf(fout, "\t.byte\t%d\n",tac->op1->value?tac->op1->value[1]:0);	
 				break;
 			case SYMBOL_LIT_INT: 
 			case SYMBOL_LIT_FLOAT: 
@@ -152,6 +152,10 @@ void tac_translate(TAC* tac, FILE* fout) {
 		if (tac->result->type == SYMBOL_LIT_STRING) {
 			fprintf(fout, "\tmovq\t$.%s, %%rsi\n", tac->result->id);
 			fprintf(fout, "\tmovl\t$._print_string, %%edi\n");
+		} else if (tac->result->type == SYMBOL_LIT_CHAR) {
+			load_operand(fout, tac->result, "rsi");		
+			fprintf(fout, "\tmovl\t$._print_char, %%edi\n");
+			
 		} else {
 			load_operand(fout, tac->result, "rsi");
 			//			fprintf(fout, "\tmovq\t%%eax, %%rsi\n");
@@ -163,7 +167,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 		fprintf(fout, "\tmovl\t$.%s, %%esi\n",tac->result->id); //removed the $
 		switch(tac->result->type) {
 			case SYMBOL_LIT_CHAR: 
-				fprintf(fout, "\tmovl\t$._print_string, %%edi\n");
+				fprintf(fout, "\tmovl\t$._print_char, %%edi\n");
 				break;
 			case SYMBOL_LIT_INT: 
 				fprintf(fout, "\tmovl\t$._print_int, %%edi\n");
@@ -289,7 +293,7 @@ void gen_hash(hashTable *table, FILE *fout) { //all the constants must be declar
 					break;
 				case SYMBOL_LIT_CHAR:
 					fprintf(fout, ".%s:\n", currNode->id);
-					fprintf(fout, "\t.byte %d\n", currNode->value);
+					fprintf(fout, "\t.byte %d\n", currNode->value[1]);
 					break;
 				case SYMBOL_LIT_STRING:
 					fprintf(fout, ".%s:\n", currNode->id);
@@ -310,6 +314,8 @@ void print_flags(FILE *fout) {
 	fprintf(fout, "\t.string \"%%s\"\n");
 	fprintf(fout, "._print_float:\n");
 	fprintf(fout, "\t.string \"%%f\"\n");
+	fprintf(fout, "._print_char:\n");
+	fprintf(fout, "\t.string \"%%c\"\n");
 }
 
 int gen_assembly(TAC* tac_list, hashTable *table, FILE *fout) {
@@ -319,7 +325,7 @@ int gen_assembly(TAC* tac_list, hashTable *table, FILE *fout) {
 		gen_empty_program(fout);
 		return 0;
 	} 
-	fprintf(fout, ".data\n");
+	fprintf(fout, "\t.data\n");
 	print_flags(fout);
 	gen_hash(table, fout);
 	for(; tmp != NULL; tmp = tmp->next) {
