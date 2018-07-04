@@ -1,6 +1,6 @@
 #include "assembly_gen.h"
 
-int SIZE = 4; 
+int SIZE = 8; 
 int TABLE_SIZE = 40;
 int PAR_COUNT = 0;
 ASTree* _SCOPE = NULL;
@@ -252,7 +252,11 @@ void tac_translate(TAC* tac, FILE* fout) {
 	case TAC_ID_ADDRESS: break;
 	case TAC_VECTOR: // case TAC_VECTOR:(temp,vetor,index) 
 		temp1 = atoi(tac->op2->value) * SIZE;
-		fprintf(fout, "\tmovl\t%%edi, .%s+%d(%%rip)\n", tac->op1->id, temp1);
+		fprintf(stderr, "%d", temp1);
+		fprintf(fout, "\tmovl\t.%s(%%rip), %%eax\n", tac->op2->id);
+		fprintf(fout, "\tcltq\n");
+		fprintf(fout, "\tmovl\t.%s(,%%rax,8), %%edi\n", tac->op1->id);//, temp1);
+		fprintf(fout, "\tmovl\t%%edi, .%s(%%rip)\n", tac->result->id);
 		break;
 	case TAC_PARAM: 
 		load_operand(fout, tac->result, "eax");
@@ -318,7 +322,7 @@ void print_flags(FILE *fout) {
 	fprintf(fout, "._print_string:\n");
 	fprintf(fout, "\t.string \"%%s\"\n");
 	fprintf(fout, "._print_float:\n");
-	fprintf(fout, "\t.string \"%%lf\"\n");
+	fprintf(fout, "\t.string \"%%f\"\n");
 	fprintf(fout, "._print_char:\n");
 	fprintf(fout, "\t.string \"%%c\"\n");
 }

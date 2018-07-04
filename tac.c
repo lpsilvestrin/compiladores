@@ -314,7 +314,7 @@ void print_tac(TAC *tac) {
         case TAC_GREAT: fprintf(stderr, "TAC_GREAT(%s,%s,%s)\n", tac->result->id, tac->op1->id, tac->op2->id); break;
         case TAC_JUMP: fprintf(stderr, "TAC_JUMP(%s,_,_)\n", tac->result->id); break;
         case TAC_RETURN: fprintf(stderr, "TAC_RETURN(%s,%s,_)\n", tac->result->id, tac->op1->id); break;
-        case TAC_SYMBOL: break; //fprintf(stderr, "TAC_SYMBOL(%s,_,_)\n", tac->result->id); break;
+        case TAC_SYMBOL: break;//fprintf(stderr, "TAC_SYMBOL(%s,_,_)\n", tac->result->id); break;
         case TAC_PARAM: fprintf(stderr, "TAC_PARAM(%s,_,_)\n", tac->result->id); break;
         case TAC_PARAM_DEF: fprintf(stderr, "TAC_PARAM_DEF(%s,_,_)\n", tac->result->id); break;
         case TAC_VAR_AS: fprintf(stderr, "TAC_VAR_AS(%s,%s,_)\n", tac->result->id, tac->op1->id); break;
