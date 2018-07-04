@@ -141,7 +141,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 		break;	
 	case TAC_FUN_ARG: break;
 	case TAC_FUN_CALL: 
-		fprintf(fout, "\tcall\t.%s\n", tac->op1->id);
+		fprintf(fout, "\tcall\t%s\n", tac->op1->id);
 		fprintf(fout, "\taddq\t$%d, %%rsp\n", (PAR_COUNT*8));
 		// get return value from edx
 		fprintf(fout, "\tmovl\t%%edx, .%s(%%rip)\n", tac->result->id);
