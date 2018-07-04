@@ -167,7 +167,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 		fprintf(fout, "\tmovl\t$.%s, %%esi\n",tac->result->id); //removed the $
 		switch(tac->result->type) {
 			case SYMBOL_LIT_CHAR: 
-				fprintf(fout, "\tmovl\t$._print_char, %%edi\n");
+				fprintf(fout, "\tmovl\t$._print_string, %%edi\n");
 				break;
 			case SYMBOL_LIT_INT: 
 				fprintf(fout, "\tmovl\t$._print_int, %%edi\n");
@@ -185,7 +185,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 		call	scanf*/
 		fprintf(fout, "\tmovl\t$0, %%eax\n");
 		fprintf(fout, "\tcall\tscanf\n");
-		fprintf(fout, "\tmovl\t%%eax, %%esi\n");
+		fprintf(fout, "\tmovl\t%%eax, .%s(%%rip)\n", tac->result->id);
 
 		break;
 	case TAC_ADD: 
@@ -211,6 +211,11 @@ void tac_translate(TAC* tac, FILE* fout) {
 		break;
 	case TAC_NOT: 
 		tac_translate_bool_op(fout, tac, "notl");
+		break;
+	case TAC_INC:
+		load_operand(fout, tac->result, "eax");
+		fprintf(fout, "\taddl\t$1, %%eax\n");
+		fprintf(fout, "\tmovl\t%%eax, .%s(%%rip)\n", tac->result->id);
 		break;
 	case TAC_EQ:
 	case TAC_NEQ: 
