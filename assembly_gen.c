@@ -163,7 +163,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 		fprintf(fout, "\tmovl\t$.%s, %%esi\n",tac->result->id); //removed the $
 		switch(tac->result->type) {
 			case SYMBOL_LIT_CHAR: 
-				fprintf(fout, "\tmovl\t$._print_char, %%edi\n");
+				fprintf(fout, "\tmovl\t$._print_string, %%edi\n");
 				break;
 			case SYMBOL_LIT_INT: 
 				fprintf(fout, "\tmovl\t$._print_int, %%edi\n");
@@ -319,7 +319,7 @@ int gen_assembly(TAC* tac_list, hashTable *table, FILE *fout) {
 		gen_empty_program(fout);
 		return 0;
 	} 
-	//fprintf(fout, ".data\n");
+	fprintf(fout, ".data\n");
 	print_flags(fout);
 	gen_hash(table, fout);
 	for(; tmp != NULL; tmp = tmp->next) {
