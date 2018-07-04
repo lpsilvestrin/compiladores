@@ -56,7 +56,7 @@ void tac_translate_arithmetic(FILE* fout, TAC* tac, char* op) {
 	}
 	load_operand(fout, tac->op2, "eax");
 	if(strcmp(op,"idivl") == 0) {
-		fprintf(fout, "\t	cltd\n");
+		fprintf(fout, "\tcltd\n");
 		fprintf(fout, "\t%s\t%%eax\n", op);
 		fprintf(fout, "\tmovl\t%%eax, .%s(%%rip)\n", tac->result->id);
 		return;

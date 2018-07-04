@@ -14,22 +14,19 @@ int fun3(int x, int m) {
 
 int main(){
 	//read a;
-	k = fun3(1,2);
+	//k = fun3(1,2);
 	print a;
 	print c;
 	print k;
 	print "\n";
+	read k;
 	//read a;
 	//print a;
 	//print "a" k c;
-	if(k == c) then {
-		//printf("oi\n");
-		//print "\n";
-		print a;
-		//print "\n";
-		//a = a -1;
-		print a;
-	};
+	print a;
+	print "\n";
+	//a = a *1;
+	print k;
 	//scanf("%f",&k);
 	print "oi";
 	//print a;
