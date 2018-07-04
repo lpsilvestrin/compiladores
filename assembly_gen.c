@@ -120,8 +120,8 @@ void tac_translate(TAC* tac, FILE* fout) {
 		//fprintf(fout, "\t.long\t%s\n",tac->op1->value?tac->op1->value:0);
 		break;
 	case TAC_VEC_DEF: 
-		temp1 = atoi(tac->op1->id) * SIZE; //vector size
-		fprintf(fout, "\t.comm\t%s,%d,%d\n",tac->result->id, temp1, temp1); //.comm	vetor,8,8
+		temp1 = atoi(tac->op1->value) * SIZE; //vector size
+		fprintf(fout, "\t.comm\t.%s,%d,%d\n",tac->result->id, temp1, temp1); //.comm	vetor,8,8
 		break;
 	case TAC_FUN_BEGIN:
 		// set scope for next instructions
@@ -243,7 +243,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 	case TAC_ID_ADDRESS: break;
 	case TAC_VECTOR: // case TAC_VECTOR:(temp,vetor,index) 
 		temp1 = atoi(tac->op2->value) * SIZE;
-		fprintf(fout, "\tmovl\t$%%edi, .%s+%d(%%rip)\n", tac->op1->id, temp1);
+		fprintf(fout, "\tmovl\t%%edi, .%s+%d(%%rip)\n", tac->op1->id, temp1);
 		break;
 	case TAC_PARAM: 
 		load_operand(fout, tac->result, "eax");
