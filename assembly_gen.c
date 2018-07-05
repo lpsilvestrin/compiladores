@@ -119,7 +119,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 				fprintf(stderr, "ERROR ON assembly_gen, CASE TAC_VAR_DEF\n");
 				break;
 		}
-		//fprintf(fout, "\t.long\t%s\n",tac->op1->value?tac->op1->value:0);
+		//fprintf(fout, "\t.long\t%s\n",tac->op1->value?tac->op1->value:0); uee
 		break;
 	case TAC_VEC_DEF: 
 		temp1 = atoi(tac->op1->value) * SIZE; //vector size
