@@ -4,6 +4,9 @@ int SIZE = 8;
 int TABLE_SIZE = 40;
 int PAR_COUNT = 0;
 ASTree* _SCOPE = NULL;
+int last_index = 0;
+char vector_id[200];
+int flag = 0;
 
 // return the position of a parameter in the current scope
 int find_param_pos(hashNode* var) {
@@ -16,7 +19,6 @@ int find_param_pos(hashNode* var) {
 	}
 	return 0;			
 }
-
 // load an operand (either variable or "imadiato") into a register
 void load_operand(FILE* fout, hashNode* op, char* reg) {
 	if (strcmp(reg, "rsi")==0) {
@@ -122,6 +124,15 @@ void tac_translate(TAC* tac, FILE* fout) {
 	case TAC_VEC_DEF: 
 		temp1 = atoi(tac->op1->value) * SIZE; //vector size
 		fprintf(fout, "\t.comm\t.%s,%d,%d\n",tac->result->id, temp1, temp1); //.comm	vetor,8,8
+		last_index = 8; //starts from the second
+		strcpy(vector_id, tac->result->id);
+		break;
+	case TAC_VEC_SYMBOL: 
+		fprintf(fout,"\tpushq\t%%rbp\n"); //movl	$1, .vec1+0(%rip)
+		fprintf(fout,"\tmovl\t$%s, .%s+%d(%%rip)\n", tac->result->value, vector_id, last_index);
+		fprintf(fout,"\tpopq\t%%rbp\n");
+		last_index = last_index + SIZE;
+		flag = 1;
 		break;
 	case TAC_FUN_BEGIN:
 		// set scope for next instructions
@@ -188,6 +199,8 @@ void tac_translate(TAC* tac, FILE* fout) {
 		//fprintf(fout, "\tmovl\t%%eax, .%s(%%rip)\n", tac->result->id);
 
 		break;
+	
+
 	case TAC_ADD: 
 		tac_translate_arithmetic(fout, tac, "addl");
 		break;
@@ -232,7 +245,15 @@ void tac_translate(TAC* tac, FILE* fout) {
 		// return through edx
 		load_operand(fout, tac->op1, "edx");
 		break;
-	case TAC_SYMBOL: break;
+	case TAC_SYMBOL: 
+		if(flag) { //vector element
+			last_index = 0;
+			fprintf(fout,"\tpushq\t%%rbp\n"); //movl	$1, .vec1+0(%rip)
+			fprintf(fout,"\tmovl\t$%s, .%s+%d(%%rip)\n", tac->result->value, vector_id, last_index);
+			fprintf(fout,"\tpopq\t%%rbp\n");
+			
+		}
+		break;
 	case TAC_VAR_AS: 
 		store_var(fout, tac->op1, tac->result);
 		break;
@@ -252,7 +273,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 	case TAC_ID_ADDRESS: break;
 	case TAC_VECTOR: // case TAC_VECTOR:(temp,vetor,index) 
 		temp1 = atoi(tac->op2->value) * SIZE;
-		fprintf(stderr, "%d", temp1);
+		//fprintf(stderr, "%d", temp1);
 		fprintf(fout, "\tmovl\t.%s(%%rip), %%eax\n", tac->op2->id);
 		fprintf(fout, "\tcltq\n");
 		fprintf(fout, "\tmovl\t.%s(,%%rax,8), %%edi\n", tac->op1->id);//, temp1);

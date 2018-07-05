@@ -65,9 +65,9 @@ TAC* tac_generate_code(ASTree *node) {
         return NULL;
     }
     TAC *new_code[MAX_OFFSPRING];
-    TAC *t1, *t2, *t3, *t4, *t5, *t6, *t7, *t8;
-	TAC *tac_temp;
-	hashNode *label, *label2, *temp;
+    TAC *t1, *t2, *t3, *t4, *t5, *t6, *t7;//, *t8;
+	//TAC *tac_temp;
+	hashNode *label, *label2;//, *temp;
     
     for(int i=0; i < MAX_OFFSPRING; i++) {
         if(node->offspring[i] == NULL) {
@@ -92,7 +92,7 @@ TAC* tac_generate_code(ASTree *node) {
 			return tac_join(t1, new_code[2]); // join vec def with init values
 			break;
 		case AST_INIT_VALUES:
-			t1 = tac_create(TAC_SYMBOL, new_code[1]->result, NULL, NULL);
+			t1 = tac_create(TAC_VEC_SYMBOL, new_code[1]->result, NULL, NULL);
 			return tac_join(new_code[0], t1);
         case AST_FUNCTION_DEF: 
 			t1 = tac_create(TAC_FUN_END, new_label(), NULL, NULL);
@@ -124,10 +124,6 @@ TAC* tac_generate_code(ASTree *node) {
             return tac_create(TAC_READ, node->id, NULL, NULL);
             break;
         case AST_PRINT: 
-            /*
-                    | print_c LIT_STRING    {$$=astree_create(AST_PRINT,$2,$1,0,0,0);}
-                    | print_c expression    {$$=astree_create(AST_PRINT,0,$1,$2,0,0);}
-            */
 	        t1 =  tac_create(TAC_PRINT, node->id?node->id:new_code[1]->result, NULL, NULL);
 			if (new_code[1] != NULL) {
 				return tac_join(new_code[0], tac_join(new_code[1], t1));	
@@ -314,7 +310,7 @@ void print_tac(TAC *tac) {
         case TAC_GREAT: fprintf(stderr, "TAC_GREAT(%s,%s,%s)\n", tac->result->id, tac->op1->id, tac->op2->id); break;
         case TAC_JUMP: fprintf(stderr, "TAC_JUMP(%s,_,_)\n", tac->result->id); break;
         case TAC_RETURN: fprintf(stderr, "TAC_RETURN(%s,%s,_)\n", tac->result->id, tac->op1->id); break;
-        case TAC_SYMBOL: break;//fprintf(stderr, "TAC_SYMBOL(%s,_,_)\n", tac->result->id); break;
+        case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL(%s,_,_)\n", tac->result->id); break;
         case TAC_PARAM: fprintf(stderr, "TAC_PARAM(%s,_,_)\n", tac->result->id); break;
         case TAC_PARAM_DEF: fprintf(stderr, "TAC_PARAM_DEF(%s,_,_)\n", tac->result->id); break;
         case TAC_VAR_AS: fprintf(stderr, "TAC_VAR_AS(%s,%s,_)\n", tac->result->id, tac->op1->id); break;
@@ -324,6 +320,8 @@ void print_tac(TAC *tac) {
         case TAC_ID_POINTER: fprintf(stderr, "TAC_ID_POINTER\n"); break;
         case TAC_ID_ADDRESS: fprintf(stderr, "TAC_ID_ADDRESS\n"); break;
         case TAC_VECTOR: fprintf(stderr, "TAC_VECTOR(%s,%s,%s)\n", tac->result->id, tac->op1->id, tac->op2->id); break;
+        case TAC_INC: break;
+        case TAC_VEC_SYMBOL: fprintf(stderr, "TAC_VEC_SYMBOL(%s,_,_)\n", tac->result->id); break;
         default: fprintf(stderr, "WEIRD TAC TYPE ON FUNCTION print_tac\n"); break;
     }
 

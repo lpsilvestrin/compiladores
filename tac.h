@@ -41,6 +41,7 @@
 #define TAC_PARAM 34
 #define TAC_PARAM_DEF 35
 #define TAC_INC 36
+#define TAC_VEC_SYMBOL 37
 
 
 
