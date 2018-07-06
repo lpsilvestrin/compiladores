@@ -251,14 +251,14 @@ TAC* tac_generate_code(ASTree *node) {
             //ending label
 			t6 = tac_create(TAC_LABEL, label2, NULL, NULL);
 
-            return tac_join(t2, 
+            return tac_join(t1, 
+				tac_join(t2, 
 				tac_join(new_code[0], 
 				tac_join(t3, 
 				tac_join(t4,
 				tac_join(new_code[2], 
 				tac_join(t7, 
-				//tac_join(t8, 
-				tac_join(t5, t6))))))); 
+				tac_join(t5, t6)))))))); 
             break;
         case AST_WHILE: 
 			label = new_label();
