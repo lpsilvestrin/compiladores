@@ -101,7 +101,7 @@ void tac_translate_bool_op(FILE* fout, TAC* tac, char* op) {
 }
 
 void tac_translate(TAC* tac, FILE* fout) {
-	int temp1;
+	int temp1, i;
 	switch(tac->type) {
 	case TAC_VAR_DEF:
 		fprintf(fout, ".%s:\n", tac->result->id);
@@ -120,8 +120,14 @@ void tac_translate(TAC* tac, FILE* fout) {
 		//fprintf(fout, "\t.long\t%s\n",tac->op1->value?tac->op1->value:0);
 		break;
 	case TAC_VEC_DEF: 
-		temp1 = atoi(tac->op1->value) * SIZE; //vector size
-		fprintf(fout, "\t.comm\t.%s,%d,%d\n",tac->result->id, temp1, temp1); //.comm	vetor,8,8
+		fprintf(fout, ".%s:\n", tac->result->id);
+		temp1 = atoi(tac->op1->value); //vector size
+		if (tac->result->has_init_values == 1) break;
+		for (i = 0; i < temp1; i++)  
+			fprintf(fout, "\t.long\t0\n"); 
+		break;
+	case TAC_VEC_INIT:
+		fprintf(fout, "\t.long\t%s\n", tac->result->value);
 		break;
 	case TAC_FUN_BEGIN:
 		// set scope for next instructions
@@ -232,13 +238,17 @@ void tac_translate(TAC* tac, FILE* fout) {
 		// return through edx
 		load_operand(fout, tac->op1, "edx");
 		break;
-	case TAC_SYMBOL: break;
+	case TAC_SYMBOL: 
+		break;
 	case TAC_VAR_AS: 
 		store_var(fout, tac->op1, tac->result);
 		break;
 	case TAC_VECTOR_AS: 
 		temp1 = atoi(tac->op1->value) * SIZE;
-		fprintf(fout, "\tmovl\t$%s, .%s+%d(%%rip)\n", tac->op2->value, tac->result->id, temp1);
+		load_operand(fout, tac->op2, "ebx");
+		load_operand(fout, tac->op1, "eax");
+		fprintf(fout, "\tcltq\n");
+		fprintf(fout, "\tmovl\t%%ebx, .%s(,%%rax,8)\n", tac->result->id);
 		break;
 	case TAC_IFZ: 
 		fprintf(fout, "\tmovl\t .%s(%%rip), %%ebx\n", tac->result->id);
@@ -252,7 +262,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 	case TAC_ID_ADDRESS: break;
 	case TAC_VECTOR: // case TAC_VECTOR:(temp,vetor,index) 
 		temp1 = atoi(tac->op2->value) * SIZE;
-		fprintf(stderr, "%d", temp1);
+		
 		fprintf(fout, "\tmovl\t.%s(%%rip), %%eax\n", tac->op2->id);
 		fprintf(fout, "\tcltq\n");
 		fprintf(fout, "\tmovl\t.%s(,%%rax,8), %%edi\n", tac->op1->id);//, temp1);
