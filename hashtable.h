@@ -33,6 +33,7 @@ typedef struct HashNode {
 	int type; //the type 
 	int scan_type; // type defined during lexial analysis
 	int param_order;
+	int has_init_values;
 	char* value; //some content
 	struct HashNode* next;
 	ASTree *list_head; //pointer for list
