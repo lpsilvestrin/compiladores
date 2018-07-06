@@ -91,7 +91,7 @@ void tac_translate_cmp(FILE* fout, TAC* tac) {
 
 void tac_translate_bool_op(FILE* fout, TAC* tac, char* op) {
 	load_operand(fout, tac->op1, "eax");	
-	if(strcmp(op,"notl") == 1) {
+	if(strcmp(op,"notl") != 0) {
 		load_operand(fout, tac->op2, "edx");	
 		fprintf(fout,"\t%s %%eax, %%edx\n", op); 
 		fprintf(fout, "\tmovl\t%%edx, .%s(%%rip)\n", tac->result->id);
