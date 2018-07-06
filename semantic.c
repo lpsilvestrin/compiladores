@@ -172,13 +172,13 @@ int get_type(ASTree *node, ASTree* scope) {
 		break;
 	case AST_INIT_VALUES: 
 		// check the type of the list of init values
-		tn1 = get_type(n1, scope); 
-		if (n2 != NULL) {
-			tn2 = get_type(n2, scope);
+		tn2 = get_type(n2, scope); 
+		if (n1 != NULL) {
+			tn1 = get_type(n1, scope);
 			if (test_arit_type(tn1)&&(test_arit_type(tn2)))//(tn1 == tn2)
 				type = tn1;
 		} else {
-			type = tn1;
+			type = tn2;
 		}
 		break;
 	case AST_ID_POINTER:

@@ -296,7 +296,7 @@ init_value:
 
 //vector init list
 init_values_list: 
-    init_value                      {$$=$1;}
+    init_value                      {$$=astree_create(AST_INIT_VALUES,0,0,$1,0,0);}
     | init_values_list init_value   {$$=astree_create(AST_INIT_VALUES,0,$1,$2,0,0);}
     ; 
 
