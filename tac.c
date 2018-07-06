@@ -88,11 +88,14 @@ TAC* tac_generate_code(ASTree *node) {
             return tac_create(TAC_POINTER_DEF, node->id, new_code[1]->result, NULL); 
             break;
         case AST_GLOBAL_VECTOR_DEF: 
+			if (new_code[2] != NULL) {
+				node->id->has_init_values = 1;
+			}
 			t1 = tac_create(TAC_VEC_DEF, node->id, new_code[1]->result, NULL);
 			return tac_join(t1, new_code[2]); // join vec def with init values
 			break;
 		case AST_INIT_VALUES:
-			t1 = tac_create(TAC_SYMBOL, new_code[1]->result, NULL, NULL);
+			t1 = tac_create(TAC_VEC_INIT, new_code[1]->result, NULL, NULL);
 			return tac_join(new_code[0], t1);
         case AST_FUNCTION_DEF: 
 			t1 = tac_create(TAC_FUN_END, new_label(), NULL, NULL);
@@ -319,6 +322,7 @@ void print_tac(TAC *tac) {
         case TAC_PARAM_DEF: fprintf(stderr, "TAC_PARAM_DEF(%s,_,_)\n", tac->result->id); break;
         case TAC_VAR_AS: fprintf(stderr, "TAC_VAR_AS(%s,%s,_)\n", tac->result->id, tac->op1->id); break;
         case TAC_VECTOR_AS: fprintf(stderr, "TAC_VECTOR_AS(%s,%s,%s)\n", tac->result->id, tac->op1->id, tac->op2->id); break;
+        case TAC_VEC_INIT: fprintf(stderr, "TAC_VEC_INIT(%s,_,_)\n", tac->result->id); break;
         case TAC_IFZ: fprintf(stderr, "TAC_IFZ(%s,%s,_)\n", tac->result->id, tac->op1->id); break;
         case TAC_LABEL: fprintf(stderr, "TAC_LABEL(%s,_,_)\n", tac->result->id); break;
         case TAC_ID_POINTER: fprintf(stderr, "TAC_ID_POINTER\n"); break;
