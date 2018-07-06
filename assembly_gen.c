@@ -248,7 +248,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 		load_operand(fout, tac->op2, "ebx");
 		load_operand(fout, tac->op1, "eax");
 		fprintf(fout, "\tcltq\n");
-		fprintf(fout, "\tmovl\t%%ebx, .%s(,%%rax,8)\n", tac->result->id);
+		fprintf(fout, "\tmovl\t%%ebx, .%s(,%%rax,4)\n", tac->result->id);
 		break;
 	case TAC_IFZ: 
 		fprintf(fout, "\tmovl\t .%s(%%rip), %%ebx\n", tac->result->id);
@@ -265,7 +265,7 @@ void tac_translate(TAC* tac, FILE* fout) {
 		
 		fprintf(fout, "\tmovl\t.%s(%%rip), %%eax\n", tac->op2->id);
 		fprintf(fout, "\tcltq\n");
-		fprintf(fout, "\tmovl\t.%s(,%%rax,8), %%edi\n", tac->op1->id);//, temp1);
+		fprintf(fout, "\tmovl\t.%s(,%%rax,4), %%edi\n", tac->op1->id);//, temp1);
 		fprintf(fout, "\tmovl\t%%edi, .%s(%%rip)\n", tac->result->id);
 		break;
 	case TAC_PARAM: 
