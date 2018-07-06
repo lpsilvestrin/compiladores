@@ -61,7 +61,8 @@ void tac_translate_arithmetic(FILE* fout, TAC* tac, char* op) {
 		fprintf(fout, "\tmovl\t%%eax, .%s(%%rip)\n", tac->result->id);
 		return;
 	}
-	fprintf(fout, "\t%s\t%%edx, %%eax\n", op);
+	fprintf(fout, "\t%s\t%%eax, %%edx\n", op);
+	fprintf(fout, "\tmovl\t%%edx, %%eax\n", op);
 	fprintf(fout, "\tmovl\t%%eax, .%s(%%rip)\n", tac->result->id);
 }
 
